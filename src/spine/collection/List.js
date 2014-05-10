@@ -2,6 +2,7 @@ JSoop.define('Spine.collection.List', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
         observable: 'JSoop.mixins.Observable',
+        pluginManager: 'JSoop.mixins.PluginManager',
         filterable: 'Spine.util.filter.Filterable',
         sortable: 'Spine.util.Sortable'
     },
@@ -15,6 +16,7 @@ JSoop.define('Spine.collection.List', {
 
         me.initMixin('configurable', [config]);
         me.initMixin('observable');
+        me.initMixin('pluginManager');
         me.initMixin('sortable');
 
         if (items) {

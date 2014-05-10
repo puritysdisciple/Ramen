@@ -115,7 +115,7 @@ JSoop.define('Spine.collection.Dictionary', {
         if (JSoop.isString(fn)) {
             body = [
                 'var val1 = item1["' + fn + '"]',
-                '    val2 = item2["' + fn + '"]',
+                '    val2 = item2["' + fn + '"];',
                 'if (val1 ' + ((dir === 'desc')? '>' : '<') + ' val2) {',
                 '   return -1;',
                 '}',

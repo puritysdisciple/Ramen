@@ -27,7 +27,7 @@ JSoop.define('Spine.data.Collection', {
         if (JSoop.isString(fn)) {
             body = [
                 'var val1 = model1.get("' + fn + '"),',
-                '    val2 = model2.get("' + fn + '")',
+                '    val2 = model2.get("' + fn + '");',
                 'if (val1 ' + ((dir === 'desc')? '>' : '<') + ' val2) {',
                 '   return -1;',
                 '}',
