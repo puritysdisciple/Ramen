@@ -29,8 +29,8 @@ JSoop.define('Spine.dom.Helper', {
             html.push('></' + config.tag + '>');
         }
 
-        //todo: detach from jQuery
-        return jQuery(html.join(''));
+        //todo: detach from jquery
+        return jQuery(html.join(' '));
     },
 
     parseStyle: function (obj) {

@@ -8,6 +8,6 @@ JSoop.define('Spine', {
             AUTO_ID = AUTO_ID + 1;
 
             return prefix + '-' + AUTO_ID;
-        }
+        };
     }())
 });

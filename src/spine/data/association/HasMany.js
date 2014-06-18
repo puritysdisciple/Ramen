@@ -1,7 +1,7 @@
 JSoop.define('Spine.data.association.HasMany', {
     extend: 'Spine.data.association.Association',
 
-    getData: function (attributes) {
+    getData: function () {
         var me = this,
             data = me.callParent(arguments);
 

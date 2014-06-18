@@ -85,13 +85,13 @@ describe('Spine.data.Collection', function () {
     });
 
     it('should be able to filter models', function () {
-        collection.filter({
+        collection.addFilter('Clark', {
             first: 'Clark'
         });
 
         expect(collection.getCount()).toBe(1);
 
-        collection.clearFilter();
+        collection.removeFilter('Clark');
 
         expect(collection.getCount()).toBe(5);
 

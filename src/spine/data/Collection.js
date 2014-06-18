@@ -1,4 +1,3 @@
-//TODO: Add filtering capabilities
 JSoop.define('Spine.data.Collection', {
     extend: 'Spine.collection.Dictionary',
 
@@ -43,7 +42,7 @@ JSoop.define('Spine.data.Collection', {
         return fn;
     },
 
-    onBeforeAdd: function (collection, item, index) {
+    onAddBefore: function (collection, item, index) {
         var me = this;
 
         if (me.callParent(arguments) === false) {

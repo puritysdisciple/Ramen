@@ -14,13 +14,21 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
+            //testing plugin
+            //'../lib/jasmine-jquery.js',
+
+            //Spine Dependencies
+            '../lib/jquery.js',
             '../lib/jsoop-debug.js',
+            '../lib/twig.js',
 
             //Core
             'Spine.js',
 
             //Util
+            'spine/util/Renderable.js',
             'spine/util/Sortable.js',
+            'spine/util/Template.js',
             'spine/util/filter/Filter.js',
             'spine/util/filter/Filterable.js',
 
@@ -38,6 +46,14 @@ module.exports = function(config) {
             'spine/data/Field.js',
             'spine/data/Model.js',
             'spine/data/Collection.js',
+
+            //Dom
+            'spine/dom/Helper.js',
+
+            //View
+            'spine/view/ViewManager.js',
+            'spine/view/Box.js',
+            'spine/view/View.js',
 
             //Helpers
             '../test/helper/data/Person.js',

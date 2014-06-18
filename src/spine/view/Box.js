@@ -2,8 +2,11 @@ JSoop.define('Spine.view.Box', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
         observable: 'JSoop.mixins.Observable',
-        pluginManager: 'JSoop.mixins.PluginManager'
+        pluginManager: 'JSoop.mixins.PluginManager',
+        renderable: 'Spine.util.Renderable'
     },
+
+    stype: 'box',
 
     isBox: true,
 
@@ -25,10 +28,12 @@ JSoop.define('Spine.view.Box', {
         me.initMixin('observable');
         me.initMixin('pluginManager');
 
+        me.initView();
+
         me.id = me.getId();
         me.el = me.createEl();
 
-        me.initView();
+        Spine.view.ViewManager.add(me);
 
         if (me.autoRender) {
             me.render(me.renderTo);
@@ -47,18 +52,23 @@ JSoop.define('Spine.view.Box', {
         return me.id;
     },
 
-    createEl: function () {
-        var me = this,
-            tag = me.tag || {
-                tag: 'div',
-                cls: JSoop.toArray(me.cls).push(me.baseCls),
-                style: me.style || {}
-            };
+    render: function (container, index) {
+        var me = this;
 
-        return Spine.dom.Helper.create(tag);
+        if (me.fireEvent('render:before', me) === false) {
+            return;
+        }
+
+        me.fireEvent('render:during', me);
+
+        me.addToContainer(container, index);
+
+        me.isRendered = true;
+
+        me.fireEvent('render:after', me);
     },
 
-    render: function (container) {
+    addToContainer: function (container, index) {
         var me = this;
 
         if (!container) {
@@ -71,15 +81,53 @@ JSoop.define('Spine.view.Box', {
         }
         //</debug>
 
-        if (me.fireEvent('render:before', me) === false) {
+        //todo: detach from jquery
+        container = jQuery(container).eq(0);
+
+        if (index === undefined || !container[0].childNodes[index]) {
+            container.append(me.el);
+        } else {
+            container = container[0];
+
+            container.insertBefore(me.el[0], container.childNodes[index]);
+        }
+    },
+
+    addCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.addClass(cls);
+        });
+    },
+
+    removeCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.removeClass(cls);
+        });
+    },
+
+    destroy: function () {
+        var me = this;
+
+        if (me.fireEvent('destroy:before') === false) {
             return;
         }
 
-        me.fireEvent('render:during', me);
+        me.fireEvent('destroy', me);
+
+        me.removeAllListeners();
+        me.removeAllManagedListeners();
 
         //todo: detach from jquery
-        jQuery(container).append(me.el);
-
-        me.fireEvent('render:after', me);
+        me.el.remove();
     }
 });

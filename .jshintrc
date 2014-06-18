@@ -21,6 +21,8 @@
     "browser"      : true,
     "globals"      : {
         "JSoop": true,
-        "Spine": true
+        "Spine": true,
+        "SpineOverrides": true,
+        "jQuery": true
     }
 }

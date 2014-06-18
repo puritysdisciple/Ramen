@@ -39,7 +39,7 @@ JSoop.define('Spine.data.association.Association', {
     constructor: function (config) {
         var me = this;
 
-        me.initMixin('configurable', arguments);
+        me.initMixin('configurable', [config]);
     },
 
     parse: function (model, attributes) {
@@ -50,7 +50,7 @@ JSoop.define('Spine.data.association.Association', {
             prep = me.prepare;
 
             if (JSoop.isString(prep)) {
-                prep = model[prep]
+                prep = model[prep];
             }
 
             prep.call(model, attributes);

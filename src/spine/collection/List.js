@@ -1,10 +1,10 @@
 JSoop.define('Spine.collection.List', {
     mixins: {
-        configurable: 'JSoop.mixins.Configurable',
-        observable: 'JSoop.mixins.Observable',
+        configurable : 'JSoop.mixins.Configurable',
+        observable   : 'JSoop.mixins.Observable',
         pluginManager: 'JSoop.mixins.PluginManager',
-        filterable: 'Spine.util.filter.Filterable',
-        sortable: 'Spine.util.Sortable'
+        filterable   : 'Spine.util.filter.Filterable',
+        sortable     : 'Spine.util.Sortable'
     },
 
     isList: true,
@@ -17,6 +17,7 @@ JSoop.define('Spine.collection.List', {
         me.initMixin('configurable', [config]);
         me.initMixin('observable');
         me.initMixin('pluginManager');
+        me.initMixin('filterable');
         me.initMixin('sortable');
 
         if (items) {
@@ -47,7 +48,7 @@ JSoop.define('Spine.collection.List', {
 
             var index = me.findInsertionIndex(item);
 
-            if (me.fireEvent('beforeAdd', me, item, index) !== false) {
+            if (me.fireEvent('add:before', me, item, index) !== false) {
                 item = me.insertItem(item, index, me.items);
 
                 added.push(item);
@@ -66,7 +67,7 @@ JSoop.define('Spine.collection.List', {
         JSoop.each(items, function (item) {
             item = me.initItem(item);
 
-            if (me.fireEvent('beforeAdd', me, item, index) !== false) {
+            if (me.fireEvent('add:before', me, item, index) !== false) {
                 item = me.insertItem(item, index, me.items);
 
                 index = index + 1;
@@ -103,7 +104,7 @@ JSoop.define('Spine.collection.List', {
         JSoop.each(items, function (item) {
             var index = me.indexOf(item);
 
-            if (item !== -1 && me.fireEvent('beforeRemove', me, item, index) !== false) {
+            if (item !== -1 && me.fireEvent('remove:before', me, item, index) !== false) {
                 me.removeAt(index);
 
                 removed.push(item);
@@ -115,6 +116,19 @@ JSoop.define('Spine.collection.List', {
 
     removeAt: function (index) {
         this.items.splice(index, 1);
+    },
+
+    removeAll: function () {
+        var me = this;
+
+        if (me.fireEvent('remove:all:before', me) === false) {
+            return;
+        }
+
+        me.items = [];
+        me.unfilteredItems = [];
+
+        me.fireEvent('remove:all', me);
     },
 
     indexOf: function (item) {
@@ -142,6 +156,36 @@ JSoop.define('Spine.collection.List', {
         }
     },
 
+    find: function (attributes) {
+        var me = this,
+            filter = me.createFilter(attributes),
+            found = [];
+
+        me.each(function (item) {
+            if (filter.is(item)) {
+                found.push(item);
+            }
+        });
+
+        return found;
+    },
+
+    findFirst: function (attributes) {
+        var me = this,
+            filter = me.createFilter(attributes),
+            found;
+
+        me.each(function (item) {
+            if (filter.is(item)) {
+                found = item;
+
+                return false;
+            }
+        });
+
+        return found;
+    },
+
     getCount: function () {
         return this.items.length;
     },
@@ -158,7 +202,7 @@ JSoop.define('Spine.collection.List', {
         me.fireEvent('filter', me, filtered, unfiltered);
     },
 
-    onBeforeAdd: function (list, item, index) {
+    onAddBefore: function (list, item, index) {
         var me = this;
 
         if (me.isFiltered) {
@@ -175,5 +219,7 @@ JSoop.define('Spine.collection.List', {
             }
         }
     },
-    onBeforeRemove: JSoop.emptyFn
+    onRemoveBefore: JSoop.emptyFn,
+
+    onRemoveAll: JSoop.emptyFn
 });

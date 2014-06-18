@@ -47,7 +47,7 @@ JSoop.define('Spine.collection.Dictionary', {
         me.callParent(arguments);
     },
 
-    onBeforeAdd: function (dictionary, item, index) {
+    onAddBefore: function (dictionary, item, index) {
         var me = this,
             key = me.getKey(item);
 
@@ -70,8 +70,6 @@ JSoop.define('Spine.collection.Dictionary', {
         JSoop.each(me.items, function (item) {
             me.ids.push(me.getKey(item));
         });
-
-        me.fireEvent('sort', me);
     },
 
     afterFilter: function () {
@@ -81,11 +79,26 @@ JSoop.define('Spine.collection.Dictionary', {
 
         me.rebuildKeys();
         me.rebuildCache();
+
+        me.callParent(arguments);
+    },
+
+    onRemoveAll: function () {
+        var me = this;
+
+        me.keys = [];
+        me.unfilteredKeys = [];
+
+        me.cache = {};
     },
 
     //====================================================================================================
     //New Members
     //====================================================================================================
+    has: function (item) {
+        return this.indexOf(item) !== -1;
+    },
+
     getKey: function (item) {
         return item.id;
     },

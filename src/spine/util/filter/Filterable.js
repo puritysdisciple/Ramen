@@ -5,10 +5,59 @@ JSoop.define('Spine.util.filter.Filterable', {
     filterTarget: 'items',
     filterType: 'Spine.util.filter.Filter',
 
-    filter: function (config) {
+    constructor: function () {
+        var me = this;
+
+        me.filters = {};
+    },
+
+    addFilter: function (name, config) {
         var me = this,
-            filter = me.createFilter(config),
-            filtered = me.runFilter(filter);
+            filters = name;
+
+        if (JSoop.isString(filters)) {
+            filters = {};
+            filters[name] = config;
+        }
+
+        JSoop.iterate(filters, function (config, name) {
+            var filter = me.createFilter(config);
+
+            me.filters[name] = filter;
+        });
+
+        me.filter();
+    },
+
+    removeFilter: function (name) {
+        var me = this;
+
+        delete me.filters[name];
+
+        me.filter();
+    },
+
+    createFilterFn: function () {
+        var me = this,
+            body = ['true'],
+            fn;
+
+        JSoop.iterate(me.filters, function (filter, name) {
+            body.push('this.filters["' + name + '"].is(item)');
+        });
+
+        body = 'return ' + body.join('&&') + ';';
+
+        fn = new Function('item', body);
+
+        return function () {
+            return fn.apply(me, arguments);
+        };
+    },
+
+    filter: function () {
+        var me = this,
+            filtered;
 
         if (me.beforeFilter(me) === false) {
             return;
@@ -18,7 +67,12 @@ JSoop.define('Spine.util.filter.Filterable', {
             me.unfilteredItems = me[me.filterTarget].slice();
         }
 
-        me.currentFilter = filter;
+        me.currentFilter = me.createFilter({
+            fn: me.createFilterFn()
+        });
+
+        filtered = me.runFilter(me.currentFilter);
+
         me.isFiltered = true;
 
         me[me.filterTarget] = filtered;
@@ -56,7 +110,7 @@ JSoop.define('Spine.util.filter.Filterable', {
         return filtered;
     },
 
-    clearFilter: function () {
+    clearFilters: function () {
         var me = this;
 
         if (!me.isFiltered) {

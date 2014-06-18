@@ -1,5 +1,7 @@
 JSoop.define('Spine.view.View', {
-    extends: 'Spine.view.Box',
+    extend: 'Spine.view.Box',
+
+    stype: 'view',
 
     tpl: '',
 
@@ -17,46 +19,103 @@ JSoop.define('Spine.view.View', {
     onRenderDuring: function () {
         var me = this,
             renderData = me.initRenderData(me.renderData || {}),
-            tpl = me.getTpl('tpl');
+            tpl = me.getTemplate('tpl'),
+            html = tpl.render(renderData);
 
         //todo: detach from jquery
-        me.el.html(tpl.render(renderData));
+        me.el.html(html);
 
         me.initRenderSelectors();
-        me.initChildEls()
+        me.initChildEls();
+        me.initDomListeners();
     },
 
-    getTpl: function (name) {
-        var me = this,
-            tpl = me[name];
+    addDomListener: function (el, ename, listener) {
+        if (listener.single) {
+            listener.callFn = function () {
+                var ret = listener.fn.apply(listener.scope, arguments);
 
-        if (tpl.isTemplate) {
-            return tpl;
+                //todo: detach from jquery
+                el.unbind(ename, listener.callFn);
+
+                return ret;
+            };
         }
 
-        me[name] = JSoop.create('Spine.util.Template', tpl);
-
-        return me[name];
+        //todo: detach from jquery
+        el.bind(ename, listener.callFn);
     },
 
-    initRenderSelectors: function () {
-        var me = this,
-            renderSelectors = me.renderSelectors || {};
+    initDomListener: function (ename, listener, defaults) {
+        var me = this;
 
-        JSoop.iterate(renderSelectors, function (selector, key) {
-            //todo: detach from jquery
-            me[key] = jQuery(selector, me.el);
+        if (!JSoop.isObject(listener)) {
+            listener = {
+                fn: listener
+            };
+        }
+
+        if (JSoop.isString(listener.fn)) {
+            listener.fn = me[listener.fn];
+        }
+
+        JSoop.applyIf(listener, defaults || {});
+        JSoop.applyIf(listener, {
+            scope: me
+        });
+
+        listener.fn = listener.callFn = JSoop.bind(listener.fn, listener.scope);
+
+        return listener;
+    },
+
+    initDomListeners: function () {
+        var me = this,
+            domListeners = me.domListeners || {};
+
+        JSoop.iterate(domListeners, function (events, el) {
+            var defaultOptions = {};
+
+            JSoop.iterate(events, function (listeners, ename) {
+                if (ename === 'single' || ename === 'scope') {
+                    defaultOptions[ename] = listeners;
+                }
+            });
+
+            JSoop.iterate(events, function (listeners, ename) {
+                if (ename === 'single' || ename === 'scope') {
+                    return;
+                }
+
+                listeners = JSoop.toArray(listeners);
+
+                JSoop.each(listeners, function (listener) {
+                    listener = me.initDomListener(ename, listener, defaultOptions);
+                    me.addDomListener(me[el], ename, listener);
+                });
+            });
         });
     },
 
-    initChildEls: function () {
+    destroy: function () {
         var me = this,
-            id = me.getId(),
+            renderSelectors = me.renderSelectors || {},
             els = me.childEls || {};
 
+        //Unbind and destroy renderSelectors
+        JSoop.iterate(renderSelectors, function (selector, key) {
+            //todo: detach from jquery
+            me[key].off();
+            me[key] = null;
+        });
+
+        //Unbind and destroy childEls
         JSoop.iterate(els, function (addition, key) {
             //todo: detach from jquery
-            me[key] = jQuery('#' + id + '-' + addition);
+            me[key].off();
+            me[key] = null;
         });
+
+        me.callParent();
     }
 });

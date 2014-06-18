@@ -1,0 +1,113 @@
+{
+    "projectName": "Spine",
+    "deployDir": "../Codex/assets/lib",
+    "licenseText": "",
+    "packages": [{
+        "id": "core",
+        "name": "Core",
+        "file": "pkgs/core.js",
+        "fileIncludes": [{
+            "text": "Spine.js",
+            "path": "src/"
+        }]
+    }, {
+        "id": "collection",
+        "name": "Collection",
+        "file": "pkgs/collection.js",
+        "fileIncludes": [{
+            "text": "Sortable.js",
+            "path": "src/spine/util/"
+        }, {
+            "text": "Filter.js",
+            "path": "src/spine/util/filter/"
+        }, {
+            "text": "Filterable.js",
+            "path": "src/spine/util/filter/"
+        }, {
+            "text": "List.js",
+            "path": "src/spine/collection/"
+        }, {
+            "text": "Dictionary.js",
+            "path": "src/spine/collection/"
+        }]
+    }, {
+        "id": "data",
+        "name": "Data",
+        "file": "pkgs/data.js",
+        "fileIncludes": [{
+            "text": "Association.js",
+            "path": "src/spine/data/association/"
+        }, {
+            "text": "HasMany.js",
+            "path": "src/spine/data/association/"
+        }, {
+            "text": "HasOne.js",
+            "path": "src/spine/data/association/"
+        }, {
+            "text": "ModelFilter.js",
+            "path": "src/spine/data/filter/"
+        }, {
+            "text": "Field.js",
+            "path": "src/spine/data/"
+        }, {
+            "text": "Model.js",
+            "path": "src/spine/data/"
+        }, {
+            "text": "Query.js",
+            "path": "src/spine/data/"
+        }, {
+            "text": "Collection.js",
+            "path": "src/spine/data/"
+        }]
+    }, {
+        "id": "view",
+        "name": "View",
+        "file": "pkgs/view.js",
+        "fileIncludes": [{
+            "text": "Helper.js",
+            "path": "src/spine/dom/"
+        }, {
+            "text": "Box.js",
+            "path": "src/spine/view/"
+        }, {
+            "text": "View.js",
+            "path": "src/spine/view/"
+        }, {
+            "text": "Container.js",
+            "path": "src/spine/view/container/"
+        }]
+    }],
+    "builds": [{
+        "name": "Data Only",
+        "target": "spine-data.js",
+        "options": {
+            "debug": true
+        },
+        "packages": [
+            "collection",
+            "data"
+        ]
+    }/*, {
+        "name": "All Debug",
+        "target": "spine-debug.js",
+        "options": {
+            "debug": true
+        },
+        "packages": [
+            "core",
+            "data",
+            "app",
+            "view"
+        ]
+    }, {
+        "name": "All",
+        "target": "spine.js",
+        "compress": true,
+        "packages": [
+            "core",
+            "data",
+            "app",
+            "view"
+        ]
+    }*/]
+}

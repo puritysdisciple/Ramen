@@ -9,6 +9,10 @@ JSoop.define('Spine.util.filter.Filter', {
         if (arguments.length === 1) {
             if (attributes.fn) {
                 config = attributes;
+            } else if (JSoop.isFunction(attributes)) {
+                config = {
+                    fn: attributes
+                };
             } else {
                 config = {
                     fn: me.createFilterFn(attributes),
