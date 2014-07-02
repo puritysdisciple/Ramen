@@ -70,5 +70,5 @@ JSoop.define('Spine.data.Collection', {
         }
 
         return JSoop.create(me.model, item);
-    }
+    },
 });

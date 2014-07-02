@@ -54,13 +54,17 @@ module.exports = function(config) {
             'spine/view/ViewManager.js',
             'spine/view/Box.js',
             'spine/view/View.js',
+                //Binding
+                'spine/view/binding/Binding.js',
+                'spine/view/binding/ModelBinding.js',
 
             //Helpers
             '../test/helper/data/Person.js',
             '../test/helper/data/Company.js',
 
             //Tests
-            '../test/spine/*/*.js'
+            '../test/spine/*/*.js',
+            '../test/spine/*/*/*.js'
         ],
 
 

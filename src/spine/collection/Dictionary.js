@@ -29,7 +29,8 @@ JSoop.define('Spine.collection.Dictionary', {
     },
 
     insertUnfilteredItem: function (item, index) {
-        var me = this;
+        var me = this,
+            key = me.getKey(item);
 
         me.unfilteredKeys.splice(index, 0, key);
 

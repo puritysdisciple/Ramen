@@ -2,13 +2,17 @@ JSoop.define('Spine.util.Renderable', {
     isRenderable: true,
 
     createEl: function () {
+        return Spine.dom.Helper.create(this.getTagConfig());
+    },
+
+    getTagConfig: function () {
         var me = this,
             classes = JSoop.toArray(me.cls),
             tag;
 
         classes.push(me.baseCls);
 
-        tag = me.tag || {};
+        tag = JSoop.clone(me.tag || {});
 
         JSoop.applyIf(tag, {
             tag: 'div',
@@ -17,7 +21,7 @@ JSoop.define('Spine.util.Renderable', {
             style: me.style || {}
         });
 
-        return Spine.dom.Helper.create(tag);
+        return tag;
     },
 
     getTemplate: function (name) {

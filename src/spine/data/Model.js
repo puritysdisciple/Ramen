@@ -182,7 +182,9 @@ JSoop.define('Spine.data.Model', {
     set: function (field, value) {
         var me = this,
             data = {},
-            attributes = field;
+            attributes = field,
+            newValues = {},
+            oldValues = {};
 
         if (!JSoop.isObject(attributes)) {
             attributes = {};
@@ -210,10 +212,16 @@ JSoop.define('Spine.data.Model', {
             me.attributes[field] = value;
 
             me.fireEvent('change:' + field, me, value, oldValue);
-            me.fireEvent('change', me, field, value, oldValue);
+
+            if (oldValue !== value) {
+                oldValues[field] = oldValue;
+                newValues[field] = value;
+            }
         });
 
         me.parseAssociations(attributes);
+
+        me.fireEvent('change', me, oldValues, newValues);
     },
 
     /**

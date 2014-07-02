@@ -5,6 +5,14 @@ JSoop.define('Spine.view.View', {
 
     tpl: '',
 
+    initView: function () {
+        var me = this;
+
+        me.renderData = me.renderData || {};
+
+        me.callParent(arguments);
+    },
+
     initRenderData: function (renderData) {
         var me = this;
 
@@ -18,7 +26,7 @@ JSoop.define('Spine.view.View', {
 
     onRenderDuring: function () {
         var me = this,
-            renderData = me.initRenderData(me.renderData || {}),
+            renderData = me.initRenderData(me.renderData),
             tpl = me.getTemplate('tpl'),
             html = tpl.render(renderData);
 

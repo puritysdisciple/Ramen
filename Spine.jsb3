@@ -1,6 +1,6 @@
 {
     "projectName": "Spine",
-    "deployDir": "../Codex/assets/lib",
+    "deployDir": "build",
     "licenseText": "",
     "packages": [{
         "id": "core",
@@ -64,8 +64,17 @@
         "name": "View",
         "file": "pkgs/view.js",
         "fileIncludes": [{
+            "text": "ViewManager.js",
+            "path": "src/spine/view/"
+        }, {
+            "text": "Template.js",
+            "path": "src/spine/util/"
+        }, {
             "text": "Helper.js",
             "path": "src/spine/dom/"
+        }, {
+            "text": "Renderable.js",
+            "path": "src/spine/util/"
         }, {
             "text": "Box.js",
             "path": "src/spine/view/"
@@ -73,8 +82,14 @@
             "text": "View.js",
             "path": "src/spine/view/"
         }, {
-            "text": "Container.js",
-            "path": "src/spine/view/container/"
+            "text": "Binding.js",
+            "path": "src/spine/view/binding/"
+        }, {
+            "text": "ModelBinding.js",
+            "path": "src/spine/view/binding/"
+        }, {
+            "text": "BindingView.js",
+            "path": "src/spine/view/binding/"
         }]
     }],
     "builds": [{
@@ -87,7 +102,7 @@
             "collection",
             "data"
         ]
-    }/*, {
+    }, {
         "name": "All Debug",
         "target": "spine-debug.js",
         "options": {
@@ -95,19 +110,9 @@
         },
         "packages": [
             "core",
+            "collection",
             "data",
-            "app",
             "view"
         ]
-    }, {
-        "name": "All",
-        "target": "spine.js",
-        "compress": true,
-        "packages": [
-            "core",
-            "data",
-            "app",
-            "view"
-        ]
-    }*/]
+    }]
 }

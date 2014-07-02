@@ -5,6 +5,11 @@ JSoop.define('Spine.dom.Helper', {
     singletonRegEx: /^(br|hr|img|input|link|meta|param)$/,
 
     create: function (config) {
+        //todo: detach from jquery
+        return jQuery(Spine.dom.Helper.markup(config));
+    },
+
+    markup: function (config) {
         var html = ['<' + config.tag];
 
         JSoop.iterate(config, function (value, attr) {
@@ -26,11 +31,17 @@ JSoop.define('Spine.dom.Helper', {
         if (Spine.dom.Helper.singletonRegEx.test(config.tag)) {
             html.push('/>');
         } else {
-            html.push('></' + config.tag + '>');
+            html.push('>');
+
+            if (config.html) {
+                html.push(config.html);
+            }
+
+            html.push('</' + config.tag + '>');
         }
 
         //todo: detach from jquery
-        return jQuery(html.join(' '));
+        return html.join(' ');
     },
 
     parseStyle: function (obj) {
