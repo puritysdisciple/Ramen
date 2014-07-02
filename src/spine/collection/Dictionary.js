@@ -15,6 +15,16 @@ JSoop.define('Spine.collection.Dictionary', {
         me.callParent(arguments);
     },
 
+    indexOf: function (item) {
+        var me = this;
+
+        if (JSoop.isPrimative(item)) {
+            return me.indexOfKey(item);
+        }
+
+        return me.callParent(arguments);
+    },
+
     insertItem: function (item, index, target) {
         var me = this,
             key = me.getKey(item);

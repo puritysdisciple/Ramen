@@ -110,9 +110,13 @@ describe('Spine.data.Collection', function () {
 
     describe('should be able to remove models', function () {
         it('by model', function () {
+            var id = collection.getKey(collection.at(1));
+
             expect(collection.getCount()).toBe(5);
 
             collection.remove(collection.at(1));
+
+            expect(collection.indexOfKey(id)).toBe(-1);
 
             expect(collection.getCount()).toBe(4);
         });
@@ -121,6 +125,8 @@ describe('Spine.data.Collection', function () {
             expect(collection.getCount()).toBe(4);
 
             collection.remove('444-44-4444');
+
+            expect(collection.indexOfKey('444-44-4444')).toBe(-1);
 
             expect(collection.getCount()).toBe(3);
         });
