@@ -32,32 +32,18 @@ describe('Spine.view.binding.ModelBinding', function () {
     });
 
     it('should correctly render the formatter', function () {
-        waits(100);
-
-        runs(function () {
-            expect(binding.el.html()).toBe('Quibby Higglesworth');
-        });
+        expect(binding.el.html()).toBe('Quibby Higglesworth');
     });
 
     it('should correctly update when the model changes', function () {
-        waits(100);
+        expect(binding.el.html()).toBe('Quibby Higglesworth');
 
-        runs(function () {
-            expect(binding.el.html()).toBe('Quibby Higglesworth');
+        model.set('first', 'Magnus');
 
-            model.set('first', 'Magnus');
-        });
+        expect(binding.el.html()).toBe('Magnus Higglesworth');
 
-        waitsFor(function () {
-            return binding.el.html() === 'Magnus Higglesworth';
-        }, 'the content to be updated', 100);
+        model.set('last', 'Higglebottoms');
 
-        runs(function () {
-            model.set('last', 'Higglebottoms');
-        });
-
-        waitsFor(function () {
-            return binding.el.html() === 'Magnus Higglebottoms';
-        }, 'the content to be updated', 100);
+        expect(binding.el.html()).toBe('Magnus Higglebottoms');
     });
 });

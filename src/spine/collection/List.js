@@ -104,6 +104,8 @@ JSoop.define('Spine.collection.List', {
         JSoop.each(items, function (item) {
             var index = me.indexOf(item);
 
+            item = me.at(index);
+
             if (index !== -1 && me.fireEvent('remove:before', me, item, index) !== false) {
                 me.removeAt(index);
 

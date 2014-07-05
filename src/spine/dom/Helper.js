@@ -13,6 +13,10 @@ JSoop.define('Spine.dom.Helper', {
         var html = ['<' + config.tag];
 
         JSoop.iterate(config, function (value, attr) {
+            if (attr === 'html') {
+                return;
+            }
+
             switch (attr) {
                 case 'tag':
                     return;

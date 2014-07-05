@@ -5,6 +5,9 @@ JSoop.define('Spine.view.View', {
 
     tpl: '',
 
+    baseCls: 'view',
+    baseId: 'view',
+
     initView: function () {
         var me = this;
 

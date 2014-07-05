@@ -57,6 +57,12 @@ module.exports = function(config) {
                 //Binding
                 'spine/view/binding/Binding.js',
                 'spine/view/binding/ModelBinding.js',
+                'spine/view/binding/BindingView.js',
+                //Layout
+                'spine/view/layout/Layout.js',
+                //Container
+                'spine/view/container/Container.js',
+                'spine/view/container/CollectionContainer.js',
 
             //Helpers
             '../test/helper/data/Person.js',
