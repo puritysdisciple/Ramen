@@ -34,7 +34,7 @@ JSoop.define('Spine.view.binding.BindingView', {
                 binding = JSoop.create(binding.type, binding);
             } else {
                 binding.owner = me;
-                binding.model = model;
+                binding.model = binding.model || model;
 
                 binding.attach();
             }
