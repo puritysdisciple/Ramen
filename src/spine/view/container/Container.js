@@ -3,6 +3,8 @@ JSoop.define('Spine.view.container.Container', {
 
     isContainer: true,
 
+    stype: 'container',
+
     baseCls: 'container',
     baseId: 'container',
 

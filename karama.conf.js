@@ -58,9 +58,10 @@ module.exports = function(config) {
             'spine/dom/Helper.js',
 
             //View
-            'spine/view/ViewManager.js',
             'spine/view/Box.js',
+            'spine/view/Query.js',
             'spine/view/View.js',
+            'spine/view/ViewManager.js',
                 //Binding
                 'spine/view/binding/Binding.js',
                 'spine/view/binding/ModelBinding.js',

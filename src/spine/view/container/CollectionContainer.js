@@ -1,6 +1,8 @@
 JSoop.define('Spine.view.container.CollectionContainer', {
     extend: 'Spine.view.container.Container',
 
+    stype: 'collection-container',
+
     initView: function () {
         var me = this;
 

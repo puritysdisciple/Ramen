@@ -1,6 +1,8 @@
 JSoop.define('Spine.view.View', {
     extend: 'Spine.view.Box',
 
+    isView: true,
+
     stype: 'view',
 
     tpl: '',

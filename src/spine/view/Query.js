@@ -74,7 +74,7 @@
                 type = match[1],
                 attribute = match[3],
                 value = match[4],
-                fn = ['if (view.vtype !== \'' + type + '\') { return false; }'];
+                fn = ['if (view.stype !== \'' + type + '\') { return false; }'];
 
             if (attribute && !value) {
                 fn.push('if (!view[\'' + attribute + '\']) { return false; }');
