@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Jasmine Spec Runner v1.3.1</title>
+
+    <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.3.1/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.1/jasmine.css">
+
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
+
+    <!-- Spine Dependencies -->
+   <script src="lib/jquery.js"></script>
+   <script src="lib/jsoop-debug.js"></script>
+   <script src="lib/twig.js"></script>
+
+    <!-- Core -->
+   <script src="src/Spine.js"></script>
+
+    <!-- Util -->
+   <script src="src/spine/util/Renderable.js"></script>
+   <script src="src/spine/util/Sortable.js"></script>
+   <script src="src/spine/util/Template.js"></script>
+   <script src="src/spine/util/filter/Filter.js"></script>
+   <script src="src/spine/util/filter/Filterable.js"></script>
+
+    <!-- App -->
+    <script src="src/spine/app/Controller.js"></script>
+    <script src="src/spine/app/History.js"></script>
+    <script src="src/spine/app/Route.js"></script>
+    <script src="src/spine/app/Router.js"></script>
+
+    <!-- Data -->
+   <script src="src/spine/data/filter/ModelFilter.js"></script>
+
+    <!-- Collection -->
+   <script src="src/spine/collection/List.js"></script>
+   <script src="src/spine/collection/Dictionary.js"></script>
+
+    <!-- Data -->
+   <script src="src/spine/data/association/Association.js"></script>
+   <script src="src/spine/data/association/HasMany.js"></script>
+   <script src="src/spine/data/association/HasOne.js"></script>
+   <script src="src/spine/data/Field.js"></script>
+   <script src="src/spine/data/Model.js"></script>
+   <script src="src/spine/data/Collection.js"></script>
+
+    <!-- Dom -->
+   <script src="src/spine/dom/Helper.js"></script>
+
+    <!-- View -->
+   <script src="src/spine/view/ViewManager.js"></script>
+   <script src="src/spine/view/Box.js"></script>
+   <script src="src/spine/view/View.js"></script>
+    <!-- Binding -->
+   <script src="src/spine/view/binding/Binding.js"></script>
+   <script src="src/spine/view/binding/ModelBinding.js"></script>
+   <script src="src/spine/view/binding/BindingView.js"></script>
+    <!-- Layout -->
+   <script src="src/spine/view/layout/Layout.js"></script>
+    <!-- Container -->
+   <script src="src/spine/view/container/Container.js"></script>
+   <script src="src/spine/view/container/CollectionContainer.js"></script>
+
+    <!-- Helpers -->
+   <script src="test/helper/data/Person.js"></script>
+   <script src="test/helper/data/Company.js"></script>
+
+    <!-- Tests -->
+        <!-- App -->
+        <script src="test/spine/app/Controller.js"></script>
+        <script src="test/spine/app/History.js"></script>
+        <script src="test/spine/app/Route.js"></script>
+        <script src="test/spine/app/Router.js"></script>
+
+        <!-- Collection -->
+        <script src="test/spine/collection/List.js"></script>
+
+        <!-- Data -->
+        <script src="test/spine/data/Collection.js"></script>
+        <script src="test/spine/data/Model.js"></script>
+
+        <!-- View -->
+        <script src="test/spine/view/Box.js"></script>
+        <script src="test/spine/view/View.js"></script>
+
+            <!-- Binding -->
+            <script src="test/spine/view/binding/Binding.js"></script>
+            <script src="test/spine/view/binding/ModelBinding.js"></script>
+
+            <!-- Container -->
+            <script src="test/spine/view/container/CollectionContainer.js"></script>
+            <script src="test/spine/view/container/Container.js"></script>
+</head>
+
+<body>
+<script type="text/javascript">
+    (function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var htmlReporter = new jasmine.HtmlReporter();
+
+        jasmineEnv.addReporter(htmlReporter);
+
+        jasmineEnv.specFilter = function(spec) {
+            return htmlReporter.specFilter(spec);
+        };
+
+        var currentWindowOnload = window.onload;
+
+        window.onload = function() {
+            if (currentWindowOnload) {
+                currentWindowOnload();
+            }
+            execJasmine();
+        };
+
+        function execJasmine() {
+            jasmineEnv.execute();
+        }
+
+    })();
+</script>
+</body>
+</html>

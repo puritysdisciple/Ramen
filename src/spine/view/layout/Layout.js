@@ -1,6 +1,10 @@
 JSoop.define('Spine.view.layout.Layout', {
     extend: 'Spine.view.Box',
 
+    isLayout: true,
+
+    isManaged: false,
+
     baseCls: 'layout',
     baseId: 'layout',
 
@@ -117,6 +121,14 @@ JSoop.define('Spine.view.layout.Layout', {
 
     getWrapperStyle: function () {
         return {};
+    },
+
+    destroy: function () {
+        var me = this;
+
+        if (me.callParent(arguments) !== false) {
+            me.itemCache.removeAll();
+        }
     },
 
     onItemsAdd: function (collection, added) {

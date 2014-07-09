@@ -31,6 +31,11 @@ describe('Spine.view.binding.ModelBinding', function () {
         view.render('body');
     });
 
+    afterEach(function () {
+        view.destroy();
+        binding.destroy();
+    });
+
     it('should correctly render the formatter', function () {
         expect(binding.el.html()).toBe('Quibby Higglesworth');
     });

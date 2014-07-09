@@ -24,6 +24,11 @@ describe('Spine.view.binding.Binding', function () {
         view.render('body');
     });
 
+    afterEach(function () {
+        view.destroy();
+        binding.destroy();
+    });
+
     it('should correctly create an element', function () {
         expect(binding.el[0].nodeName).toBe('DIV');
     });

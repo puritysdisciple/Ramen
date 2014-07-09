@@ -32,6 +32,13 @@ module.exports = function(config) {
             'spine/util/filter/Filter.js',
             'spine/util/filter/Filterable.js',
 
+            //App
+            'spine/app/Application.js',
+            'spine/app/Controller.js',
+            'spine/app/History.js',
+            'spine/app/Route.js',
+            'spine/app/Router.js',
+
             //Data
             'spine/data/filter/ModelFilter.js',
 

@@ -9,6 +9,7 @@ JSoop.define('Spine.view.Box', {
     stype: 'box',
 
     isBox: true,
+    isManaged: true,
 
     autoRender: false,
     el: null,
@@ -33,7 +34,9 @@ JSoop.define('Spine.view.Box', {
         me.id = me.getId();
         me.el = me.createEl();
 
-        Spine.view.ViewManager.add(me);
+        if (me.isManaged) {
+            Spine.view.ViewManager.add(me);
+        }
 
         if (me.autoRender) {
             me.render(me.renderTo);
@@ -119,7 +122,7 @@ JSoop.define('Spine.view.Box', {
         var me = this;
 
         if (me.fireEvent('destroy:before') === false) {
-            return;
+            return false;
         }
 
         me.fireEvent('destroy', me);
@@ -129,5 +132,16 @@ JSoop.define('Spine.view.Box', {
 
         //todo: detach from jquery
         me.el.remove();
-    }
+
+        if (me.isManaged) {
+            Spine.view.ViewManager.remove(me);
+        }
+    },
+
+    onDestroyBefore: JSoop.emptyFn,
+    onDestroy: JSoop.emptyFn,
+
+    onRenderDuring: JSoop.emptyFn,
+    onRenderBefore: JSoop.emptyFn,
+    onRenderAfter: JSoop.emptyFn
 });

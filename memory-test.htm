@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Jasmine Spec Runner v2.0.0</title>
+
+    <!-- Spine Dependencies -->
+    <script src="lib/jquery.js"></script>
+    <script src="lib/jsoop-debug.js"></script>
+    <script src="lib/twig.js"></script>
+
+    <!-- Core -->
+    <script src="src/Spine.js"></script>
+
+    <!-- Util -->
+    <script src="src/spine/util/Renderable.js"></script>
+    <script src="src/spine/util/Sortable.js"></script>
+    <script src="src/spine/util/Template.js"></script>
+    <script src="src/spine/util/filter/Filter.js"></script>
+    <script src="src/spine/util/filter/Filterable.js"></script>
+
+    <!-- Data -->
+    <script src="src/spine/data/filter/ModelFilter.js"></script>
+
+    <!-- Collection -->
+    <script src="src/spine/collection/List.js"></script>
+    <script src="src/spine/collection/Dictionary.js"></script>
+
+    <!-- Data -->
+    <script src="src/spine/data/association/Association.js"></script>
+    <script src="src/spine/data/association/HasMany.js"></script>
+    <script src="src/spine/data/association/HasOne.js"></script>
+    <script src="src/spine/data/Field.js"></script>
+    <script src="src/spine/data/Model.js"></script>
+    <script src="src/spine/data/Collection.js"></script>
+
+    <!-- Dom -->
+    <script src="src/spine/dom/Helper.js"></script>
+
+    <!-- View -->
+    <script src="src/spine/view/ViewManager.js"></script>
+    <script src="src/spine/view/Box.js"></script>
+    <script src="src/spine/view/View.js"></script>
+    <!-- Binding -->
+    <script src="src/spine/view/binding/Binding.js"></script>
+    <script src="src/spine/view/binding/ModelBinding.js"></script>
+    <script src="src/spine/view/binding/BindingView.js"></script>
+    <!-- Layout -->
+    <script src="src/spine/view/layout/Layout.js"></script>
+    <!-- Container -->
+    <script src="src/spine/view/container/Container.js"></script>
+    <script src="src/spine/view/container/CollectionContainer.js"></script>
+
+    <!-- Helpers -->
+    <script src="test/helper/data/Person.js"></script>
+    <script src="test/helper/data/Company.js"></script>
+
+    <script>
+    jQuery(document).ready(function () {
+        jQuery('button').click(function () {
+            var view;
+
+            setInterval(function () {
+                view = JSoop.create('Spine.view.container.Container', {
+                    items: [{
+                        tpl: 'Hello'
+                    }, {
+                        tpl: 'Hello Again'
+                    }],
+                    renderTo: 'body',
+                    autoRender: true
+                });
+
+                view.destroy();
+            }, 50);
+        });
+    });
+    </script>
+</head>
+
+<body>
+<button>Test</button>
+</body>
+</html>

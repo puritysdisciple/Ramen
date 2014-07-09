@@ -27,8 +27,8 @@ JSoop.define('Spine.view.binding.Binding', {
         var me = this;
 
         me.owner.on({
-            'render:before': me.onRenderBefore,
-            'render:after': me.onRenderAfter,
+            'render:before': me.onOwnerRenderBefore,
+            'render:after': me.onOwnerRenderAfter,
             scope: me,
             single: true
         });
@@ -90,13 +90,13 @@ JSoop.define('Spine.view.binding.Binding', {
         me.removeAllManagedListeners();
     },
 
-    onRenderBefore: function (view) {
+    onOwnerRenderBefore: function (view) {
         var me = this;
 
         view.renderData[me.token] = me.getHtml();
     },
 
-    onRenderAfter: function () {
+    onOwnerRenderAfter: function () {
         var me = this;
 
         //todo: detach from jquery

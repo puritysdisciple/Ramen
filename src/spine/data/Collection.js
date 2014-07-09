@@ -70,5 +70,15 @@ JSoop.define('Spine.data.Collection', {
         }
 
         return JSoop.create(me.model, item);
-    },
+    }
+}, function () {
+    Spine.collections = {};
+
+    Spine.addCollection = function (name, collection) {
+        Spine.collections[name] = collection;
+    };
+
+    Spine.getCollection = function (name) {
+        return Spine.collections[name];
+    };
 });

@@ -7,9 +7,15 @@ describe('Spine.view.container.Container', function () {
                 tpl: 'Hello Again'
             }],
             renderTo: 'body',
-            autoRender: true
+            autoRender: true,
+
+            layout: {
+                wrapperCls: 'wrapper'
+            }
         });
 
-        //console.log(view.el.html());
+        expect(view.el.find('.wrapper').length).toBe(2);
+
+        view.destroy();
     });
 });

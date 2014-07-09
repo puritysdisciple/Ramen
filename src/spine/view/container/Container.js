@@ -98,5 +98,19 @@ JSoop.define('Spine.view.container.Container', {
         items = me.initItems(items);
 
         me.items.insert(items, index);
+    },
+
+    destroy: function () {
+        var me = this;
+
+        if (me.callParent(arguments) !== false) {
+            me.items.each(function (item) {
+                item.destroy();
+            });
+
+            me.items.removeAll();
+
+            me.layout.destroy();
+        }
     }
 });
