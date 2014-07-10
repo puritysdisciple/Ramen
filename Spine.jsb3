@@ -1,7 +1,7 @@
 {
     "projectName": "Spine",
     "deployDir": "build",
-    "licenseText": "",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2014 Richard Cook\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "packages": [{
         "id": "core",
         "name": "Core",
@@ -60,28 +60,61 @@
             "path": "src/spine/data/"
         }]
     }, {
-        "id": "view",
-        "name": "View",
-        "file": "pkgs/view.js",
+        "id": "app",
+        "name": "App",
+        "file": "pkgs/app.js",
         "fileIncludes": [{
-            "text": "ViewManager.js",
-            "path": "src/spine/view/"
+            "text": "Application.js",
+            "path": "src/spine/app/"
+        }, {
+            "text": "Controller.js",
+            "path": "src/spine/app/"
+        }, {
+            "text": "History.js",
+            "path": "src/spine/app/"
+        }, {
+            "text": "Route.js",
+            "path": "src/spine/app/"
+        } ,{
+            "text": "Router.js",
+            "path": "src/spine/app/"
+        }]
+    }, {
+        "id": "view-support",
+        "name": "ViewSupport",
+        "file": "pkgs/view/support.js",
+        "fileIncludes": [{
+            "text": "Renderable.js",
+            "path": "src/spine/util/"
         }, {
             "text": "Template.js",
             "path": "src/spine/util/"
         }, {
             "text": "Helper.js",
             "path": "src/spine/dom/"
-        }, {
-            "text": "Renderable.js",
-            "path": "src/spine/util/"
-        }, {
+        }]
+    }, {
+        "id": "view-core",
+        "name": "ViewCore",
+        "file": "pkgs/view/core.js",
+        "fileIncludes": [{
             "text": "Box.js",
             "path": "src/spine/view/"
         }, {
             "text": "View.js",
             "path": "src/spine/view/"
         }, {
+            "text": "Query.js",
+            "path": "src/spine/view/"
+        }, {
+            "text": "ViewManager.js",
+            "path": "src/spine/view/"
+        }]
+    }, {
+        "id": "view-binding",
+        "name": "ViewBinding",
+        "file": "pkgs/view/binding.js",
+        "fileIncludes": [{
             "text": "Binding.js",
             "path": "src/spine/view/binding/"
         }, {
@@ -90,6 +123,25 @@
         }, {
             "text": "BindingView.js",
             "path": "src/spine/view/binding/"
+        }]
+    }, {
+        "id": "view-container",
+        "name": "ViewContainer",
+        "file": "pkgs/view/container.js",
+        "fileIncludes": [{
+            "text": "Container.js",
+            "path": "src/spine/view/container/"
+        }, {
+            "text": "CollectionContainer.js",
+            "path": "src/spine/view/container/"
+        }]
+    }, {
+        "id": "view-layout",
+        "name": "ViewLayout",
+        "file": "pkgs/view/layout.js",
+        "fileIncludes": [{
+            "text": "Layout.js",
+            "path": "src/spine/view/layout/"
         }]
     }],
     "builds": [{
@@ -112,7 +164,27 @@
             "core",
             "collection",
             "data",
-            "view"
+            "app",
+            "view-support",
+            "view-core",
+            "view-binding",
+            "view-layout",
+            "view-container"
+        ]
+    }, {
+        "name": "All",
+        "target": "spine.js",
+        "compress": true,
+        "packages": [
+            "core",
+            "collection",
+            "data",
+            "app",
+            "view-support",
+            "view-core",
+            "view-binding",
+            "view-layout",
+            "view-container"
         ]
     }]
 }

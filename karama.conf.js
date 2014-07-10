@@ -22,55 +22,7 @@ module.exports = function(config) {
             '../lib/jsoop-debug.js',
             '../lib/twig.js',
 
-            //Core
-            'Spine.js',
-
-            //Util
-            'spine/util/Renderable.js',
-            'spine/util/Sortable.js',
-            'spine/util/Template.js',
-            'spine/util/filter/Filter.js',
-            'spine/util/filter/Filterable.js',
-
-            //App
-            'spine/app/Application.js',
-            'spine/app/Controller.js',
-            'spine/app/History.js',
-            'spine/app/Route.js',
-            'spine/app/Router.js',
-
-            //Data
-            'spine/data/filter/ModelFilter.js',
-
-            //Collection
-            'spine/collection/List.js',
-            'spine/collection/Dictionary.js',
-
-            //Data
-            'spine/data/association/Association.js',
-            'spine/data/association/HasMany.js',
-            'spine/data/association/HasOne.js',
-            'spine/data/Field.js',
-            'spine/data/Model.js',
-            'spine/data/Collection.js',
-
-            //Dom
-            'spine/dom/Helper.js',
-
-            //View
-            'spine/view/Box.js',
-            'spine/view/Query.js',
-            'spine/view/View.js',
-            'spine/view/ViewManager.js',
-                //Binding
-                'spine/view/binding/Binding.js',
-                'spine/view/binding/ModelBinding.js',
-                'spine/view/binding/BindingView.js',
-                //Layout
-                'spine/view/layout/Layout.js',
-                //Container
-                'spine/view/container/Container.js',
-                'spine/view/container/CollectionContainer.js',
+            '../build/spine-debug.js',
 
             //Helpers
             '../test/helper/data/Person.js',
