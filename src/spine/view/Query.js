@@ -17,7 +17,7 @@
     Query.prototype = {
         parse: function () {
             var me = this,
-                raw = me.raw.trim(),
+                raw = me.raw.replace(/^\s+|\s+$/g, ''),
                 stack = raw.split(''),
                 token = '',
                 stringOpen = false,

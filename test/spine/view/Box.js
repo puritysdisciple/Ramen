@@ -65,6 +65,11 @@ describe('Spine.view.Box', function () {
     it('should correctly destroy itself', function () {
         view.destroy();
 
-        expect(view.el[0].parentNode).toBeFalsy();
-    })
+        if (view.el[0].parentNode) {
+            //this is for testing IE8 or lower
+            expect(view.el[0].parentNode.nodeType).toBe(11);
+        } else {
+            expect(view.el[0].parentNode).toBeFalsy();
+        }
+    });
 });

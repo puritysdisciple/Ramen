@@ -56,7 +56,7 @@ describe('Spine.view.View', function () {
     });
 
     it('should render the template correctly', function () {
-        expect(view.el.html()).toBe('<ul id="' + view.getId() + '-list"><li>item 1</li><li>item 2</li><li>item 3</li></ul>');
+        expect(view.el.find('li').length).toBe(3);
     });
 
     it('should find child els correctly', function () {

@@ -56,5 +56,5 @@ JSoop.define('Spine.util.Renderable', {
             //todo: detach from jquery
             me[key] = jQuery('#' + id + '-' + addition, me.el);
         });
-    },
+    }
 });
