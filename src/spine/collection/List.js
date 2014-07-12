@@ -136,7 +136,7 @@ JSoop.define('Spine.collection.List', {
     indexOf: function (item) {
         var me = this;
 
-        return me.items.indexOf(item);
+        return JSoop.util.Array.indexOf(me.items, item);
     },
 
     at: function (index) {

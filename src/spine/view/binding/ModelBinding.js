@@ -23,7 +23,7 @@ JSoop.define('Spine.view.binding.ModelBinding', {
             match;
 
         for (match = parser.exec(fn); match; match = parser.exec(fn)) {
-            if (watching.indexOf(match[1]) === -1) {
+            if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
                 watching.push(match[1]);
             }
         }

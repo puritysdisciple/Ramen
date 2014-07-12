@@ -117,7 +117,7 @@ JSoop.define('Spine.collection.Dictionary', {
     indexOfKey: function (key) {
         var me = this;
 
-        return me.keys.indexOf(key);
+        return JSoop.util.Array.indexOf(me.keys, key);
     },
 
     get: function (key) {
