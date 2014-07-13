@@ -129,6 +129,7 @@ JSoop.define('Spine.view.Box', {
 
         me.removeAllListeners();
         me.removeAllManagedListeners();
+        me.destroyPlugins();
 
         //todo: detach from jquery
         me.el.remove();

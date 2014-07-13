@@ -204,6 +204,21 @@ JSoop.define('Spine.collection.List', {
         me.fireEvent('filter', me, filtered, unfiltered);
     },
 
+    destroy: function () {
+        var me = this;
+
+        if (me.fireEvent('destroy:before') === false) {
+            return false;
+        }
+
+        me.fireEvent('destroy', me);
+
+        me.removeAllListeners();
+        me.removeAllManagedListeners();
+        me.destroyPlugins();
+        me.removeAll();
+    },
+
     onAddBefore: function (list, item, index) {
         var me = this;
 
@@ -222,6 +237,6 @@ JSoop.define('Spine.collection.List', {
         }
     },
     onRemoveBefore: JSoop.emptyFn,
-
-    onRemoveAll: JSoop.emptyFn
+    onRemoveAll: JSoop.emptyFn,
+    onDestroy: JSoop.emptyFn
 });
