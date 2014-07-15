@@ -12,15 +12,23 @@ JSoop.define('Spine.view.binding.BindingView', {
     initBindings: function () {
         var me = this,
             bindings = JSoop.clone(me.bindings || {}),
-            model = me.getModel();
+            myModel = me.getModel();
 
         me.bindings = {};
 
         JSoop.iterate(bindings || {}, function (binding, key) {
+            var model;
+
             if (JSoop.isString(binding)) {
                 binding = {
                     field: binding
                 };
+            }
+
+            model = binding.model || myModel;
+
+            if (JSoop.isString(model)) {
+                model = JSoop.getValue(me[model], me);
             }
 
             if (!binding.isBinding) {

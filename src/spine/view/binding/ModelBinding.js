@@ -3,6 +3,9 @@ JSoop.define('Spine.view.binding.ModelBinding', {
 
     isModelBinding: true,
 
+    watchingFields: null,
+    watchingAssociations: null,
+
     initBinding: function () {
         var me = this;
 
@@ -13,6 +16,7 @@ JSoop.define('Spine.view.binding.ModelBinding', {
         me.parseWatchers();
 
         me.mon(me.model, 'change', me.onChange, me);
+        me.mon(me.model, 'change:association', me.onAssociationChange, me);
     },
 
     parseWatchers: function () {
@@ -22,13 +26,25 @@ JSoop.define('Spine.view.binding.ModelBinding', {
             parser = /\.get\(["'](.+?)["']\)/g,
             match;
 
+        //this looks for field changes
         for (match = parser.exec(fn); match; match = parser.exec(fn)) {
             if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
                 watching.push(match[1]);
             }
         }
 
-        me.watching = watching;
+        me.watchingFields = watching;
+
+        parser = /\.get([A-Z][a-zA-Z0-9]*)\(.*\)/g;
+        watching = [];
+
+        for (match = parser.exec(fn); match; match = parser.exec(fn)) {
+            if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
+                watching.push(match[1]);
+            }
+        }
+
+        me.watchingAssociations = watching;
     },
 
     getRenderData: function () {
@@ -41,7 +57,7 @@ JSoop.define('Spine.view.binding.ModelBinding', {
         var me = this,
             update = false;
 
-        JSoop.each(me.watching, function (field) {
+        JSoop.each(me.watchingFields, function (field) {
             if (newValues.hasOwnProperty(field)) {
                 update = true;
 
@@ -50,6 +66,15 @@ JSoop.define('Spine.view.binding.ModelBinding', {
         });
 
         if (update) {
+            me.update();
+        }
+    },
+
+    onAssociationChange: function (model, name) {
+        var me = this;
+
+        //this could cause an issue when watching many different associations
+        if (JSoop.util.Array.indexOf(me.watchingAssociations, name) !== -1) {
             me.update();
         }
     }

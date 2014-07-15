@@ -34,7 +34,7 @@ JSoop.define('Spine.data.association.HasMany', {
     assignModels: function (model, models) {
         var me = this,
             collectionGetter = 'get' + me.name,
-            collection;
+            collection, changeListener;
 
         if (!model[collectionGetter]) {
             collection = JSoop.create(me.collectionType || 'Spine.data.Collection', [], {
@@ -44,6 +44,16 @@ JSoop.define('Spine.data.association.HasMany', {
             model[collectionGetter] = function () {
                 return collection;
             };
+
+            changeListener = me.createAssociationChangeListener(model);
+
+            model.mon(collection, {
+                add: changeListener,
+                remove: changeListener,
+                filter: changeListener,
+                sort: changeListener,
+                scope: model
+            });
         } else {
             collection = model[collectionGetter]();
         }

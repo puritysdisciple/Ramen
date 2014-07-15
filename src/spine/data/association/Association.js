@@ -78,6 +78,14 @@ JSoop.define('Spine.data.association.Association', {
         return JSoop.create(me.model, data);
     },
 
+    createAssociationChangeListener: function (model) {
+        var me = this;
+
+        return function () {
+            model.fireEvent('change:association', model, me.name, model['get' + me.name]());
+        };
+    },
+
     createModels: JSoop.emptyFn,
     assignModels: JSoop.emptyFn
 });

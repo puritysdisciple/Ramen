@@ -15,10 +15,22 @@ JSoop.define('Spine.data.association.HasOne', {
     },
 
     assignModels: function (model, models) {
-        var me = this;
+        var me = this,
+            getter = 'get' + me.name,
+            old;
 
-        model['get' + me.name] = function () {
+        if (model[getter]) {
+            old = model['get' + me.name]();
+        }
+
+        model[getter] = function () {
             return models;
         };
+
+        if (old) {
+            model.moff(old, 'change');
+        }
+
+        model.mon(models, 'change', me.createAssociationChangeListener(model), model);
     }
 });
