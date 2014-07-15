@@ -18,7 +18,7 @@ JSoop.define('Spine.collection.Dictionary', {
     indexOf: function (item) {
         var me = this;
 
-        if (JSoop.isPrimative(item)) {
+        if (JSoop.isPrimitive(item)) {
             return me.indexOfKey(item);
         }
 
