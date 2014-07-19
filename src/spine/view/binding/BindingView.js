@@ -35,14 +35,15 @@ JSoop.define('Spine.view.binding.BindingView', {
                 JSoop.applyIf(binding, {
                     type: 'Spine.view.binding.ModelBinding',
                     token: key,
-                    owner: me,
-                    model: model
+                    owner: me
                 });
+
+                binding.model = model;
 
                 binding = JSoop.create(binding.type, binding);
             } else {
                 binding.owner = me;
-                binding.model = binding.model || model;
+                binding.model = model;
 
                 binding.attach();
             }

@@ -2,14 +2,20 @@ JSoop.define('Spine.data.association.HasOne', {
     extend: 'Spine.data.association.Association',
 
     createModels: function (model, data) {
+        var me = this,
+            newModel;
+
+        if (!data) {
+            if (model['get' + me.name]) {
+                data = model['get' + me.name]().attributes;
+            } else {
+                data = {};
+            }
+        }
+
         data[this.foreignKey] = model.get('id');
 
-        var me = this,
-            newModel = me.createModels(data);
-
-        newModel['get' + model.name] = function () {
-            return model;
-        };
+        newModel = me.createModel(data);
 
         return newModel;
     },

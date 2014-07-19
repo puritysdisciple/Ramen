@@ -1,6 +1,4 @@
 // Karma configuration
-// Generated on Fri Jan 24 2014 13:36:17 GMT-0800 (PST)
-
 module.exports = function(config) {
     config.set({
 
@@ -10,7 +8,6 @@ module.exports = function(config) {
 
         // frameworks to use
         frameworks: ['jasmine'],
-
 
         // list of files / patterns to load in the browser
         files: [
@@ -42,8 +39,15 @@ module.exports = function(config) {
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress'],
+        reporters: ['coverage'],
 
+        coverageReporter: {
+            dir : '../coverage/'
+        },
+
+        preprocessors: {
+            '../build/spine-debug.js': ['coverage']
+        },
 
         // web server port
         port: 9876,

@@ -1,6 +1,6 @@
 {
   "name": "spinejs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A javascript application framework",
   "main": "spine-debug.js",
   "scripts": {

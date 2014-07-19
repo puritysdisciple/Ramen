@@ -50,10 +50,14 @@ JSoop.define('Spine.data.Collection', {
 
             //merge models if it is already in the collection
             if (index !== -1) {
-                me.items[index].set(item.attributes);
+                me.items[index].set(item.mergeData);
+
+                delete item.mergeData;
             }
 
             return false;
+        } else {
+            delete item.mergeData;
         }
     },
 
@@ -69,7 +73,9 @@ JSoop.define('Spine.data.Collection', {
             return item;
         }
 
-        return JSoop.create(me.model, item);
+        return JSoop.create(me.model, item, {
+            mergeData: item
+        });
     }
 }, function () {
     Spine.collections = {};
