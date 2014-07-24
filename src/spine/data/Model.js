@@ -191,7 +191,7 @@ JSoop.define('Spine.data.Model', {
             attributes[field] = value;
         }
 
-        if (!me.getId() && !attributes[me.idField]) {
+        if (me.getId() === undefined && attributes[me.idField] === undefined) {
             //this will trigger the id field parsing if no id exists
             attributes[me.idField] = '';
         }

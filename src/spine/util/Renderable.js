@@ -7,12 +7,18 @@ JSoop.define('Spine.util.Renderable', {
 
     getTagConfig: function () {
         var me = this,
-            classes = JSoop.toArray(me.cls),
+            classes = JSoop.toArray(me.cls || []),
             tag;
 
         classes.push(me.baseCls);
 
-        tag = JSoop.clone(me.tag || {});
+        if (JSoop.isString(me.tag)) {
+            tag = {
+                tag: me.tag
+            };
+        } else {
+            tag = JSoop.clone(me.tag || {});
+        }
 
         JSoop.applyIf(tag, {
             tag: 'div',

@@ -66,6 +66,12 @@ JSoop.define('Spine.view.container.Container', {
     initItem: function (item) {
         var me = this;
 
+        if (item.isBox) {
+            item.owner = me;
+
+            return item;
+        }
+
         JSoop.applyIf(item, JSoop.clone(me.itemDefaults || {}));
         JSoop.applyIf(item, {
             type: 'Spine.view.View'

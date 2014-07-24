@@ -59,7 +59,7 @@ JSoop.define('Spine.view.binding.Binding', {
         var me = this,
             renderData = me.getRenderData();
 
-        if (JSoop.isString(renderData)) {
+        if (!JSoop.isObject(renderData)) {
             renderData = {
                 content: renderData
             };

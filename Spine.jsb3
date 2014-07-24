@@ -70,6 +70,9 @@
             "text": "Controller.js",
             "path": "src/spine/app/"
         }, {
+            "text": "Helper.js",
+            "path": "src/spine/app/"
+        }, {
             "text": "History.js",
             "path": "src/spine/app/"
         }, {

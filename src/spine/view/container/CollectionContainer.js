@@ -12,6 +12,8 @@ JSoop.define('Spine.view.container.CollectionContainer', {
 
         me.callParent(arguments);
 
+        me.initEmptyView();
+
         me.mon(me.collection, {
             add: me.onCollectionAdd,
             remove: me.onCollectionRemove,
@@ -41,6 +43,51 @@ JSoop.define('Spine.view.container.CollectionContainer', {
         return item;
     },
 
+    initEmptyView: function () {
+        var me = this,
+            emptyView;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        if (!me.emptyView.isBox) {
+            emptyView = JSoop.clone(me.emptyView);
+
+            //empty view doesn't have a model, so we need to bypass CollectionContainer::initItem
+            emptyView = Spine.view.container.Container.prototype.initItem.call(me, emptyView);
+
+            me.emptyView = emptyView;
+        }
+
+        //hide the empty view by default
+        me.emptyView.on('render:during', me.hideEmptyView, me, {single: true});
+
+        me.items.add(emptyView);
+    },
+
+    showEmptyView: function () {
+        var me = this;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        //todo: detatch from jquery
+        me.emptyView.el.show();
+    },
+
+    hideEmptyView: function () {
+        var me = this;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        //todo: detatch from jquery
+        me.emptyView.el.hide();
+    },
+
     createItemSortFn: function () {
         var me = this,
             collection = me.collection;
@@ -58,6 +105,8 @@ JSoop.define('Spine.view.container.CollectionContainer', {
 
             me.insert(item, index);
         });
+
+        me.hideEmptyView();
     },
 
     onCollectionRemove: function (collection, removed) {
@@ -70,6 +119,10 @@ JSoop.define('Spine.view.container.CollectionContainer', {
 
             delete me.itemCache[key];
         });
+
+        if (collection.getCount() === 0) {
+            me.showEmptyView();
+        }
     },
 
     onCollectionSort: function () {
@@ -91,5 +144,11 @@ JSoop.define('Spine.view.container.CollectionContainer', {
         });
 
         me.items.remove(removed);
+
+        if (collection.getCount() === 0) {
+            me.showEmptyView();
+        } else {
+            me.hideEmptyView();
+        }
     }
 });

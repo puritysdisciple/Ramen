@@ -46,6 +46,7 @@ JSoop.define('Spine.view.layout.Layout', {
     },
 
     initLayout: JSoop.emptyFn,
+    initContainer: JSoop.emptyFn,
 
     add: function (items) {
         var me = this;
@@ -72,6 +73,8 @@ JSoop.define('Spine.view.layout.Layout', {
             return;
         }
 
+        me.initContainer();
+
         me.itemCache.each(function (item, index) {
             var key = me.getItemId(item),
                 wrapper = me.createWrapper(item, index);
@@ -91,13 +94,19 @@ JSoop.define('Spine.view.layout.Layout', {
             tag = JSoop.clone(me.wrapperTag || {
                 tag: 'div'
             }),
-            classes = me.getWrapperClasses(item),
+            classes = me.getWrapperClasses(item, index),
             container = me.owner.getTargetEl(),
             wrapper;
 
+        if (JSoop.isString(tag)) {
+            tag = {
+                tag: tag
+            };
+        }
+
         JSoop.applyIf(tag, {
             cls: classes,
-            style: me.getWrapperStyle()
+            style: me.getWrapperStyle(item, index)
         });
 
         wrapper = Spine.dom.Helper.create(tag);
@@ -113,14 +122,35 @@ JSoop.define('Spine.view.layout.Layout', {
         return wrapper;
     },
 
-    getWrapperClasses: function () {
-        var me = this;
+    getWrapperClasses: function (item) {
+        var me = this,
+            classes = [me.wrapperCls];
 
-        return [me.wrapperCls];
+        if (item.wrapperCls) {
+            classes = classes.concat(JSoop.toArray(item.wrapperCls));
+        }
+
+        return classes;
     },
 
-    getWrapperStyle: function () {
-        return {};
+    getWrapperStyle: function (item) {
+        var style = {},
+            keys = [
+                'width',
+                'height',
+                'padding',
+                'margin'
+            ];
+
+        JSoop.each(keys, function (key) {
+            if (item[key] !== undefined) {
+                style[key] = item[key];
+            }
+        });
+
+        JSoop.apply(style, item.wrapperStyle || {});
+
+        return style;
     },
 
     destroy: function () {
@@ -184,7 +214,13 @@ JSoop.define('Spine.view.layout.Layout', {
     },
 
     onOwnerItemsAdd: function (collection, items) {
-        this.itemCache.add(items);
+        var me = this;
+
+        JSoop.each(items, function (item) {
+            var index = collection.indexOf(item);
+
+            me.itemCache.insert(item, index);
+        });
     },
 
     onOwnerItemsRemove: function (collection, items) {

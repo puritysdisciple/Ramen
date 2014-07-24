@@ -23,6 +23,10 @@ JSoop.define('Spine.view.binding.BindingView', {
                 binding = {
                     field: binding
                 };
+            } else if (JSoop.isFunction(binding)) {
+                binding = {
+                    formatter: binding
+                };
             }
 
             model = binding.model || myModel;

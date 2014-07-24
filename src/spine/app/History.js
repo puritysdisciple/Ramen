@@ -39,6 +39,8 @@ JSoop.define('Spine.app.History', {
         } else {
             me.checkUrlInterval = setInterval(checkUrl, me.interval);
         }
+
+        checkUrl();
     },
 
     createFrame: function () {

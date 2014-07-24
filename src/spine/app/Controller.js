@@ -15,10 +15,32 @@ JSoop.define('Spine.app.Controller', {
         Spine.view.ViewManager.on('add', me.onViewAdd, me);
 
         me.initController();
+        me.initHelpers();
         me.initRouter();
     },
 
     initController: JSoop.emptyFn,
+
+    initHelpers: function () {
+        var me = this,
+            helpers = me.helpers;
+
+        me.helpers = {};
+
+        if (helpers) {
+            JSoop.iterate(helpers, function (helper, key) {
+                if (JSoop.isString(helper)) {
+                    helper = {
+                        type: helper
+                    };
+                }
+
+                helper.owner = me;
+
+                me.helpers[key] = JSoop.create(helper.type, helper);
+            });
+        }
+    },
 
     initRouter: function () {
         var me = this;
@@ -72,12 +94,22 @@ JSoop.define('Spine.app.Controller', {
 
         if (JSoop.isString(callback)) {
             callback = {
-                fn: me[callback]
+                fn: callback
             };
         }
 
-        scope = callback.scope || me;
+        JSoop.applyIf(callback, {
+            scope: me
+        });
 
-        callback.fn.apply(scope, route.getParams(Spine.app.History.getFragment()));
+        if (JSoop.isString(callback.scope)) {
+            callback.scope = me.helpers[callback.scope];
+        }
+
+        if (JSoop.isString(callback.fn)) {
+            callback.fn = callback.scope[callback.fn];
+        }
+
+        return callback.fn.apply(callback.scope, route.getParams(Spine.app.History.getFragment()));
     }
 });

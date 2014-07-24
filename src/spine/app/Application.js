@@ -11,9 +11,9 @@ JSoop.define('Spine.app.Application', {
         me.initCollections();
         me.initControllers();
 
-        Spine.app.History.start();
-
         me.run();
+
+        Spine.app.History.start();
     },
 
     initCollections: function () {
@@ -51,6 +51,10 @@ JSoop.define('Spine.app.Application', {
     run: JSoop.emptyFn
 }, function () {
     Spine.application = function (config) {
+        if (config.requires) {
+            JSoop.Loader.require(config.requires);
+        }
+
         JSoop.create('Spine.app.Application', config);
     };
 });

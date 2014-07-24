@@ -59,12 +59,21 @@ JSoop.define('Spine.app.Router', {
     },
 
     onHistoryChange: function (fragment) {
-        var me = this;
+        var me = this,
+            routed = false;
 
         JSoop.iterate(me.routes, function (route, path) {
             if (route.is(fragment)) {
-                me.fireEvent('route', me, path, route);
+                if (me.fireEvent('route', me, path, route) === false) {
+                    routed = true;
+
+                    return false;
+                }
             }
         });
+
+        if (routed) {
+            return false;
+        }
     }
 });

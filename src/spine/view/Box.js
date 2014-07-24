@@ -80,7 +80,7 @@ JSoop.define('Spine.view.Box', {
 
         //<debug>
         if (!container) {
-            jSoop.error('Render requires either a container argument or a "renderTo" config value');
+            JSoop.error('Render requires either a container argument or a "renderTo" config value');
         }
         //</debug>
 

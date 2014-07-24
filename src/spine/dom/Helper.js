@@ -48,15 +48,30 @@ JSoop.define('Spine.dom.Helper', {
         return html.join(' ');
     },
 
+    addUnits: function (value) {
+        if (JSoop.isNumber(value)) {
+            value = value + 'px';
+        }
+
+        return value;
+    },
+
     parseStyle: function (obj) {
-        var style = [];
+        var me = this,
+            style = [];
 
         if (JSoop.isString(obj)) {
             return obj;
         }
 
         JSoop.iterate(obj, function (value, key) {
-            style.push(key + ':' + value);
+            if (JSoop.isObject(value)) {
+                JSoop.iterate(value, function (subValue, subKey) {
+                    style.push(key + '-' + subKey + ':' + me.addUnits(value));
+                });
+            } else {
+                style.push(key + ':' + me.addUnits(value));
+            }
         });
 
         return style.join(';');
