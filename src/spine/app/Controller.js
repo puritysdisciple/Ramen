@@ -71,6 +71,10 @@ JSoop.define('Spine.app.Controller', {
         });
     },
 
+    navigate: function (config) {
+        Spine.app.History.navigate(config);
+    },
+
     onViewAdd: function (manager, views) {
         var me = this;
 

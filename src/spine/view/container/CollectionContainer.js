@@ -2,6 +2,7 @@ JSoop.define('Spine.view.container.CollectionContainer', {
     extend: 'Spine.view.container.Container',
 
     stype: 'collection-container',
+    supressEmptyView: false,
 
     initView: function () {
         var me = this;
@@ -120,7 +121,7 @@ JSoop.define('Spine.view.container.CollectionContainer', {
             delete me.itemCache[key];
         });
 
-        if (collection.getCount() === 0) {
+        if (collection.getCount() === 0 && !me.supressEmptyView) {
             me.showEmptyView();
         }
     },
@@ -131,21 +132,32 @@ JSoop.define('Spine.view.container.CollectionContainer', {
         me.items.sort(me.createItemSortFn());
     },
 
-    onCollectionFilter: function (collection) {
+    onCollectionFilter: function (collection, filtered, unfiltered) {
         var me = this,
-            removed = [];
+            removed = [],
+            added = [];
 
-        JSoop.iterate(me.itemCache, function (item, id) {
-            if (collection.indexOfKey(id) === -1) {
+        JSoop.each(unfiltered, function (item) {
+            if (collection.indexOf(item) === -1) {
                 removed.push(item);
-
-                delete me.itemCache[id];
             }
         });
 
-        me.items.remove(removed);
+        collection.iterate(function (item, id) {
+            if (!me.itemCache[id]) {
+                added.push(item);
+            }
+        });
 
-        if (collection.getCount() === 0) {
+        if (removed.length > 0) {
+            me.onCollectionRemove(collection, removed);
+        }
+
+        if (added.length > 0) {
+            me.onCollectionAdd(collection, added);
+        }
+
+        if (collection.getCount() === 0 && !me.supressEmptyView) {
             me.showEmptyView();
         } else {
             me.hideEmptyView();

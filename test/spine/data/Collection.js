@@ -106,6 +106,24 @@ describe('Spine.data.Collection', function () {
         expect(collection.find({
             first: 'Jarod'
         }).length).toBe(1);
+
+        collection.addFilter('Clark', {
+            first: 'Clark'
+        });
+
+        expect(collection.getCount()).toBe(1);
+
+        collection.clearFilters();
+
+        expect(collection.getCount()).toBe(5);
+
+        collection.addFilter('Clark', {
+            first: 'Clark'
+        });
+
+        expect(collection.getCount()).toBe(1);
+
+        collection.clearFilters();
     });
 
     describe('should be able to remove models', function () {

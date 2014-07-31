@@ -121,16 +121,24 @@ JSoop.define('Spine.collection.List', {
     },
 
     removeAll: function () {
-        var me = this;
+        var me = this,
+            removed;
 
         if (me.fireEvent('remove:all:before', me) === false) {
             return;
+        }
+
+        if (me.isFiltered) {
+            removed = me.unfilteredItems;
+        } else {
+            removed = me.items;
         }
 
         me.items = [];
         me.unfilteredItems = [];
 
         me.fireEvent('remove:all', me);
+        me.fireEvent('remove', me, removed);
     },
 
     indexOf: function (item) {

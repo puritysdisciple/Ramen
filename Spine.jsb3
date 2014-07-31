@@ -137,6 +137,9 @@
         }, {
             "text": "CollectionContainer.js",
             "path": "src/spine/view/container/"
+        }, {
+            "text": "Viewport.js",
+            "path": "src/spine/view/container/"
         }]
     }, {
         "id": "view-layout",
@@ -145,19 +148,12 @@
         "fileIncludes": [{
             "text": "Layout.js",
             "path": "src/spine/view/layout/"
+        }, {
+            "text": "NoLayout.js",
+            "path": "src/spine/view/layout/"
         }]
     }],
     "builds": [{
-        "name": "Data Only",
-        "target": "spine-data.js",
-        "options": {
-            "debug": true
-        },
-        "packages": [
-            "collection",
-            "data"
-        ]
-    }, {
         "name": "All Debug",
         "target": "spine-debug.js",
         "options": {

@@ -69,7 +69,7 @@ JSoop.define('Spine.app.History', {
         }
 
         JSoop.applyIf(config, {
-            silent: true,
+            silent: false,
             replace: false
         });
 

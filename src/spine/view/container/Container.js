@@ -120,5 +120,32 @@ JSoop.define('Spine.view.container.Container', {
 
             me.layout.destroy();
         }
+    },
+
+    find: function (query) {
+        var me = this,
+            found = [];
+
+        query = Spine.view.Query.parse(query);
+
+        me.items.each(function (item) {
+            if (query.is(item)) {
+                found.push(item);
+            }
+        });
+
+        return found;
+    },
+
+    findFirst: function (query) {
+        var me = this;
+
+        return me.find(query).shift();
+    },
+
+    findLast: function (query) {
+        var me = this;
+
+        return me.find(query).pop();
     }
 });
