@@ -192,6 +192,7 @@ JSoop.define('Spine.view.layout.Layout', {
 
             //todo: detach from jquery
             wrapper.remove();
+            item.destroy();
         });
     },
 

@@ -123,6 +123,8 @@ JSoop.define('Spine.util.filter.Filterable', {
         me[me.filterTarget] = me.unfilteredItems;
 
         delete me.unfilteredItems;
+
+        me.afterFilter(me, me[me.filterTarget], me[me.filterTarget]);
     },
 
     find: function (config) {

@@ -108,18 +108,14 @@ JSoop.define('Spine.view.container.Container', {
         me.items.insert(items, index);
     },
 
-    destroy: function () {
+    onDestroy: function () {
         var me = this;
 
-        if (me.callParent(arguments) !== false) {
-            me.items.each(function (item) {
-                item.destroy();
-            });
+        me.items.removeAll();
 
-            me.items.removeAll();
+        me.layout.destroy();
 
-            me.layout.destroy();
-        }
+        me.callParent(arguments);
     },
 
     find: function (query) {
