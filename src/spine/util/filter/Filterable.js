@@ -119,6 +119,7 @@ JSoop.define('Spine.util.filter.Filterable', {
 
         me.isFiltered = false;
         me.currentFilter = null;
+        me.filters = {};
 
         me[me.filterTarget] = me.unfilteredItems;
 
