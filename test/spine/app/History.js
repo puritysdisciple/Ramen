@@ -29,10 +29,13 @@ describe('Spine.app.History', function () {
         }, 250);
     });
 
-    it('should navigate silently by default', function () {
+    it('should navigate silently', function () {
         currentFragment = '';
 
-        Spine.app.History.navigate('test4');
+        Spine.app.History.navigate({
+            fragment: 'test4',
+            silent: true
+        });
 
         expect(currentFragment).toBe('');
         expect(window.location.hash).toBe('#test4');
@@ -42,10 +45,7 @@ describe('Spine.app.History', function () {
         currentFragment = '';
 
         runs(function () {
-            Spine.app.History.navigate({
-                fragment: 'test5',
-                silent: false
-            });
+            Spine.app.History.navigate('test5');
         });
 
         waitsFor(function () {

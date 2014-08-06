@@ -18,6 +18,10 @@ describe('Spine.view.Box', function () {
         view.destroy();
     });
 
+    it('should register itself with the ViewManager', function () {
+        expect(Spine.view.ViewManager.indexOf(view)).not.toBe(-1);
+    });
+
     it('should render correctly', function () {
         expect(view.el[0].parentNode).toBe(document.body);
     });
@@ -64,6 +68,8 @@ describe('Spine.view.Box', function () {
 
     it('should correctly destroy itself', function () {
         view.destroy();
+
+        expect(Spine.view.ViewManager.indexOf(view)).toBe(-1);
 
         if (view.el[0].parentNode) {
             //this is for testing IE8 or lower
