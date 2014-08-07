@@ -1,0 +1,274 @@
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <title>Spine - Standing Up Your Apps</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../assets/css/prism.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+        <link rel="stylesheet" href="../assets/examples/guides/create-a-view/styles.css">
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">Spine</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../features.html">Features</a></li>
+                <li><a href="../guides.html">Guides</a></li>
+                <li><a href="https://github.com/puritysdisciple/jsoop">Download</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Creating a Custom View</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+    <div class="col-md-9">
+        <h3 id="step-1">Step 1: Choosing a Starting Point</h3>
+        <p>
+            In this guide, we're going to be creating a chat status widget. Similar to the one you can find in google
+            hangouts. I am assuming that the data for said view is already modeled and that all that needs to be done is
+            displaying it. Our end result should look like the following:
+        </p>
+
+        <div id="talk-status-4" class="talk-status">
+            <div class="talk-status-status">
+                <div id="binding-5" class="binding">
+                    <span class="status-away"></span>
+                </div>
+            </div>
+            <div id="talk-status-4-name" class="talk-status-name">Eric</div>
+            <div class="talk-status-message">
+                <div id="binding-6" class="binding">I'm not here, you'll survive</div>
+            </div>
+        </div>
+        <p>
+            The first stage of turning any view into code is coming up with a starting point. This is the view type that
+            you will be extending to create your view. It is important that you start by extending the view type that is
+            closest to what you're looking to create. The view types that Spine comes with are as follows:
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>Spine.view.Box</strong><br/>
+                    The box view is nothing more than a managed HTML tag. In most cases, you shouldn't be extending this.
+                    However, it is the most basic kind of view. If you just want to inject a raw snippet of HTML into the
+                    page and have no need for it to be dynamic, then this is what you want to start with.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>Spine.view.View</strong><br/>
+                    The standard view builds on top of box by giving you access to templates, childEls, renderSelectors and
+                    domListeners. If your view doesn't need to hold other views, and doesn't deal directly with data stored
+                    in models, this is where you want to start.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>Spine.view.binding.BindingView</strong><br/>
+                    Binding view builds on view by giving you data bindings that are used to read data from a
+                    Spine.data.Model.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>Spine.view.container.Container</strong><br/>
+                    The container view, as it's name suggests, is a view that can hold and render other views. It supports
+                    the use of layouts to give you control of how and where each of its children is rendered. Due to the
+                    complexities involved with this view, you can read <a href="#">this guide</a> for how to create your
+                    own container.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>Spine.view.container.CollectionContainer</strong><br/>
+                    The final type of view that Spine gives you is the collection container. Like the standard container,
+                    this view holds child views. However, this is the data driven version; creating a new child item for
+                    each member in its collection.
+                </p>
+            </li>
+        </ul>
+        <p>
+            Due to the fact that our view is going to be very data driven, we are going to start from
+            <code>Spine.view.binding.BindingView</code>. Starting from here will give us the ability to create a view
+            that updates automatically as our data changes. This will save us a lot of time trying to keep our view
+            in sync with our data.
+        </p>
+        <h3 id="step-2">Step 2: Basic Configuration</h3>
+        <p>
+            There are three things that need to be set when you create any view. These are <code>baseId</code>,
+            <code>baseCls</code>, <code>stype</code>.
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>baseId</strong>: Spine uses generated ID's to make sure that each view can be identified.
+                    These come in the form of <code>view-1</code> where view is the <code>baseId</code> and 1 is the
+                    generated ID. Setting the <code>baseId</code> to something meaningful will help with debugging your
+                    HTML.
+                </p>
+            </li>
+            <li>
+                <strong>baseCls</strong>: This is the css class that will be added to the view's tag, and will be passed
+                to the template as a parameter. This allows you to easily namespace your css classes.
+            </li>
+            <li>
+                <strong>stype</strong>: The <code>stype</code> is used by controllers and queries to locate your view.
+                If your view has no interactions, then this isn't strictly needed. However it is good to get into the
+                habit of setting this on all view types.
+            </li>
+        </ul>
+        <p>
+            Putting all these things into code is pretty simple:
+        </p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-1.js"></pre>
+        <p>
+            If we rendered the view right now, this would be the resulting HTML:
+        </p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-1.html"></pre>
+        <h3 id="step-3">Step 3: Adding Some Content</h3>
+        <p>
+            A <code>div</code> tag isn't very interesting and doesn't do much. Lets add some more content to this view
+            so that we can get the base structure setup. To do this, we are going to need to add some HTML to the view's
+            <code>tpl</code> property.
+        </p>
+        <p>
+            By default, Spine uses <a href="http://twig.sensiolabs.org/">twig</a> templates to render it's views. Every
+            view passes its <code>id</code> and <code>baseCls</code> to its template. This allows us to easily define
+            and access the HTML within the template. Lets set it up:
+        </p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-2.js"></pre>
+        <h3 id="step-4">Step 4: Setup Some Interactivity</h3>
+        <p>
+            Now, as part of this view, we need to be able to interact with it. When the user clicks on the name of one
+            of their contacts it should start a conversation with them. This is done in two stages:
+        </p>
+        <ol>
+            <li>Create a listener on the name element</li>
+            <li>Trigger a custom event that controllers can listen for</li>
+        </ol>
+        <p>
+            These two steps involve two more config items that we need to set <code>childEls</code> and
+            <code>domListeners</code>.
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>childEls</strong>: gives us a way to grab references to dom elements once our view is
+                    rendered. These elements are located using a combination of the view's id as well as their name.
+                    This is why we set the id field for our name element to <code>{{ id }}-name</code>.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>domListeners</strong>: tells the view to attach listeners to the specified dom references.
+                    All dom listeners added this way are scoped to the view itself. This has an interaction with jQuery
+                    specifically, forcing you to use <code>event.target</code> instead of <code>this</code> to get the
+                    element that was the target of the event.
+                </p>
+            </li>
+        </ul>
+        <pre data-src="../assets/examples/guides/create-a-view/step-3.js"></pre>
+        <h3 id="step-5">Step 5: Add the Data</h3>
+        <p>
+            Up until this point, we've just been setting our view up for basic rendering and interaction. However,
+            our view really won't be that interesting until it starts reacting to our data. To do this, we use
+            <code>renderData</code> and <code>bindings</code>.
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>renderData</strong>: Render data is used as a way to send parameters to our templates. As was explained in
+                    <a href="#step-2">step 2</a> the view passes a few things to the template by default. It does this by adding
+                    their values to the <code>renderData</code> object.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>bindings</strong>: Bindings are added via the <code>bindings</code> config, and act as links between our data and our view.
+                    This is an object where the keys are the template references we want to populate, and the values are
+                    <code>Spine.view.binding.ModelBinding</code> configs.
+                </p>
+            </li>
+        </ul>
+        <p>
+            Due to the fact that a user can't change their name in our system, we're going to use <code>renderData</code>
+            for sending that data to our template. The rest of our fields we want to change with our data, so we will
+            use <code>bindings</code> for those:
+        </p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-4.js"></pre>
+        <h3 id="step-6">Step 6: Putting it to Use</h3>
+        <p>
+            Now that we have our view completed, we can render it onto the page in whatever way we want to. Here is an
+            example of one way that could be done:
+        </p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-5.js"></pre>
+        <h3 id="step-7">Step 7: Seeing it in Action</h3>
+        <div class="row">
+            <div class="col-md-9">
+                <div id="demo"></div>
+            </div>
+            <div class="col-md-3 demo-controls">
+                <button class="btn btn-success">Set Available</button><br/>
+                <button class="btn btn-warning">Set Away</button><br/>
+                <button class="btn btn-danger">Set Busy</button><br/>
+            </div>
+        </div>
+        <p>Here's the final code for the view:</p>
+        <pre data-src="../assets/examples/guides/create-a-view/step-6.js"></pre>
+    </div>
+    <div class="col-md-3">
+        <div class="affix-top usage-sidebar">
+            <ul class="nav">
+                <li class="active"><a href="#step-1">Step 1: Choosing a Starting Point</a></li>
+                <li><a href="#step-2">Step 2: asic Configuration</a></li>
+                <li><a href="#step-3">Step 3: Adding Some Content</a></li>
+                <li><a href="#step-4">Step 4: Setup Some Interactivity</a></li>
+                <li><a href="#step-5">Step 5: Add the Data</a></li>
+                <li><a href="#step-6">Step 6: Putting it to Use</a></li>
+                <li><a href="#step-7">Step 7: Seeing it in Action</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    </div>
+
+<div class="container">
+    <footer>
+        <hr/>
+    </footer>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="../assets/js/twig.js"></script>
+<script src="../assets/js/jsoop.js"></script>
+<script src="../assets/js/spine.js"></script>
+<script src="../assets/js/prism.min.js"></script>
+    <script src="../assets/js/usage.js"></script>
+    <script src="../assets/examples/guides/create-a-view/demo.js"></script>
+</body>
+</html>
