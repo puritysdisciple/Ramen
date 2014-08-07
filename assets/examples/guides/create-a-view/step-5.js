@@ -1,7 +1,7 @@
 var user = JSoop.create('Talk.model.User', {
         name: 'Eric',
         status: 'away',
-        message: 'I am currently out of the office'
+        message: 'I\'m not here, you\'ll survive'
     }),
     status = JSoop.create('Talk.view.Status', {
         //give the view our user model
