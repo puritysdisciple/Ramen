@@ -2,6 +2,7 @@
     var sidebar = jQuery('.usage-sidebar').eq(0),
         root = $('html, body'),
         hash = '#' + location.hash.replace('#docs-', ''),
+        codeBlocks = jQuery('pre'),
         scrollTimeout;
 
     function scrollTo (targetHash) {
@@ -20,31 +21,37 @@
         return true;
     }
 
-    Prism.hooks.add('after-highlight', function () {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function () {
-            jQuery('body').scrollspy({
-                target: '.usage-sidebar',
-                offset: 70
-            });
-            sidebar.affix({
-                offset: {
-                    top: sidebar.offset().top - 48
-                }
-            });
-
-            jQuery('a[href*="#"]').on('click', function() {
-                var el = jQuery(this),
-                    href = el.attr('href');
-
-                if (scrollTo(href)) {
-                    return false;
-                }
-            });
-
-            if (hash !== '#') {
-                scrollTo(hash);
+    function scrollSetup () {
+        jQuery('body').scrollspy({
+            target: '.usage-sidebar',
+            offset: 70
+        });
+        sidebar.affix({
+            offset: {
+                top: sidebar.offset().top - 48
             }
-        }, 100);
-    });
+        });
+
+        jQuery('a[href*="#"]').on('click', function() {
+            var el = jQuery(this),
+                href = el.attr('href');
+
+            if (scrollTo(href)) {
+                return false;
+            }
+        });
+
+        if (hash !== '#') {
+            scrollTo(hash);
+        }
+    }
+
+    if (codeBlocks.length > 0) {
+        Prism.hooks.add('after-highlight', function () {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(scrollSetup, 100);
+        });
+    } else {
+        scrollSetup();
+    }
 }());
