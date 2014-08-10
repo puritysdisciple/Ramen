@@ -1,0 +1,247 @@
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <title>Spine - Standing Up Your Apps</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../assets/css/prism.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">Spine</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../features.html">Features</a></li>
+                <li><a href="../guides.html">Guides</a></li>
+                <li><a href="https://github.com/puritysdisciple/jsoop">Download</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Modeling Your Data</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+    <div class="col-md-9">
+        <h3 id="intro">Introduction</h3>
+        <p>
+            Spine gives you access to a very powerful data layer that gives you control over nearly all aspects of of
+            your data. It does this using a few different constructs. These include models, collections and associations.
+            Using these three object types, you are able to track changes to your data, filter and sort it, and create
+            meaningful linkage between different data types. In this guide, we're going to cover how to define models as
+            they are the most complex part of the data layer.
+        </p>
+        <h3 id="creating-models">Creating Models</h3>
+        <p>
+            The most important part of setting up your data layer is to create models that correctly reflect your
+            different data types. Creating a data model is simple, only requiring a list of field definitions and a
+            name. The name will be used later in this guide, but the field definitions are how you describe to Spine
+            how to handle each part of your data.
+        </p>
+        <p>
+            A field definition requires only a <code>name</code>. The <code>name</code> will be used as the index your
+            data value will be stored as within your model. Along with <code>name</code> a field may optionally include
+            the following options:
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>mapping</strong>: this is a string based path to the field, if one isn't provided Spine will use
+                    the name of the field to locate the data for the field.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>type</strong>: if this is set, then Spine will attempt to convert whatever it reads into the
+                    given format. Available formats are: <code>int</code>, <code>float</code>, <code>bool</code>, and
+                    <code>auto</code>. <code>auto</code> is used by default, which does no conversion.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>convert</strong>: this is a function that will be used to convert your data from one form to
+                    another. It will receive three parameters: the value of your data, the model and the raw data object
+                    the field is trying to parse. The return value of this function will be used as the final value of your
+                    data. If you return <code>undefined</code> then Spine assumes you don't want this field in your model
+                    and will do nothing with it.
+                </p>
+            </li>
+        </ul>
+        <p>
+            For our application, we're going to need a model users, conversations and messages. Lets take a look at the
+            data our server is sending us:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/server.json.js"></pre>
+        <h3 id="transforming-data">Transforming Data</h3>
+        <p>
+            Lets start by creating our user model. We just need to extend <code>Spine.data.Model</code>, add a name and
+            define some fields. In this case, we need fields for <code>id</code>, <code>name</code> and
+            <code>message</code>. Putting that into code is very simple:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-1.js"></pre>
+        <p>
+            This is a good starting point, but there are a few problems with this model. Firstly, it won't be able to
+            locate any of our data. If you look at what the server is sending, you'll notice that the user's details
+            are nested in the <code>user</code> object. We can tell Spine to look for the data there by adding a
+            <code>mapping</code> property to our fields. Also, our ID field is coming from the server as a string, but
+            in messages the <code>sender</code> field is an integer. We can fix this too by adding a <code>type</code>
+            property to that field:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-2.js"></pre>
+        <p>
+            We can use these techniques to model the conversations and messages in the same way:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-3.js"></pre>
+        <h3 id="creating-meaningful-connections">Creating Meaningful Connections</h3>
+        <p>
+            At this point, you'll probably notice that we've been ignoring some things in our data. Namely the
+            <code>contacts</code> field and the <code>participants</code> field. This is because we're going to use
+            those fields for creating associations.
+        </p>
+        <p>
+            Associations allow you to link your data together. This makes working with your data much easier. Lets
+            create an association for <code>contacts</code> on our user model. To do this, you need to use the
+            <code>associations</code> parameter, and pass it a few things:
+        </p>
+        <ul>
+            <li>
+                <p>
+                    <strong>type</strong>: the type of the association. The options that are available out of the box
+                    are <code>hasMany</code> and <code>hasOne</code>.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>name</strong>: the name of the association. This will determine the name of the getter that
+                    is added to your model. This getter will be used to retrieve the associated data.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>model</strong>: the model that is used to describe the associated data.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>mapping</strong>: this will be used by Spine to locate the source of the associated data.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>foreignKey</strong>: is where the <code>id</code> of the originating model will be stored in
+                    all associated models. One thing to note is that this field must be added to the <code>fields</code>
+                    list on the model that will be associated. This is optional.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>globalCollection</strong>: a common pattern is to use a global collection to store a copy of
+                    all models in your application. By defining the <code>globalCollection</code> parameter, it tells
+                    Spine that all created models in the association need to be added to this collection. The only thing
+                    to remember is that the collection must be created beforehand and added globally using
+                    <code>Spine.addCollection</code>. This too, is optional.
+                </p>
+            </li>
+        </ul>
+        <p>
+            We can start by linking together our user model with its contacts:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-4.js"></pre>
+        <p>
+            With this association defined, our model will now have access to a collection of contacts through
+            <code>getContacts</code>. For example, you could do something like this:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-5.js"></pre>
+        <p>
+            Associations aren't just one way, they also give you a link to the originating model. This is where the
+            model's <code>name</code> parameter comes into play. In this case each contact receives a <code>getUser</code>
+            method that holds a reference to its owner.
+        </p>
+        <h3 id="preparing-data">Preparing Data</h3>
+        <p>
+            Creating the association needed between <code>Spine.data.Conversation</code> and its <code>participants</code>
+            is a little bit different. In this case, our server only sent us the ID's of the participating users. As such
+            we need to prepare our data before we try and associate it.
+        </p>
+        <p>
+            This can be achieved using the <code>prepare</code> parameter of the association. This is a function, or
+            name of a function, that will be called prior to the association being parsed. It receives the raw data
+            object that will be parsed. Due to the fact that javascript passes objects by reference, we can modify it
+            within the function, thus preparing our data for parsing.
+        </p>
+        <p>
+            Lets see what that looks like:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-6.js"></pre>
+        <p>
+            If you notice, our server did something similar to our messages; sending us only ID's for the
+            <code>sender</code> field. It is likely that this isn't what we want, just as we didn't want it that way
+            within our conversation model. We can do something to fix it though, using the <code>convert</code>
+            parameter on the <code>sender</code> field. As was explained <a href="#">earlier</a>, the
+            <code>convert</code> function can be used to prepare the final value of a field. Lets set that up to make
+            our message model easier to use:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-7.js"></pre>
+        <p>
+            Now we can use the <code>sender</code> field as a real user model:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-8.js"></pre>
+        <h3 id="the-result">The Result</h3>
+        <p>
+            That's it, you should now have a fairly good understand of how to model data and their associations. In
+            this guide, we created three different models. Here they are in their entirety:
+        </p>
+        <pre data-src="../assets/examples/guides/modeling-your-data/step-9.js"></pre>
+    </div>
+    <div class="col-md-3">
+        <div class="affix-top usage-sidebar">
+            <ul class="nav">
+                <li class="active"><a href="#intro">Introduction</a></li>
+                <li><a href="#creating-models">Creating Models</a></li>
+                <li><a href="#transforming-data">Transforming Data</a></li>
+                <li><a href="#creating-meaningful-connections">Creating Meaningful Connections</a></li>
+                <li><a href="#preparing-data">Preparing Data</a></li>
+                <li><a href="#the-result">The Result</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    </div>
+
+<div class="container">
+    <footer>
+        <hr/>
+    </footer>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="../assets/js/twig.js"></script>
+<script src="../assets/js/jsoop.js"></script>
+<script src="../assets/js/spine.js"></script>
+<script src="../assets/js/prism.min.js"></script>
+    <script src="../assets/js/usage.js"></script>
+</body>
+</html>
