@@ -4,4 +4,4 @@ user.getContacts()
     .each(function (contact) {
         //log the name of each contact
         console.log(contact.get('name'));
-    })
+    });
