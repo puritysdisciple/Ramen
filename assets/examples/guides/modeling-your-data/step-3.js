@@ -1,5 +1,5 @@
 JSoop.define('Talk.model.Conversation', {
-    extend: 'Spine.data.Model',
+    extend: 'Ramen.data.Model',
 
     name: 'Conversation',
 
@@ -9,7 +9,7 @@ JSoop.define('Talk.model.Conversation', {
 });
 
 JSoop.define('Talk.model.Message', {
-    extend: 'Spine.data.Model',
+    extend: 'Ramen.data.Model',
 
     name: 'Message',
 

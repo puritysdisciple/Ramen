@@ -1,24 +1,51 @@
 body {
     padding-top: 48px;
 }
+
+a {
+    color: #105B63;
+}
+a:hover {
+    color: #105B63;
+}
+
 .jumbotron h1 {
     margin-top: 0;
 }
 
 .jumbotron {
-    background: #FAC485;
+    background: #B6D15D;
+}
+
+.jumbotron p {
+    margin-bottom: 0;
+}
+
+.jumbotron h1 {
+    margin-bottom: 0;
 }
 
 .guide-jumbotron {
-    background: #424342;
-    border-bottom: 10px solid #F2B134;
-    color: #F5F2EB;
+    background-color: #BD4932;
+    color: #FFFAD5;
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
 .guide-jumbotron h1 {
     font-size: 48px;
+}
+.jumbotron.main {
+    background-color: #BD4932;
+    color: #FFFAD5;
+}
+.jumbotron.main .container {
+    background-image: url("resources/images/ramen.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    padding-left: 190px;
+    padding-top: 15px;
+    min-height: 135px;
 }
 
 .feature-section {
@@ -51,7 +78,7 @@ body {
 }
 
 .usage-sidebar .nav .nav > li.active {
-    border-left: 5px solid #F2B134;
+    border-left: 5px solid #105B63;
     background-color: #eee;
 }
 .usage-sidebar .nav .nav > li.active > a {
@@ -67,7 +94,7 @@ body {
 }
 
 .usage-sidebar > .nav > li.active > a {
-    border-color: #FAC485;
+    border-color: #105B63;
 }
 
 .callout {

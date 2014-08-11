@@ -1,4 +1,4 @@
-JSoop.define('Spine.view.container.CollectionContainer', {
+JSoop.define('Ramen.view.container.CollectionContainer', {
     //...
     initEmptyView: function () {
         var me = this,
@@ -12,7 +12,7 @@ JSoop.define('Spine.view.container.CollectionContainer', {
             emptyView = JSoop.clone(me.emptyView);
 
             //empty view doesn't have a model, so we need to bypass CollectionContainer::initItem
-            emptyView = Spine.view.container.Container.prototype.initItem.call(me, emptyView);
+            emptyView = Ramen.view.container.Container.prototype.initItem.call(me, emptyView);
 
             me.emptyView = emptyView;
         }

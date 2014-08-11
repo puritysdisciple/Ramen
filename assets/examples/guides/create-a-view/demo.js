@@ -1,7 +1,7 @@
 //define our new view type like any other class
 JSoop.define('Talk.view.Status', {
     //extend the base view type
-    extend: 'Spine.view.binding.BindingView',
+    extend: 'Ramen.view.binding.BindingView',
 
     //configure the view as we need it
     stype: 'talk-status',
@@ -62,7 +62,7 @@ JSoop.define('Talk.view.Status', {
 });
 
 JSoop.define('Talk.model.User', {
-    extend: 'Spine.data.Model',
+    extend: 'Ramen.data.Model',
 
     name: 'User',
 

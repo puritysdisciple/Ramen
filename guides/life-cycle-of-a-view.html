@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
 
-    <title>Spine - Standing Up Your Apps</title>
+    <title>Ramen - Making Your Apps Delicious</title>
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
@@ -25,13 +25,21 @@
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">Spine</a>
+            <a class="navbar-brand" href="../index.html">Ramen</a>
         </div>
         <div class="navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="../features.html">Features</a></li>
                 <li><a href="../guides.html">Guides</a></li>
-                <li><a href="https://github.com/puritysdisciple/jsoop">Download</a></li>
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Download <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="../assets/js/ramen.js" target="_blank">Compressed</a></li>
+                        <li><a href="../assets/js/ramen-debug.js" target="_blank">Uncompressed</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
@@ -47,11 +55,11 @@
     <div class="col-md-9">
         <h3 id="intro">Introduction</h3>
         <p>
-            In this guide, we're going to to cover the life cycle of the views that Spine comes with out of the box.
+            In this guide, we're going to to cover the life cycle of the views that Ramen comes with out of the box.
             This will give you the available hooks you can use to modify their behavior, as well as what you can do in
             each of the hooks. Mastering hooks is the key to creating complex custom views.
         </p>
-        <h3 id="spine-view-box">Spine.view.Box</h3>
+        <h3 id="Ramen-view-box">Ramen.view.Box</h3>
         <p>
             The box view is nothing more than a managed HTML tag. In most cases, you shouldn't be extending this.
             However, it is the most basic kind of view. If you just want to inject a raw snippet of HTML into the
@@ -139,7 +147,7 @@
                 </p>
             </li>
         </ol>
-        <h3 id="spine-view-view">Spine.view.View</h3>
+        <h3 id="Ramen-view-view">Ramen.view.View</h3>
         <p>
             The standard view builds on top of box by giving you access to templates, childEls, renderSelectors and
             domListeners. If your view doesn't need to hold other views, and doesn't deal directly with data stored
@@ -163,10 +171,10 @@
                 </p>
             </li>
         </ol>
-        <h3 id="spine-view-binding-binding-view">Spine.view.binding.BindingView</h3>
+        <h3 id="Ramen-view-binding-binding-view">Ramen.view.binding.BindingView</h3>
         <p>
             Binding view builds on view by giving you data bindings that are used to read data from a
-            Spine.data.Model.
+            Ramen.data.Model.
         </p>
         <h4>destroy</h4>
         <ol>
@@ -178,7 +186,7 @@
                 </p>
             </li>
         </ol>
-        <h3 id="spine-view-container-container">Spine.view.container.Container</h3>
+        <h3 id="Ramen-view-container-container">Ramen.view.container.Container</h3>
         <p>
             The container view, as it's name suggests, is a view that can hold and render other views. It supports
             the use of layouts to give you control of how and where each of its children is rendered.
@@ -214,7 +222,7 @@
                 </p>
             </li>
         </ol>
-        <h3 id="spine-view-container-collection-container">Spine.view.container.CollectionContainer</h3>
+        <h3 id="Ramen-view-container-collection-container">Ramen.view.container.CollectionContainer</h3>
         <ol>
             <li>
                 <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> initView</strong><br/>
@@ -240,11 +248,11 @@
         <div class="affix-top usage-sidebar">
             <ul class="nav">
                 <li class="active"><a href="#intro">Introduction</a></li>
-                <li><a href="#spine-view-box">Spine.view.Box</a></li>
-                <li><a href="#spine-view-view">Spine.view.View</a></li>
-                <li><a href="#spine-view-binding-binding-view">Spine.view.binding.BindingView</a></li>
-                <li><a href="#spine-view-container-container">Spine.view.container.Container</a></li>
-                <li><a href="#spine-view-container-collection-container">Spine.view.container.CollectionContainer</a></li>
+                <li><a href="#Ramen-view-box">Ramen.view.Box</a></li>
+                <li><a href="#Ramen-view-view">Ramen.view.View</a></li>
+                <li><a href="#Ramen-view-binding-binding-view">Ramen.view.binding.BindingView</a></li>
+                <li><a href="#Ramen-view-container-container">Ramen.view.container.Container</a></li>
+                <li><a href="#Ramen-view-container-collection-container">Ramen.view.container.CollectionContainer</a></li>
             </ul>
         </div>
     </div>
@@ -261,7 +269,7 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="../assets/js/twig.js"></script>
 <script src="../assets/js/jsoop.js"></script>
-<script src="../assets/js/spine.js"></script>
+<script src="../assets/js/ramen.js"></script>
 <script src="../assets/js/prism.min.js"></script>
     <script src="../assets/js/usage.js"></script>
 </body>
