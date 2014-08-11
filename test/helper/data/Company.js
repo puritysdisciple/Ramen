@@ -1,5 +1,5 @@
 JSoop.define('Testing.data.Company', {
-    extend: 'Spine.data.Model',
+    extend: 'Ramen.data.Model',
 
     name: 'Company',
 

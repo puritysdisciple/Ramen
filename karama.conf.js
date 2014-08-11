@@ -19,15 +19,15 @@ module.exports = function(config) {
             '../lib/jsoop-debug.js',
             '../lib/twig.js',
 
-            '../build/spine-debug.js',
+            '../build/ramen-debug.js',
 
             //Helpers
             '../test/helper/data/Person.js',
             '../test/helper/data/Company.js',
 
             //Tests
-            '../test/spine/*/*.js',
-            '../test/spine/*/*/*.js'
+            '../test/ramen/*/*.js',
+            '../test/ramen/*/*/*.js'
         ],
 
 
@@ -46,7 +46,7 @@ module.exports = function(config) {
         },
 
         preprocessors: {
-            '../build/spine-debug.js': ['coverage']
+            '../build/ramen-debug.js': ['coverage']
         },
 
         // web server port
