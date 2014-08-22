@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.binding.ModelBinding
+ * @extends Ramen.view.binding.Binding
+ */
 JSoop.define('Ramen.view.binding.ModelBinding', {
     extend: 'Ramen.view.binding.Binding',
 

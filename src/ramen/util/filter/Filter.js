@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.util.filter.Filter
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.util.filter.Filter', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'

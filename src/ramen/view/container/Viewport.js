@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.container.Viewport
+ * @extends Ramen.view.container.Container
+ */
 JSoop.define('Ramen.view.container.Viewport', {
     extend: 'Ramen.view.container.Container',
 

@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.data.Query
+ * @private
+ */
 JSoop.define('Ramen.data.Query', {
     constructor: function (field, value) {
         var me = this,

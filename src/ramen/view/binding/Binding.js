@@ -1,3 +1,9 @@
+/**
+ * @class Ramen.view.binding.Binding
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins Ramen.util.Renderable
+ */
 JSoop.define('Ramen.view.binding.Binding', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
@@ -80,7 +86,9 @@ JSoop.define('Ramen.view.binding.Binding', {
     update: function () {
         var me = this;
 
-        me.el.html(me.getContent());
+        setTimeout(function () {
+            me.el.html(me.getContent());
+        }, 0);
     },
 
     destroy: function () {

@@ -1,3 +1,10 @@
+/**
+ * @class Ramen.app.Route
+ * @private
+ * Represents a browser history state that can be used to execute code. This class shouldn't be instantiated directly.
+ * Use {@link Ramen.app.Controller controllers} to create these along with their callbacks.
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.app.Route', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'

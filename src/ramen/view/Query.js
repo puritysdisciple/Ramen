@@ -160,6 +160,10 @@
         }
     };
 
+    /**
+     * @class Ramen.view.Query
+     * @singleton
+     */
     JSoop.define('Ramen.view.Query', {
         singleton: true,
 

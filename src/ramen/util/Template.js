@@ -1,3 +1,6 @@
+/**
+ * @class Ramen.util.Template
+ */
 //todo: detach from twig
 JSoop.define('Ramen.util.Template', {
     isTemplate: true,

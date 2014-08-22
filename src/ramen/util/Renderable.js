@@ -1,3 +1,6 @@
+/**
+ * @class Ramen.util.Renderable
+ */
 JSoop.define('Ramen.util.Renderable', {
     isRenderable: true,
 

@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.dom.Helper
+ * @singleton
+ */
 JSoop.define('Ramen.dom.Helper', {
     singleton: true,
 

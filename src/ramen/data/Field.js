@@ -1,6 +1,7 @@
 /**
  * @class Ramen.data.Field
- *
+ * @private
+ * @mixins JSoop.mixins.Configurable
  * The Field class is used to parse a value out of data object. It can locate the value, convert its type, and run an
  * arbitrary conversion function to make sure the resulting value is the one that is requested.
  */

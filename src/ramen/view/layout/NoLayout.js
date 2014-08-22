@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.layout.NoLayout
+ * @extends Ramen.view.layout.Layout
+ */
 JSoop.define('Ramen.view.layout.NoLayout', {
     extend: 'Ramen.view.layout.Layout',
 

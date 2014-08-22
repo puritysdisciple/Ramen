@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.data.association.HasOne
+ * @extends Ramen.data.association.Association
+ */
 JSoop.define('Ramen.data.association.HasOne', {
     extend: 'Ramen.data.association.Association',
 

@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.layout.Layout
+ * @extends Ramen.view.Box
+ */
 JSoop.define('Ramen.view.layout.Layout', {
     extend: 'Ramen.view.Box',
 
@@ -38,7 +42,7 @@ JSoop.define('Ramen.view.layout.Layout', {
             scope: me
         });
 
-        me.mon(me.owner, 'render:after', me.renderItems, me, {
+        me.mon(me.owner, 'render:during', me.renderItems, me, {
             single: true
         });
 

@@ -1,3 +1,9 @@
+/**
+ * @class Ramen.app.Router
+ * @private
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ */
 JSoop.define('Ramen.app.Router', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',

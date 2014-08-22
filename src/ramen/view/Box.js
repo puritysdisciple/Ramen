@@ -1,3 +1,10 @@
+/**
+ * @class Ramen.view.Box
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins JSoop.mixins.PluginManager
+ * @mixins Ramen.util.Renderable
+ */
 JSoop.define('Ramen.view.Box', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
@@ -68,7 +75,15 @@ JSoop.define('Ramen.view.Box', {
 
         me.isRendered = true;
 
-        me.fireEvent('render:after', me);
+        if (me.owner) {
+            me.fireEvent('render:after', me);
+        } else {
+            me.mon(me.owner, 'render:after', function () {
+                me.fireEvent('render:after', me);
+            }, me, {
+                single: true
+            });
+        }
     },
 
     addToContainer: function (container, index) {

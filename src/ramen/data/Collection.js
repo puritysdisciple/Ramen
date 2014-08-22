@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.data.Collection
+ * @extends Ramen.collection.Dictionary
+ */
 JSoop.define('Ramen.data.Collection', {
     extend: 'Ramen.collection.Dictionary',
 

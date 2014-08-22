@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.container.CollectionContainer
+ * @extends Ramen.view.container.Container
+ */
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 

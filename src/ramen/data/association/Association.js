@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.data.association.Association
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.data.association.Association', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'

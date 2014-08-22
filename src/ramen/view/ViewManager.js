@@ -1,5 +1,9 @@
-JSoop.define('Spine.view.ViewManager', {
-    extend: 'Spine.collection.Dictionary',
+/**
+ * @class Ramen.view.ViewManager
+ * @extends Ramen.collection.Dictionary
+ */
+JSoop.define('Ramen.view.ViewManager', {
+    extend: 'Ramen.collection.Dictionary',
 
     singleton: true,
 

@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.view.binding.SnapshotView
+ * @extends Ramen.view.binding.BindingView
+ */
 JSoop.define('Ramen.view.binding.SnapshotView', {
     extend: 'Ramen.view.binding.BindingView',
 

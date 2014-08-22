@@ -1,3 +1,6 @@
+/**
+ * @class Ramen.util.Sortable
+ */
 JSoop.define('Ramen.util.Sortable', {
     isSortable: true,
     sortTarget: 'items',

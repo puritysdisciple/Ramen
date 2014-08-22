@@ -1,8 +1,94 @@
+/**
+ * @class Ramen.app.Controller
+ * @mixins JSoop.mixins.Configurable
+ * Represents a set of behaviors. In general this means responding to changes in page state or using
+ * {@link Ramen.view.View view} events to change that state. Controllers do this through
+ * {@link Ramen.app.Controller#routes routes} and {@link Ramen.app.Controller#control controlls}. For example, a
+ * controller designed to handle user state could look something like:
+ *
+ *      JSoop.define('Demo.controller.User', {
+ *          extend: 'Ramen.app.Controller',
+ *
+ *          routes: {
+ *              'users/list': 'onRouteList',
+ *              'users/edit/:user': 'onRouteEdit'
+ *          },
+ *
+ *          initController: function () {
+ *              var me = this;
+ *
+ *              me.control({
+ *                  'user-list': {
+ *                      'select': me.onUserSelect,
+ *                      'scope': me
+ *                  }
+ *              });
+ *
+ *              me.callParent(arguments);
+ *          },
+ *
+ *          onRouteEdit: function (user) {
+ *              user = Ramen.getCollection('Users').get(parseInt(user, 10));
+ *              ...
+ *          },
+ *
+ *          onUserSelect: function (user) {
+ *              this.navigate('users/edit/' + user.get('id'));
+ *          }
+ *      });
+ *
+ * If a controller starts becoming too large, it is advisable to break it into smaller pieces using
+ * {@link Ramen.app.Helper helpers}. This can make very large sections of your app's behavior easier to manage, without
+ * breaking the desired structure.
+ */
 JSoop.define('Ramen.app.Controller', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
     },
 
+    /**
+     * @cfg {Object} routes
+     * A list of routes and callbacks. If the browser's hash matches one of the patterns here, it will trigger the
+     * defined callback. The callback can be either a function or name of a function. Also, the scope of a callback
+     * can be defined with either an object, or the name of a helper. For example:
+     *
+     *      ...
+     *      helpers: {
+     *          'search': 'Demo.controller.helpers.UserSearch'
+     *      },
+     *
+     *      routes: {
+     *          'users/edit/:user': 'onRouteEdit',
+     *          'users/search?:query': {
+     *              fn: 'onRouteSearch',
+     *              //use the search helper
+     *              scope: 'search'
+     *          }
+     *      },
+     *
+     *      onRouteEdit: function (user) {
+     *          ...
+     *      },
+     *      ...
+     */
+
+    /**
+     * @cfg {Object} helpers
+     * A list of helpers that will be created. For example:
+     *
+     *      ...
+     *      helpers: {
+     *          search: 'Demo.controller.helpers.UserSearch'
+     *      },
+     *      ...
+     *
+     * See {@link Ramen.app.Helper} for more details about helpers.
+     */
+
+    /**
+     * Creates a new controller
+     * @param {Object} config The config object
+     */
     constructor: function (config) {
         var me = this;
 
@@ -19,6 +105,11 @@ JSoop.define('Ramen.app.Controller', {
         me.initRouter();
     },
 
+    /**
+     * @method
+     * Called after the config has been applied, but before any other actions have been taken.
+     * @template
+     */
     initController: JSoop.emptyFn,
 
     initHelpers: function () {
@@ -59,6 +150,22 @@ JSoop.define('Ramen.app.Controller', {
         });
     },
 
+    /**
+     * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
+     * {@link Ramen.view.Manager}. If a view matches one of the selectors, the events nested in the object will be
+     * attached to it. For example, this will attach to all new views and log a message when they are rendered:
+     *
+     *      this.control({
+     *          //look for all new views
+     *          'view': {
+     *              'render:after': function (view) {
+     *                  console.log(view.getId() + ' rendered');
+     *              }
+     *          }
+     *      });
+     *
+     * @param {Object} config The list of selectors and events this controller should react to
+     */
     control: function (config) {
         var me = this;
 
@@ -71,6 +178,9 @@ JSoop.define('Ramen.app.Controller', {
         });
     },
 
+    /**
+     * @inheritdoc Ramen.app.History#navigate
+     */
     navigate: function (config) {
         Ramen.app.History.navigate(config);
     },

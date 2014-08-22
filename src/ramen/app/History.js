@@ -1,3 +1,11 @@
+/**
+ * @class Ramen.app.History
+ * @singleton
+ * @mixins JSoop.mixins.Observable
+ * Represents browser history state and is used to track changes in the browser history state. In general this class
+ * should not be used, instead use {@link Ramen.app.Controller#routes routes} to moniter and execute code based on
+ * browser state.
+ */
 JSoop.define('Ramen.app.History', {
     mixins: {
         observable: 'JSoop.mixins.Observable'
@@ -14,6 +22,9 @@ JSoop.define('Ramen.app.History', {
         me.initMixin('observable');
     },
 
+    /**
+     * @private
+     */
     start: function () {
         var me = this,
             docMode, isOldIE, checkUrl;
@@ -43,6 +54,9 @@ JSoop.define('Ramen.app.History', {
         checkUrl();
     },
 
+    /**
+     * @private
+     */
     createFrame: function () {
         var me = this,
             frame = Ramen.dom.Helper.create({
@@ -54,6 +68,14 @@ JSoop.define('Ramen.app.History', {
         me.iframe = frame.hide().appendTo('body')[0].contentWindow;
     },
 
+    /**
+     * @method
+     * Changes the current history state
+     * @param {Object/string} config The config object or new fragment
+     * @param {string} config.fragment The new fragment
+     * @param {boolean} [config.silent=false] Whether or not to supress the change event
+     * @param {boolean} [config.replace=false] Whether or not to replace the current history state
+     */
     navigate: function (config) {
         var me = this,
             fragment;
@@ -89,6 +111,9 @@ JSoop.define('Ramen.app.History', {
         }
     },
 
+    /**
+     * @private
+     */
     updateFragment: (function () {
         function updateLocation (location, fragment, replace) {
             if (replace) {
@@ -123,6 +148,11 @@ JSoop.define('Ramen.app.History', {
         };
     }()),
 
+    /**
+     * @method
+     * Gets the current fragment
+     * @returns {string} The current fragment
+     */
     getFragment: function (fragment) {
         var me = this;
 
@@ -133,12 +163,18 @@ JSoop.define('Ramen.app.History', {
         return fragment.replace(/^[#\/]|\s+$/g, '');
     },
 
+    /**
+     * @private
+     */
     getHash: function (target) {
         var match = (target || window).location.href.match(/#(.*)$/);
 
         return match ? match[1] : '';
     },
 
+    /**
+     * @private
+     */
     checkUrl: function () {
         var me = this,
             current = me.getFragment();
@@ -162,10 +198,18 @@ JSoop.define('Ramen.app.History', {
         return true;
     },
 
+    /**
+     * @private
+     */
     loadUrl: function () {
         var me = this,
             fragment = me.getFragment();
 
+        /**
+         * @event change
+         * Fired when the history state changes
+         * @param {string} fragment the new fragment
+         */
         me.fireEvent('change', fragment);
     }
 });

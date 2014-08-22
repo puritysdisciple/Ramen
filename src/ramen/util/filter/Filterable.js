@@ -1,3 +1,6 @@
+/**
+ * @class Ramen.util.filter.Filterable
+ */
 JSoop.define('Ramen.util.filter.Filterable', {
     isFilterable: true,
     isFiltered: false,

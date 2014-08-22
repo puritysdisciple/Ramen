@@ -1,5 +1,7 @@
 /**
  * @class Ramen.data.Model
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
  * A model represents a single set of data.
  */
 JSoop.define('Ramen.data.Model', {

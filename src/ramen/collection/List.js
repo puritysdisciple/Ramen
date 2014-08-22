@@ -1,3 +1,11 @@
+/**
+ * @class Ramen.collection.List
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins JSoop.mixins.PluginManager
+ * @mixins Ramen.util.filter.Filterable
+ * @mixins Ramen.util.Sortable
+ */
 JSoop.define('Ramen.collection.List', {
     mixins: {
         configurable : 'JSoop.mixins.Configurable',

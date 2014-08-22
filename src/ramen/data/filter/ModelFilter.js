@@ -1,3 +1,7 @@
+/**
+ * @class Ramen.data.filter.ModelFilter
+ * @extends Ramen.util.filter.Filter
+ */
 JSoop.define('Ramen.data.filter.ModelFilter', {
     extend: 'Ramen.util.filter.Filter',
 
