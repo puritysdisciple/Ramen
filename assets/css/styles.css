@@ -14,7 +14,11 @@ a:hover {
 }
 
 .jumbotron {
-    background: #B6D15D;
+    background-color: #BD4932;
+    color: #FFFAD5;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #3c3c3c;
 }
 
 .jumbotron p {
@@ -25,13 +29,6 @@ a:hover {
     margin-bottom: 0;
 }
 
-.guide-jumbotron {
-    background-color: #BD4932;
-    color: #FFFAD5;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
 .guide-jumbotron h1 {
     font-size: 48px;
 }
@@ -39,7 +36,7 @@ a:hover {
     background-color: #BD4932;
     color: #FFFAD5;
 }
-.jumbotron.main .container {
+.jumbotron .container {
     background-image: url("resources/images/ramen.png");
     background-repeat: no-repeat;
     background-position: 0 0;
@@ -79,7 +76,7 @@ a:hover {
 
 .usage-sidebar .nav .nav > li.active {
     border-left: 5px solid #105B63;
-    background-color: #eee;
+    background-color: #eaeaea;
 }
 .usage-sidebar .nav .nav > li.active > a {
     padding-left: 27px;
@@ -90,7 +87,7 @@ a:hover {
 }
 
 .usage-sidebar > .nav > li.active > a {
-    background-color: #eee;
+    background-color: #eaeaea;
 }
 
 .usage-sidebar > .nav > li.active > a {
@@ -100,7 +97,7 @@ a:hover {
 .callout {
     margin: 20px 0;
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px solid #eaeaea;
     border-left-width: 5px;
     border-radius: 3px;
 }

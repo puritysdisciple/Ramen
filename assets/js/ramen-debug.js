@@ -21,9 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen
+ * The Ramen namespace encompasses all classes, singletons, and utility methods provided by the framework. Most
+ * functionality is nested in other namespaces.
+ * @singleton
+ */
 JSoop.define('Ramen', {
     singleton: true,
 
+    /**
+     * @method
+     * Generates a unique ID.
+     * @param {string} prefix The prefix to add to the ID
+     * @return {string} The unique ID
+     */
     id: (function () {
         var AUTO_ID = 0;
 
@@ -61,6 +73,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.util.Sortable
+ */
 JSoop.define('Ramen.util.Sortable', {
     isSortable: true,
     sortTarget: 'items',
@@ -111,6 +126,10 @@ JSoop.define('Ramen.util.Sortable', {
     afterSort: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.util.filter.Filter
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.util.filter.Filter', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
@@ -158,6 +177,9 @@ JSoop.define('Ramen.util.filter.Filter', {
     }
 });
 
+/**
+ * @class Ramen.util.filter.Filterable
+ */
 JSoop.define('Ramen.util.filter.Filterable', {
     isFilterable: true,
     isFiltered: false,
@@ -315,6 +337,14 @@ JSoop.define('Ramen.util.filter.Filterable', {
     afterFilter: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.collection.List
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins JSoop.mixins.PluginManager
+ * @mixins Ramen.util.filter.Filterable
+ * @mixins Ramen.util.Sortable
+ */
 JSoop.define('Ramen.collection.List', {
     mixins: {
         configurable : 'JSoop.mixins.Configurable',
@@ -566,6 +596,10 @@ JSoop.define('Ramen.collection.List', {
     onDestroy: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.collection.Dictionary
+ * @extends Ramen.collection.List
+ */
 JSoop.define('Ramen.collection.Dictionary', {
     extend: 'Ramen.collection.List',
 
@@ -767,6 +801,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.data.association.Association
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.data.association.Association', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
@@ -858,6 +896,10 @@ JSoop.define('Ramen.data.association.Association', {
     assignModels: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.data.association.HasMany
+ * @extends Ramen.data.association.Association
+ */
 JSoop.define('Ramen.data.association.HasMany', {
     extend: 'Ramen.data.association.Association',
 
@@ -926,6 +968,10 @@ JSoop.define('Ramen.data.association.HasMany', {
     }
 });
 
+/**
+ * @class Ramen.data.association.HasOne
+ * @extends Ramen.data.association.Association
+ */
 JSoop.define('Ramen.data.association.HasOne', {
     extend: 'Ramen.data.association.Association',
 
@@ -969,6 +1015,10 @@ JSoop.define('Ramen.data.association.HasOne', {
     }
 });
 
+/**
+ * @class Ramen.data.filter.ModelFilter
+ * @extends Ramen.util.filter.Filter
+ */
 JSoop.define('Ramen.data.filter.ModelFilter', {
     extend: 'Ramen.util.filter.Filter',
 
@@ -987,7 +1037,8 @@ JSoop.define('Ramen.data.filter.ModelFilter', {
 
 /**
  * @class Ramen.data.Field
- *
+ * @private
+ * @mixins JSoop.mixins.Configurable
  * The Field class is used to parse a value out of data object. It can locate the value, convert its type, and run an
  * arbitrary conversion function to make sure the resulting value is the one that is requested.
  */
@@ -1090,6 +1141,8 @@ JSoop.define('Ramen.data.Field', {
 
 /**
  * @class Ramen.data.Model
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
  * A model represents a single set of data.
  */
 JSoop.define('Ramen.data.Model', {
@@ -1331,6 +1384,10 @@ JSoop.define('Ramen.data.Model', {
     }
 });
 
+/**
+ * @class Ramen.data.Query
+ * @private
+ */
 JSoop.define('Ramen.data.Query', {
     constructor: function (field, value) {
         var me = this,
@@ -1364,6 +1421,10 @@ JSoop.define('Ramen.data.Query', {
     }
 });
 
+/**
+ * @class Ramen.data.Collection
+ * @extends Ramen.collection.Dictionary
+ */
 JSoop.define('Ramen.data.Collection', {
     extend: 'Ramen.collection.Dictionary',
 
@@ -1478,11 +1539,71 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.app.Application
+ * Represents a Ramen application. In most cases, this is a single page application that contains one or more
+ * {@link Ramen.view.View views}. The behavior of views is controlled by {@link Ramen.app.Controller controllers} and
+ * application data is managed through {@link Ramen.data.Model models} and {@link Ramen.data.Collection collections}.
+ *
+ * Controllers and collections are instantiated through this class:
+ *
+ *      Ramen.application({
+ *          collections: {
+ *              Users: 'Demo.collection.Users'
+ *          },
+ *
+ *          controllers: {
+ *              user: 'Demo.collection.User'
+ *          },
+ *
+ *          run: function () {
+ *              //application execution
+ *          }
+ *      });
+ *
+ * This will setup the desired collection and controller, and will call the `run` function when everything is ready. It
+ * should rarely be required to extend this class. Instead, use {@link Ramen#application} to create a new application.
+ *
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.app.Application', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
     },
 
+    /**
+     * @cfg {Object} controllers
+     * Creates controllers with the given names and types. In the following example, the controller `user` will be
+     * created with the type `Demo.controller.User`:
+     *
+     *      ...
+     *      controllers: {
+     *          user: 'Demo.controller.User'
+     *      },
+     *      ...
+     *
+     * The value of each key-value pair can either be a `string` defining the type that should be created, or a config
+     * object that can be used to create a controller. If a config object is used, the `type` key must be populated
+     * with the desired controller type to be created. Each controller receives an `app` property that references the
+     * application that created it.
+     */
+    /**
+     * @cfg {Object} collections
+     * Creates collections with the given names and types. These collections will then be accessible via
+     * {@link Ramen#getCollection}. For example, the following creates a collection of type `Demo.collection.Users` and
+     * makes it available under the name `Users`.
+     *
+     *      ...
+     *      collections: {
+     *          Users: 'Demo.collection.Users'
+     *      },
+     *      ...
+     */
+
+    /**
+     * Creates a new Application
+     * @param {Object} config The config object
+     */
     constructor: function (config) {
         var me = this;
 
@@ -1528,8 +1649,18 @@ JSoop.define('Ramen.app.Application', {
         });
     },
 
+    /**
+     * @method
+     * Called after all {@link #controllers} and {@link #collections} have been created.
+     * @template
+     */
     run: JSoop.emptyFn
 }, function () {
+    /**
+     * @member Ramen
+     * Creates a new {@link Ramen.app.Application}.
+     * @param {Object} config The config object
+     */
     Ramen.application = function (config) {
         if (config.requires) {
             JSoop.Loader.require(config.requires);
@@ -1539,11 +1670,97 @@ JSoop.define('Ramen.app.Application', {
     };
 });
 
+/**
+ * @class Ramen.app.Controller
+ * @mixins JSoop.mixins.Configurable
+ * Represents a set of behaviors. In general this means responding to changes in page state or using
+ * {@link Ramen.view.View view} events to change that state. Controllers do this through
+ * {@link Ramen.app.Controller#routes routes} and {@link Ramen.app.Controller#control controlls}. For example, a
+ * controller designed to handle user state could look something like:
+ *
+ *      JSoop.define('Demo.controller.User', {
+ *          extend: 'Ramen.app.Controller',
+ *
+ *          routes: {
+ *              'users/list': 'onRouteList',
+ *              'users/edit/:user': 'onRouteEdit'
+ *          },
+ *
+ *          initController: function () {
+ *              var me = this;
+ *
+ *              me.control({
+ *                  'user-list': {
+ *                      'select': me.onUserSelect,
+ *                      'scope': me
+ *                  }
+ *              });
+ *
+ *              me.callParent(arguments);
+ *          },
+ *
+ *          onRouteEdit: function (user) {
+ *              user = Ramen.getCollection('Users').get(parseInt(user, 10));
+ *              ...
+ *          },
+ *
+ *          onUserSelect: function (user) {
+ *              this.navigate('users/edit/' + user.get('id'));
+ *          }
+ *      });
+ *
+ * If a controller starts becoming too large, it is advisable to break it into smaller pieces using
+ * {@link Ramen.app.Helper helpers}. This can make very large sections of your app's behavior easier to manage, without
+ * breaking the desired structure.
+ */
 JSoop.define('Ramen.app.Controller', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
     },
 
+    /**
+     * @cfg {Object} routes
+     * A list of routes and callbacks. If the browser's hash matches one of the patterns here, it will trigger the
+     * defined callback. The callback can be either a function or name of a function. Also, the scope of a callback
+     * can be defined with either an object, or the name of a helper. For example:
+     *
+     *      ...
+     *      helpers: {
+     *          'search': 'Demo.controller.helpers.UserSearch'
+     *      },
+     *
+     *      routes: {
+     *          'users/edit/:user': 'onRouteEdit',
+     *          'users/search?:query': {
+     *              fn: 'onRouteSearch',
+     *              //use the search helper
+     *              scope: 'search'
+     *          }
+     *      },
+     *
+     *      onRouteEdit: function (user) {
+     *          ...
+     *      },
+     *      ...
+     */
+
+    /**
+     * @cfg {Object} helpers
+     * A list of helpers that will be created. For example:
+     *
+     *      ...
+     *      helpers: {
+     *          search: 'Demo.controller.helpers.UserSearch'
+     *      },
+     *      ...
+     *
+     * See {@link Ramen.app.Helper} for more details about helpers.
+     */
+
+    /**
+     * Creates a new controller
+     * @param {Object} config The config object
+     */
     constructor: function (config) {
         var me = this;
 
@@ -1560,6 +1777,11 @@ JSoop.define('Ramen.app.Controller', {
         me.initRouter();
     },
 
+    /**
+     * @method
+     * Called after the config has been applied, but before any other actions have been taken.
+     * @template
+     */
     initController: JSoop.emptyFn,
 
     initHelpers: function () {
@@ -1600,6 +1822,22 @@ JSoop.define('Ramen.app.Controller', {
         });
     },
 
+    /**
+     * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
+     * {@link Ramen.view.Manager}. If a view matches one of the selectors, the events nested in the object will be
+     * attached to it. For example, this will attach to all new views and log a message when they are rendered:
+     *
+     *      this.control({
+     *          //look for all new views
+     *          'view': {
+     *              'render:after': function (view) {
+     *                  console.log(view.getId() + ' rendered');
+     *              }
+     *          }
+     *      });
+     *
+     * @param {Object} config The list of selectors and events this controller should react to
+     */
     control: function (config) {
         var me = this;
 
@@ -1612,6 +1850,9 @@ JSoop.define('Ramen.app.Controller', {
         });
     },
 
+    /**
+     * @inheritdoc Ramen.app.History#navigate
+     */
     navigate: function (config) {
         Ramen.app.History.navigate(config);
     },
@@ -1659,12 +1900,21 @@ JSoop.define('Ramen.app.Controller', {
     }
 });
 
+/**
+ * @class Ramen.app.Helper
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ */
 JSoop.define('Ramen.app.Helper', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
         observable: 'JSoop.mixins.Observable'
     },
 
+    /**
+     * Creates a new helper
+     * @param {Object} config The config object
+     */
     constructor: function (config) {
         var me = this;
 
@@ -1674,9 +1924,22 @@ JSoop.define('Ramen.app.Helper', {
         me.initHelper();
     },
 
+    /**
+     * @method
+     * Called after the config has been applied
+     * @template
+     */
     initHelper: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.app.History
+ * @singleton
+ * @mixins JSoop.mixins.Observable
+ * Represents browser history state and is used to track changes in the browser history state. In general this class
+ * should not be used, instead use {@link Ramen.app.Controller#routes routes} to moniter and execute code based on
+ * browser state.
+ */
 JSoop.define('Ramen.app.History', {
     mixins: {
         observable: 'JSoop.mixins.Observable'
@@ -1693,6 +1956,9 @@ JSoop.define('Ramen.app.History', {
         me.initMixin('observable');
     },
 
+    /**
+     * @private
+     */
     start: function () {
         var me = this,
             docMode, isOldIE, checkUrl;
@@ -1722,6 +1988,9 @@ JSoop.define('Ramen.app.History', {
         checkUrl();
     },
 
+    /**
+     * @private
+     */
     createFrame: function () {
         var me = this,
             frame = Ramen.dom.Helper.create({
@@ -1733,6 +2002,14 @@ JSoop.define('Ramen.app.History', {
         me.iframe = frame.hide().appendTo('body')[0].contentWindow;
     },
 
+    /**
+     * @method
+     * Changes the current history state
+     * @param {Object/string} config The config object or new fragment
+     * @param {string} config.fragment The new fragment
+     * @param {boolean} [config.silent=false] Whether or not to supress the change event
+     * @param {boolean} [config.replace=false] Whether or not to replace the current history state
+     */
     navigate: function (config) {
         var me = this,
             fragment;
@@ -1768,6 +2045,9 @@ JSoop.define('Ramen.app.History', {
         }
     },
 
+    /**
+     * @private
+     */
     updateFragment: (function () {
         function updateLocation (location, fragment, replace) {
             if (replace) {
@@ -1802,6 +2082,11 @@ JSoop.define('Ramen.app.History', {
         };
     }()),
 
+    /**
+     * @method
+     * Gets the current fragment
+     * @returns {string} The current fragment
+     */
     getFragment: function (fragment) {
         var me = this;
 
@@ -1812,12 +2097,18 @@ JSoop.define('Ramen.app.History', {
         return fragment.replace(/^[#\/]|\s+$/g, '');
     },
 
+    /**
+     * @private
+     */
     getHash: function (target) {
         var match = (target || window).location.href.match(/#(.*)$/);
 
         return match ? match[1] : '';
     },
 
+    /**
+     * @private
+     */
     checkUrl: function () {
         var me = this,
             current = me.getFragment();
@@ -1841,14 +2132,29 @@ JSoop.define('Ramen.app.History', {
         return true;
     },
 
+    /**
+     * @private
+     */
     loadUrl: function () {
         var me = this,
             fragment = me.getFragment();
 
+        /**
+         * @event change
+         * Fired when the history state changes
+         * @param {string} fragment the new fragment
+         */
         me.fireEvent('change', fragment);
     }
 });
 
+/**
+ * @class Ramen.app.Route
+ * @private
+ * Represents a browser history state that can be used to execute code. This class shouldn't be instantiated directly.
+ * Use {@link Ramen.app.Controller controllers} to create these along with their callbacks.
+ * @mixins JSoop.mixins.Configurable
+ */
 JSoop.define('Ramen.app.Route', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable'
@@ -1922,6 +2228,12 @@ JSoop.define('Ramen.app.Route', {
     }
 });
 
+/**
+ * @class Ramen.app.Router
+ * @private
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ */
 JSoop.define('Ramen.app.Router', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
@@ -2025,6 +2337,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.util.Renderable
+ */
 JSoop.define('Ramen.util.Renderable', {
     isRenderable: true,
 
@@ -2092,6 +2407,9 @@ JSoop.define('Ramen.util.Renderable', {
     }
 });
 
+/**
+ * @class Ramen.util.Template
+ */
 //todo: detach from twig
 JSoop.define('Ramen.util.Template', {
     isTemplate: true,
@@ -2121,6 +2439,10 @@ JSoop.define('Ramen.util.Template', {
     }
 });
 
+/**
+ * @class Ramen.dom.Helper
+ * @singleton
+ */
 JSoop.define('Ramen.dom.Helper', {
     singleton: true,
 
@@ -2224,6 +2546,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.view.Box
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins JSoop.mixins.PluginManager
+ * @mixins Ramen.util.Renderable
+ */
 JSoop.define('Ramen.view.Box', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
@@ -2294,7 +2623,15 @@ JSoop.define('Ramen.view.Box', {
 
         me.isRendered = true;
 
-        me.fireEvent('render:after', me);
+        if (me.owner) {
+            me.fireEvent('render:after', me);
+        } else {
+            me.mon(me.owner, 'render:after', function () {
+                me.fireEvent('render:after', me);
+            }, me, {
+                single: true
+            });
+        }
     },
 
     addToContainer: function (container, index) {
@@ -2401,6 +2738,10 @@ JSoop.define('Ramen.view.Box', {
     onRenderAfter: JSoop.emptyFn
 });
 
+/**
+ * @class Ramen.view.View
+ * @extends Ramen.view.Box
+ */
 JSoop.define('Ramen.view.View', {
     extend: 'Ramen.view.Box',
 
@@ -2698,6 +3039,10 @@ JSoop.define('Ramen.view.View', {
         }
     };
 
+    /**
+     * @class Ramen.view.Query
+     * @singleton
+     */
     JSoop.define('Ramen.view.Query', {
         singleton: true,
 
@@ -2713,8 +3058,12 @@ JSoop.define('Ramen.view.View', {
     });
 }());
 
-JSoop.define('Spine.view.ViewManager', {
-    extend: 'Spine.collection.Dictionary',
+/**
+ * @class Ramen.view.ViewManager
+ * @extends Ramen.collection.Dictionary
+ */
+JSoop.define('Ramen.view.ViewManager', {
+    extend: 'Ramen.collection.Dictionary',
 
     singleton: true,
 
@@ -2746,6 +3095,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.view.binding.Binding
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins Ramen.util.Renderable
+ */
 JSoop.define('Ramen.view.binding.Binding', {
     mixins: {
         configurable: 'JSoop.mixins.Configurable',
@@ -2828,7 +3183,9 @@ JSoop.define('Ramen.view.binding.Binding', {
     update: function () {
         var me = this;
 
-        me.el.html(me.getContent());
+        setTimeout(function () {
+            me.el.html(me.getContent());
+        }, 0);
     },
 
     destroy: function () {
@@ -2857,6 +3214,10 @@ JSoop.define('Ramen.view.binding.Binding', {
     }
 });
 
+/**
+ * @class Ramen.view.binding.ModelBinding
+ * @extends Ramen.view.binding.Binding
+ */
 JSoop.define('Ramen.view.binding.ModelBinding', {
     extend: 'Ramen.view.binding.Binding',
 
@@ -2939,6 +3300,10 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
     }
 });
 
+/**
+ * @class Ramen.view.binding.BindingView
+ * @extends Ramen.view.View
+ */
 JSoop.define('Ramen.view.binding.BindingView', {
     extend: 'Ramen.view.View',
 
@@ -3035,6 +3400,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.view.layout.Layout
+ * @extends Ramen.view.Box
+ */
 JSoop.define('Ramen.view.layout.Layout', {
     extend: 'Ramen.view.Box',
 
@@ -3075,7 +3444,7 @@ JSoop.define('Ramen.view.layout.Layout', {
             scope: me
         });
 
-        me.mon(me.owner, 'render:after', me.renderItems, me, {
+        me.mon(me.owner, 'render:during', me.renderItems, me, {
             single: true
         });
 
@@ -3272,6 +3641,10 @@ JSoop.define('Ramen.view.layout.Layout', {
     }
 });
 
+/**
+ * @class Ramen.view.layout.NoLayout
+ * @extends Ramen.view.layout.Layout
+ */
 JSoop.define('Ramen.view.layout.NoLayout', {
     extend: 'Ramen.view.layout.Layout',
 
@@ -3342,6 +3715,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * @class Ramen.view.container.Container
+ * @extends Ramen.view.View
+ */
 JSoop.define('Ramen.view.container.Container', {
     extend: 'Ramen.view.View',
 
@@ -3490,6 +3867,10 @@ JSoop.define('Ramen.view.container.Container', {
     }
 });
 
+/**
+ * @class Ramen.view.container.CollectionContainer
+ * @extends Ramen.view.container.Container
+ */
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 
@@ -3655,6 +4036,10 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
     }
 });
 
+/**
+ * @class Ramen.view.container.Viewport
+ * @extends Ramen.view.container.Container
+ */
 JSoop.define('Ramen.view.container.Viewport', {
     extend: 'Ramen.view.container.Container',
 
