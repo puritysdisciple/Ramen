@@ -76,13 +76,13 @@ JSoop.define('Ramen.view.Box', {
         me.isRendered = true;
 
         if (me.owner) {
-            me.fireEvent('render:after', me);
-        } else {
             me.mon(me.owner, 'render:after', function () {
                 me.fireEvent('render:after', me);
             }, me, {
                 single: true
             });
+        } else {
+            me.fireEvent('render:after', me);
         }
     },
 
