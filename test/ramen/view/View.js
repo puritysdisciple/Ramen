@@ -15,7 +15,7 @@ describe('Ramen.view.View', function () {
             childEls: {
                 listEl: 'list'
             },
-            renderSelectors: {
+            childSelectors: {
                 listItems: 'li'
             },
             domListeners: {

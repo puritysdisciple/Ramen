@@ -38,14 +38,10 @@ JSoop.define('Ramen.dom.Helper', {
 
         if (Ramen.dom.Helper.singletonRegEx.test(config.tag)) {
             html.push('/>');
+        } else if (config.html) {
+            html.push('>' + config.html + '</' + config.tag + '>');
         } else {
-            html.push('>');
-
-            if (config.html) {
-                html.push(config.html);
-            }
-
-            html.push('</' + config.tag + '>');
+            html.push('></' + config.tag + '>');
         }
 
         //todo: detach from jquery

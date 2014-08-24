@@ -46,11 +46,30 @@ JSoop.define('Ramen.util.Renderable', {
         return me[name];
     },
 
-    initRenderSelectors: function () {
+    initChildSelectors: function () {
         var me = this,
-            renderSelectors = me.renderSelectors || {};
+            renderSelectors = me.renderSelectors || {},
+            childSelectors = me.childSelectors || {}
+            //<debug>
+            ,hasRenderSelectors = false
+            //</debug>
+            ;
 
         JSoop.iterate(renderSelectors, function (selector, key) {
+            //<debug>
+            hasRenderSelectors = true;
+            //</debug>
+            //todo: detach from jquery
+            me[key] = jQuery(selector, me.el);
+        });
+
+        //<debug>
+        if (hasRenderSelectors) {
+            JSoop.log('renderSelectors being used in ' + me.$className + '. renderSelectors is depreciated, please use childSelectors instead');
+        }
+        //</debug>
+
+        JSoop.iterate(childSelectors, function (selector, key) {
             //todo: detach from jquery
             me[key] = jQuery(selector, me.el);
         });

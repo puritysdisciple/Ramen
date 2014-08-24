@@ -34,7 +34,7 @@ JSoop.define('Ramen.view.binding.Binding', {
 
         me.owner.on({
             'render:before': me.onOwnerRenderBefore,
-            'render:after': me.onOwnerRenderAfter,
+            'render:during': me.onOwnerRenderDuring,
             scope: me,
             single: true
         });
@@ -104,13 +104,13 @@ JSoop.define('Ramen.view.binding.Binding', {
         view.renderData[me.token] = me.getHtml();
     },
 
-    onOwnerRenderAfter: function () {
+    onOwnerRenderDuring: function () {
         var me = this;
 
         //todo: detach from jquery
         me.el = me.owner.el.find('#' + me.getId());
 
-        me.initRenderSelectors();
+        me.initChildSelectors();
         me.initChildEls();
 
         me.update();

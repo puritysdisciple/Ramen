@@ -42,7 +42,7 @@ JSoop.define('Ramen.view.View', {
         //todo: detach from jquery
         me.el.html(html);
 
-        me.initRenderSelectors();
+        me.initChildSelectors();
         me.initChildEls();
         me.initDomListeners();
     },

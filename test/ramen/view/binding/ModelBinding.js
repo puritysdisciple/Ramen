@@ -41,14 +41,22 @@ describe('Ramen.view.binding.ModelBinding', function () {
     });
 
     it('should correctly update when the model changes', function () {
-        expect(binding.el.html()).toBe('Quibby Higglesworth');
+        runs(function () {
+            expect(binding.el.html()).toBe('Quibby Higglesworth');
 
-        model.set('first', 'Magnus');
+            model.set('first', 'Magnus');
+        });
 
-        expect(binding.el.html()).toBe('Magnus Higglesworth');
+        waitsFor(function () {
+            return binding.el.html() === 'Magnus Higglesworth';
+        });
 
-        model.set('last', 'Higglebottoms');
+        runs(function () {
+            model.set('last', 'Higglebottoms');
+        });
 
-        expect(binding.el.html()).toBe('Magnus Higglebottoms');
+        waitsFor(function () {
+            return binding.el.html() === 'Magnus Higglebottoms';
+        });
     });
 });
