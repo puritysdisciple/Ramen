@@ -47,7 +47,7 @@ JSoop.define('Ramen.view.binding.Binding', {
     attach: function () {
         var me = this;
 
-        me.mon(owner, {
+        me.mon(me.owner, {
             'render:before': me.onOwnerRenderBefore,
             'render:during': me.onOwnerRenderDuring,
             scope: me,
