@@ -12,7 +12,13 @@ JSoop.define('Ramen.view.layout.Layout', {
     baseCls: 'layout',
     baseId: 'layout',
 
+    /**
+     * @cfg {String/Object}
+     */
     wrapperTag: null,
+    /**
+     * @cfg {String}
+     */
     wrapperCls: '',
 
     constructor: function () {
@@ -49,27 +55,44 @@ JSoop.define('Ramen.view.layout.Layout', {
         me.wrapperCache = {};
     },
 
+    /**
+     * @method
+     * @template
+     */
     initLayout: JSoop.emptyFn,
+    /**
+     * @method
+     * @template
+     */
     initContainer: JSoop.emptyFn,
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     */
     add: function (items) {
         var me = this;
 
         me.itemCache.add(items);
     },
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     * @param {Number} index
+     */
     insert: function (items, index) {
         var me = this;
 
         me.itemCache.insert(items, index);
     },
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     */
     remove: function (items) {
         var me = this;
 
         me.itemCache.remove(items);
     },
-
+    /**
+     * @private
+     */
     renderItems: function () {
         var me = this;
 
@@ -88,11 +111,19 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.render(wrapper);
         });
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {String}
+     */
     getItemId: function (item) {
         return this.itemCache.getKey(item);
     },
-
+    /**
+     * @private
+     * @param {Ramen.view.Box} item
+     * @param {Number} index
+     * @returns {HTMLElement}
+     */
     createWrapper: function (item, index) {
         var me = this,
             tag = JSoop.clone(me.wrapperTag || {
@@ -125,7 +156,10 @@ JSoop.define('Ramen.view.layout.Layout', {
 
         return wrapper;
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {String[]}
+     */
     getWrapperClasses: function (item) {
         var me = this,
             classes = [me.wrapperCls];
@@ -136,7 +170,10 @@ JSoop.define('Ramen.view.layout.Layout', {
 
         return classes;
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {Object}
+     */
     getWrapperStyle: function (item) {
         var style = {},
             keys = [
@@ -164,7 +201,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             me.itemCache.removeAll();
         }
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} added
+     */
     onItemsAdd: function (collection, added) {
         var me = this;
 
@@ -184,7 +225,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.render(wrapper);
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} removed
+     */
     onItemsRemove: function (collection, removed) {
         var me = this;
 
@@ -199,9 +244,13 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.destroy();
         });
     },
-
+    /**
+     * @private
+     */
     onItemsFilter: JSoop.emptyFn,
-
+    /**
+     * @private
+     */
     onItemsSort: function () {
         var me = this,
             container = me.owner.getTargetEl();
@@ -217,7 +266,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             }
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
     onOwnerItemsAdd: function (collection, items) {
         var me = this;
 
@@ -227,11 +280,17 @@ JSoop.define('Ramen.view.layout.Layout', {
             me.itemCache.insert(item, index);
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
     onOwnerItemsRemove: function (collection, items) {
         this.itemCache.remove(items);
     },
-
+    /**
+     * @private
+     */
     onOwnerItemsSort: function () {
         var me = this;
 

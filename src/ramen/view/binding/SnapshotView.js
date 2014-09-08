@@ -1,5 +1,6 @@
 /**
  * @class Ramen.view.binding.SnapshotView
+ * @private
  * @extends Ramen.view.binding.BindingView
  */
 JSoop.define('Ramen.view.binding.SnapshotView', {

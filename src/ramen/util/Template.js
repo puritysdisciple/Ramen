@@ -1,10 +1,13 @@
 /**
  * @class Ramen.util.Template
+ * A template that can be used to dynamically create content. Templates use the Twig templating language.
  */
 //todo: detach from twig
 JSoop.define('Ramen.util.Template', {
     isTemplate: true,
-
+    /**
+     * @param {String/String[]} tpl The desired template
+     */
     constructor: function (tpl) {
         var me = this;
 
@@ -16,7 +19,9 @@ JSoop.define('Ramen.util.Template', {
 
         me.initTemplate();
     },
-
+    /**
+     * @private
+     */
     initTemplate: function () {
         var me = this;
 
@@ -24,7 +29,11 @@ JSoop.define('Ramen.util.Template', {
             data: me.raw
         });
     },
-
+    /**
+     * Renders the template using the given params.
+     * @param {Object} params
+     * @returns {String}
+     */
     render: function (params) {
         return this.tpl.render(params);
     }

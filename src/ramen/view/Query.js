@@ -162,15 +162,30 @@
 
     /**
      * @class Ramen.view.Query
+     * Allows the querying of any objects the inherit from {@link Ramen.view.Box} in a css-like syntax based on
+     * {@link Ramen.view.Box#stype stype} as the tag name.
      * @singleton
      */
     JSoop.define('Ramen.view.Query', {
         singleton: true,
 
+        /**
+         * Creates a pre-parsed version of the given query for quick use. If you're going to be doing a lot of checking
+         * make sure you use this instead of {@link #is}.
+         * @param {String} selector
+         * @returns {Query}
+         */
         parse: function (selector) {
             return new Query(selector);
         },
 
+        /**
+         * Checks the given view to see if it matches the given selector. If you're going to be using the selector a lot
+         * it's better to store a parsed version of it using {@link #parse} and then call `is` directly on that object.
+         * @param {Ramen.view.Box} view The view to check
+         * @param {String} selector The query to check the view against
+         * @returns {Boolean} Whether or not the view matches
+         */
         is: function (view, selector) {
             var query = new Query(selector);
 

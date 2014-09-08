@@ -1,5 +1,7 @@
 /**
  * @class Ramen.view.binding.Binding
+ * Represents a living piece of data within a view. It will update it's display when something changes. The most common
+ * form of binding is {@link Ramen.view.binding.ModelBinding}.
  * @mixins JSoop.mixins.Configurable
  * @mixins JSoop.mixins.Observable
  * @mixins Ramen.util.Renderable
@@ -13,9 +15,19 @@ JSoop.define('Ramen.view.binding.Binding', {
 
     isBinding: true,
 
+    /**
+     * The base class applied to the containing element and passed to the template
+     */
     baseCls: 'binding',
+
+    /**
+     * The template used to render content
+     */
     tpl: '{{ content }}',
 
+    /**
+     * @param {Object} config
+     */
     constructor: function (config) {
         var me = this;
 
@@ -29,10 +41,13 @@ JSoop.define('Ramen.view.binding.Binding', {
         }
     },
 
+    /**
+     * @private
+     */
     attach: function () {
         var me = this;
 
-        me.owner.on({
+        me.mon(owner, {
             'render:before': me.onOwnerRenderBefore,
             'render:during': me.onOwnerRenderDuring,
             scope: me,
@@ -40,8 +55,15 @@ JSoop.define('Ramen.view.binding.Binding', {
         });
     },
 
+    /**
+     * @method
+     * @template
+     */
     initBinding: JSoop.emptyFn,
 
+    /**
+     * @returns {String}
+     */
     getId: function () {
         var me = this;
 
@@ -52,6 +74,11 @@ JSoop.define('Ramen.view.binding.Binding', {
         return me.id;
     },
 
+    /**
+     * Retrieves the complete markup for the binding that needs to be inserted into a view. The includes the wrapping
+     * element as well as the rendered template.
+     * @returns {String}
+     */
     getHtml: function () {
         var me = this,
             tag = me.getTagConfig();
@@ -61,6 +88,10 @@ JSoop.define('Ramen.view.binding.Binding', {
         return Ramen.dom.Helper.markup(tag);
     },
 
+    /**
+     * Retrieves the content of the binding.
+     * @returns {String}
+     */
     getContent: function () {
         var me = this,
             renderData = me.getRenderData();
@@ -79,10 +110,17 @@ JSoop.define('Ramen.view.binding.Binding', {
         return me.getTemplate('tpl').render(renderData);
     },
 
+    /**
+     * @private
+     * @returns {String}
+     */
     getRenderData: function () {
         return '';
     },
 
+    /**
+     * This needs to be called whenever the binding needs to update its content.
+     */
     update: function () {
         var me = this;
 
@@ -91,6 +129,10 @@ JSoop.define('Ramen.view.binding.Binding', {
         }, 0);
     },
 
+    /**
+     * Destroys the binding. This does not remove the HTMLElement associated with the binding. This should be done by
+     * the view managing the binding.
+     */
     destroy: function () {
         var me = this;
 
@@ -98,12 +140,19 @@ JSoop.define('Ramen.view.binding.Binding', {
         me.removeAllManagedListeners();
     },
 
+    /**
+     * @private
+     * @param {Ramen.view.Box} view
+     */
     onOwnerRenderBefore: function (view) {
         var me = this;
 
         view.renderData[me.token] = me.getHtml();
     },
 
+    /**
+     * @private
+     */
     onOwnerRenderDuring: function () {
         var me = this;
 

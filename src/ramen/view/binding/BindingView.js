@@ -1,9 +1,48 @@
 /**
  * @class Ramen.view.binding.BindingView
+ * A special view that allows the use of {@link #bindings}.
  * @extends Ramen.view.View
  */
 JSoop.define('Ramen.view.binding.BindingView', {
     extend: 'Ramen.view.View',
+
+    /**
+     * @cfg {Ramen.view.binding.Binding[]/Object[]} bindings
+     * An object containing binding configs that will be used to create {@link Ramen.view.binding.Binding}'s. If the
+     * value is just a function, the view will assume that it is a formatter.
+     *
+     * Each binding will receive the following if they are not already set:
+     *
+     *  - **type** - {@link Ramen.view.binding.ModelBinding} will be used
+     *  - **owner** - the current view
+     *  - **token** - the key of the original object
+     *
+     * For example:
+     *
+     *      ...
+     *      tpl: [
+     *          '{{ name }}',
+     *          '{{ address }}',
+     *          '{{ total }}'
+     *      ],
+     *      bindings: {
+     *          name: 'name',
+     *          address: function (model) {
+     *              return model.get('street') + ' ' +
+     *                     model.get('city') + ', ' +
+     *                     model.get('state') + ' ' +
+     *                     model.get('zip');
+     *          },
+     *          total: {
+     *              type: 'Demo.binding.Total'
+     *          }
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Ramen.data.Model} model
+     * The model that this view manages.
+     */
 
     render: function () {
         var me = this;
@@ -13,6 +52,9 @@ JSoop.define('Ramen.view.binding.BindingView', {
         me.callParent(arguments);
     },
 
+    /**
+     * @private
+     */
     initBindings: function () {
         var me = this,
             bindings = JSoop.clone(me.bindings || {}),
@@ -59,7 +101,10 @@ JSoop.define('Ramen.view.binding.BindingView', {
             me.bindings[key] = binding;
         });
     },
-
+    /**
+     * Retrieves the managed model.
+     * @returns {Ramen.data.Model}
+     */
     getModel: function () {
         return this.model;
     },

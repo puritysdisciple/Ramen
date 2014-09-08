@@ -1,5 +1,7 @@
 /**
  * @class Ramen.collection.Dictionary
+ * Represents a set of key value pairs similar to a standard javascript object. However, Dictionary provides additional
+ * functionality such as sorting and filtering.
  * @extends Ramen.collection.List
  */
 JSoop.define('Ramen.collection.Dictionary', {
@@ -7,8 +9,7 @@ JSoop.define('Ramen.collection.Dictionary', {
 
     isDictionary: true,
 
-    //====================================================================================================
-    //Ramen.collection.List Overrides
+    //region Ramen.collection.List Overrides
     //====================================================================================================
     constructor: function () {
         var me = this;
@@ -106,37 +107,68 @@ JSoop.define('Ramen.collection.Dictionary', {
 
         me.cache = {};
     },
+    //endregion
 
+    //region New Members
     //====================================================================================================
-    //New Members
-    //====================================================================================================
+    /**
+     * Checks to see whether the dictionary has the specified item.
+     * @param {Mixed} item The item to search for
+     * @returns {Boolean}
+     */
     has: function (item) {
         return this.indexOf(item) !== -1;
     },
-
+    /**
+     * Gets the key of the specified item.
+     * @param {Mixed} item
+     * @returns {String}
+     */
     getKey: function (item) {
         return item.id;
     },
-
+    /**
+     * Gets the index of the specified key.
+     * @param {String} key
+     * @returns {Number}
+     */
     indexOfKey: function (key) {
         var me = this;
 
         return JSoop.util.Array.indexOf(me.keys, key);
     },
-
+    /**
+     * Gets the item that matches the specified key.
+     * @param {String} key
+     * @returns {Mixed}
+     */
     get: function (key) {
         return this.cache[key];
     },
-
+    /**
+     * Iterates over the dictionary, executing the given function on each item. If the function returns false, execution
+     * will stop.
+     * @param {Function} fn The function to execute
+     * @param {Mixed} fn.item The current item
+     * @param {String} fn.key The current key
+     * @param {Object} [scope] The object to scope the functiojn to, defaults to the dictionary.
+     */
     iterate: function (fn, scope) {
         var me = this,
             keys = me.keys.slice();
+
+        scope = scope || me;
 
         me.each(function (item, index) {
             return fn.call(scope, item, keys[index]);
         });
     },
-
+    /**
+     * @private
+     * @param {Function/String} fn
+     * @param {"asc"/"desc"} dir
+     * @returns {Function}
+     */
     createSortFn: function (fn, dir) {
         var body;
 
@@ -158,7 +190,9 @@ JSoop.define('Ramen.collection.Dictionary', {
 
         return fn;
     },
-
+    /**
+     * @private
+     */
     rebuildCache: function () {
         var me = this;
 
@@ -168,7 +202,9 @@ JSoop.define('Ramen.collection.Dictionary', {
             me.cache[key] = item;
         });
     },
-
+    /**
+     * @private
+     */
     rebuildKeys: function () {
         var me = this;
 
@@ -178,4 +214,5 @@ JSoop.define('Ramen.collection.Dictionary', {
             me.keys.push(me.getKey(item));
         });
     }
+    //endregion
 });

@@ -30,7 +30,7 @@ JSoop.define('Ramen.data.Model', {
     idField: 'id',
 
     /**
-     * @cfg {Ramen.data.Association[]/Object[]} associations
+     * @cfg {Ramen.data.association.Association[]/Object[]} associations
      * An array of association definitions that will be used to parse related data for this model.
      */
 
@@ -223,8 +223,23 @@ JSoop.define('Ramen.data.Model', {
 
         me.parseAssociations(attributes);
 
+        /**
+         * @event change
+         * Fired when data changes within the model.
+         * @param {Ramen.data.Model} model The model that fired the event
+         * @param {Object} oldValues The old values
+         * @param {Object} newValues The new values
+         */
         me.fireEvent('change', me, oldValues, newValues);
     },
+
+    /**
+     * @event changeAssociation
+     * Fired when one of the data within one of the model's associations changes.
+     * @param {Ramen.data.Model} model The model that fired the event
+     * @param {String} name The name of the association that changed
+     * @param {Mixed} data The data of the association
+     */
 
     /**
      * @private

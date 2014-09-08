@@ -1,11 +1,26 @@
 /**
  * @class Ramen.view.container.CollectionContainer
+ * A collection container is a special container that will create a child view for every element within a
+ * {@link Ramen.data.Collection}, as well as react to any changes to said collections such as sorting or filtering.
  * @extends Ramen.view.container.Container
  */
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 
     stype: 'collection-container',
+
+    /**
+     * @cfg {Ramen.view.Box/Object} emptyView
+     * The view to show when no items are in the collection
+     */
+    /**
+     * @cfg {Ramen.data.Collection} collection
+     * The collection this view is listening to.
+     */
+    /**
+     * @cfg {Boolean}
+     * Setting this to `true` will stop the {@link #emptyView} from being displayed.
+     */
     supressEmptyView: false,
 
     initView: function () {
@@ -48,6 +63,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         return item;
     },
 
+    /**
+     * @private
+     */
     initEmptyView: function () {
         var me = this,
             emptyView;
@@ -71,6 +89,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.items.add(emptyView);
     },
 
+    /**
+     * Shows the {@link #emptyView}.
+     */
     showEmptyView: function () {
         var me = this;
 
@@ -82,6 +103,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.emptyView.el.show();
     },
 
+    /**
+     * Hides the {@link #emptyView}.
+     */
     hideEmptyView: function () {
         var me = this;
 
@@ -93,6 +117,10 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.emptyView.el.hide();
     },
 
+    /**
+     * @private
+     * @returns {Function}
+     */
     createItemSortFn: function () {
         var me = this,
             collection = me.collection;
@@ -102,6 +130,11 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         };
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} added
+     */
     onCollectionAdd: function (collection, added) {
         var me = this;
 
@@ -114,6 +147,11 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.hideEmptyView();
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} removed
+     */
     onCollectionRemove: function (collection, removed) {
         var me = this;
 
@@ -130,12 +168,21 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         }
     },
 
+    /**
+     * @private
+     */
     onCollectionSort: function () {
         var me = this;
 
         me.items.sort(me.createItemSortFn());
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} filtered
+     * @param {Ramen.data.Model[]} unfiltered
+     */
     onCollectionFilter: function (collection, filtered, unfiltered) {
         var me = this,
             removed = [],

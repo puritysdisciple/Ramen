@@ -1,5 +1,6 @@
 /**
  * @class Ramen.util.filter.Filter
+ * Represents a set of conditions used to filter items.
  * @mixins JSoop.mixins.Configurable
  */
 JSoop.define('Ramen.util.filter.Filter', {
@@ -7,6 +8,10 @@ JSoop.define('Ramen.util.filter.Filter', {
         configurable: 'JSoop.mixins.Configurable'
     },
 
+    /**
+     * @param {Object/Function} attributes The attributes to be used in the filter, or a filter function
+     * @param {Object} [config] The config object
+     */
     constructor: function (attributes, config) {
         var me = this;
 
@@ -30,6 +35,11 @@ JSoop.define('Ramen.util.filter.Filter', {
         me.initMixin('configurable', [config]);
     },
 
+    /**
+     * Creates a filter function based on the given attributes.
+     * @param {Object} attributes The attributes to compare
+     * @returns {Function}
+     */
     createFilterFn: function (attributes) {
         var body = [];
 
@@ -42,6 +52,11 @@ JSoop.define('Ramen.util.filter.Filter', {
         return new Function('item', 'attributes', body);
     },
 
+    /**
+     * Checks whether or not the given item matches the filter.
+     * @param {Mixed} item The item to test
+     * @returns {Boolean}
+     */
     is: function (item) {
         var me = this;
 

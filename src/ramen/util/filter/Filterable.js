@@ -1,11 +1,20 @@
 /**
  * @class Ramen.util.filter.Filterable
+ * A mixin that adds filtering capability to a class.
  */
 JSoop.define('Ramen.util.filter.Filterable', {
     isFilterable: true,
     isFiltered: false,
 
+    /**
+     * @cfg
+     * The property that should be filtered
+     */
     filterTarget: 'items',
+    /**
+     * @cfg
+     * The type that should be used when creating a filter
+     */
     filterType: 'Ramen.util.filter.Filter',
 
     constructor: function () {
@@ -13,7 +22,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.filters = {};
     },
-
+    /**
+     * Adds a filter
+     * @param {String} name The name of the filter
+     * @param {Object} config The filter config
+     */
     addFilter: function (name, config) {
         var me = this,
             filters = name;
@@ -31,7 +44,10 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.filter();
     },
-
+    /**
+     * Removes a filter
+     * @param {String} name The name of the filter
+     */
     removeFilter: function (name) {
         var me = this;
 
@@ -57,7 +73,9 @@ JSoop.define('Ramen.util.filter.Filterable', {
             return fn.apply(me, arguments);
         };
     },
-
+    /**
+     * Executes all filters.
+     */
     filter: function () {
         var me = this,
             filtered;
@@ -82,7 +100,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.afterFilter(me, filtered, me.unfilteredItems);
     },
-
+    /**
+     * @private
+     * @param filter
+     * @returns {*}
+     */
     createFilter: function (filter) {
         var me = this;
 
@@ -92,7 +114,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         return JSoop.create(me.filterType, filter);
     },
-
+    /**
+     * @private
+     * @param filter
+     * @returns {Mixed[]}
+     */
     runFilter: function (filter) {
         var me = this,
             filtered = [],
@@ -112,7 +138,9 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         return filtered;
     },
-
+    /**
+     * Removes all filters.
+     */
     clearFilters: function () {
         var me = this;
 
@@ -130,30 +158,51 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.afterFilter(me, me[me.filterTarget], me[me.filterTarget]);
     },
-
+    /**
+     * Gets all items that match the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed[]} The matching items
+     */
     find: function (config) {
         var me = this,
             filter = me.createFilter(config);
 
         return me.runFilter(filter);
     },
-
-    first: function (config) {
+    /**
+     * Gets the first item that passes the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed} The matching item
+     */
+    findFirst: function (config) {
         var me = this,
             filter = me.createFilter(config),
             filtered = me.runFilter(filter);
 
         return filtered[0];
     },
-
-    last: function (config) {
+    /**
+     * Gets the last item that passes the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed} The matching item
+     */
+    findLast: function (config) {
         var me = this,
             filter = me.createFilter(config),
             filtered = me.runFilter(filter);
 
         return filtered[filtered.length - 1];
     },
-
+    /**
+     * @method
+     * @template
+     * Called before executing a filter.
+     */
     beforeFilter: JSoop.emptyFn,
+    /**
+     * @method
+     * @template
+     * Called after executing a filter.
+     */
     afterFilter: JSoop.emptyFn
 });

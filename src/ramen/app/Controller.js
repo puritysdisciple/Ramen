@@ -152,7 +152,7 @@ JSoop.define('Ramen.app.Controller', {
 
     /**
      * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
-     * {@link Ramen.view.Manager}. If a view matches one of the selectors, the events nested in the object will be
+     * {@link Ramen.view.ViewManager}. If a view matches one of the selectors, the events nested in the object will be
      * attached to it. For example, this will attach to all new views and log a message when they are rendered:
      *
      *      this.control({

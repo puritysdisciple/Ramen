@@ -1,0 +1,8 @@
+{
+    "--title": "Ramen",
+    "--out": "docs/",
+    "--head-html": "<link rel=\"stylesheet\" href=\"../docs-support/styles.css\" type=\"text/css\">",
+    "--": [
+        "src/"
+    ]
+}

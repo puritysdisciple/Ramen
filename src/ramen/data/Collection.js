@@ -1,5 +1,6 @@
 /**
  * @class Ramen.data.Collection
+ * Represents a set of {@link Ramen.data.Model}'s.
  * @extends Ramen.collection.Dictionary
  */
 JSoop.define('Ramen.data.Collection', {
@@ -12,6 +13,11 @@ JSoop.define('Ramen.data.Collection', {
 
     config: {
         required: [
+            /**
+             * @cfg {String} model
+             * The default model type this collection manages. This is used when a raw javascript object is added to the
+             * collection.
+             */
             'model'
         ]
     },
@@ -70,6 +76,11 @@ JSoop.define('Ramen.data.Collection', {
     //====================================================================================================
     isCollection: true,
 
+    /**
+     * Makes sure that the given item is a {@link Ramen.data.Model}.
+     * @param {Ramen.data.Model/Object} item
+     * @returns {Ramen.data.Model}
+     */
     create: function (item) {
         var me = this;
 
@@ -84,10 +95,20 @@ JSoop.define('Ramen.data.Collection', {
 }, function () {
     Ramen.collections = {};
 
+    /**
+     * @member Ramen
+     * @param {String} name
+     * @param {Ramen.data.Collection} collection
+     */
     Ramen.addCollection = function (name, collection) {
         Ramen.collections[name] = collection;
     };
 
+    /**
+     * @member Ramen
+     * @param {String} name
+     * @returns {Ramen.data.Collection}
+     */
     Ramen.getCollection = function (name) {
         return Ramen.collections[name];
     };

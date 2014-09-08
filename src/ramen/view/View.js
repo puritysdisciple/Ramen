@@ -1,5 +1,7 @@
 /**
  * @class Ramen.view.View
+ * A more advanced version of a {@link Ramen.view.Box} adding templating, dom events, and child elements. In most cases,
+ * this is a good place to start when creating your own custom views.
  * @extends Ramen.view.Box
  */
 JSoop.define('Ramen.view.View', {
@@ -9,7 +11,68 @@ JSoop.define('Ramen.view.View', {
 
     stype: 'view',
 
+    /**
+     * @cfg {String/String[]}
+     * The template used to render the view.
+     */
     tpl: '',
+    /**
+     * @cfg {Object} domListeners
+     * An object containing listener definitions for elements within the view. The keys of this object are names of
+     * elements within the view, and the values are listener configs similar to those used by JSoop.mixins.Observable.
+     * Elements must be present in either {@link #childEls} or {@link #childSelectors}.
+     *
+     * For example:
+     *
+     *      ...
+     *      domListeners: {
+     *          buttonEl: {
+     *              click: {
+     *                  fn: 'onButtonClick',
+     *                  single: true
+     *              }
+     *              mouseover: 'onButtonOver',
+     *              mouseout: 'onButtonOut'
+     *          }
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} childEls
+     * An object containing a listing on elements that the view needs references to once its template has been rendered.
+     * They keys are the names of properties to store the elements as, and the values are pieces of ID's that, when
+     * added to the ID of view, can be used to locate the elements in the DOM. For example:
+     *
+     *      ...
+     *      tpl: '<button id="{{ id }}-btn"></button>',
+     *      childEls: {
+     *          buttonEl: 'btn'
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} childSelectors
+     * Similar to {@link #childEls} this object contains property names as its keys and css selectors as its values. In
+     * general, childEls should be used when selecting only a single element as it is more performant. However, when you
+     * need a reference to groups of elements, childSelectors should be used. For example:
+     *
+     *      ...
+     *      tpl: [
+     *          '<ul>',
+     *              '<li>Item 1</li>',
+     *              '<li>Item 2</li>',
+     *              '<li>Item 3</li>',
+     *          '</ul>'
+     *      ],
+     *      childSelectors: {
+     *          listEls: 'li'
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} renderData
+     * This object will be passed to the template at render time. `baseCls` and `id` will be passed automatically.
+     */
 
     baseCls: 'view',
     baseId: 'view',
@@ -22,6 +85,11 @@ JSoop.define('Ramen.view.View', {
         me.callParent(arguments);
     },
 
+    /**
+     * @private
+     * @param {Object} renderData
+     * @returns {Object}
+     */
     initRenderData: function (renderData) {
         var me = this;
 
@@ -46,7 +114,12 @@ JSoop.define('Ramen.view.View', {
         me.initChildEls();
         me.initDomListeners();
     },
-
+    /**
+     * @private
+     * @param {HTMLElement} el
+     * @param {String} ename
+     * @param {Object} listener
+     */
     addDomListener: function (el, ename, listener) {
         if (listener.single) {
             listener.callFn = function () {
@@ -62,7 +135,13 @@ JSoop.define('Ramen.view.View', {
         //todo: detach from jquery
         el.bind(ename, listener.callFn);
     },
-
+    /**
+     * @private
+     * @param {String} ename
+     * @param {Function/String} listener
+     * @param {Object} defaults
+     * @returns {Object}
+     */
     initDomListener: function (ename, listener, defaults) {
         var me = this;
 
@@ -85,7 +164,9 @@ JSoop.define('Ramen.view.View', {
 
         return listener;
     },
-
+    /**
+     * @private
+     */
     initDomListeners: function () {
         var me = this,
             domListeners = me.domListeners || {};

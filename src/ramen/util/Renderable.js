@@ -1,5 +1,6 @@
 /**
  * @class Ramen.util.Renderable
+ * @private
  */
 JSoop.define('Ramen.util.Renderable', {
     isRenderable: true,
@@ -33,6 +34,12 @@ JSoop.define('Ramen.util.Renderable', {
         return tag;
     },
 
+    /**
+     * Retrieves a template from the class. If the property with the given name is not a template, a template will be
+     * created using the value of the property.
+     * @param {String} name The name of the desired template
+     * @returns {Ramen.util.Template}
+     */
     getTemplate: function (name) {
         var me = this,
             tpl = me[name];
