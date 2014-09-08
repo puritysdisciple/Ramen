@@ -46,8 +46,10 @@ JSoop.define('Ramen', {
         };
     }())
 }, function () {
-    //This is here to support backwards compatability
-    JSoop.GLOBAL.Spine = Ramen;
+    if (!JSoop.GLOBAL.Spine) {
+        //This is here to support backwards compatability
+        JSoop.GLOBAL.Spine = Ramen;
+    }
 });
 
 /*
@@ -75,12 +77,24 @@ SOFTWARE.
 */
 /**
  * @class Ramen.util.Sortable
+ * A mixin that adds sorting capability to a class.
  */
 JSoop.define('Ramen.util.Sortable', {
     isSortable: true,
+    /**
+     * @cfg
+     * The property that should be sorted
+     */
     sortTarget: 'items',
     isSorted: false,
 
+    /**
+     * @private
+     * @param {Mixed} newItem
+     * @param {Function} [fn]
+     * @param {Mixed[]} [target]
+     * @returns {Number}
+     */
     findInsertionIndex: function(newItem, fn, target) {
         var me = this,
             items = target || me[me.sortTarget],
@@ -103,7 +117,10 @@ JSoop.define('Ramen.util.Sortable', {
 
         return start;
     },
-
+    /**
+     * Sorts the target based on the given comparator.
+     * @param {Function} fn The comparator to sort the target by
+     */
     sort: function (fn) {
         var me = this;
 
@@ -114,7 +131,9 @@ JSoop.define('Ramen.util.Sortable', {
 
         me.afterSort(me, me[me.sortTarget]);
     },
-
+    /**
+     * Removes the current sort. This does not change the order of any items.
+     */
     clearSort: function () {
         var me = this;
 
@@ -122,12 +141,19 @@ JSoop.define('Ramen.util.Sortable', {
 
         delete me.sortFn;
     },
-
+    /**
+     * @method
+     * @template
+     * Executed after a sort has taken place
+     * @param {Ramen.util.Sortable} me The class that did the sort
+     * @param {Mixed[]} sortedItems The target of the sort
+     */
     afterSort: JSoop.emptyFn
 });
 
 /**
  * @class Ramen.util.filter.Filter
+ * Represents a set of conditions used to filter items.
  * @mixins JSoop.mixins.Configurable
  */
 JSoop.define('Ramen.util.filter.Filter', {
@@ -135,6 +161,10 @@ JSoop.define('Ramen.util.filter.Filter', {
         configurable: 'JSoop.mixins.Configurable'
     },
 
+    /**
+     * @param {Object/Function} attributes The attributes to be used in the filter, or a filter function
+     * @param {Object} [config] The config object
+     */
     constructor: function (attributes, config) {
         var me = this;
 
@@ -158,6 +188,11 @@ JSoop.define('Ramen.util.filter.Filter', {
         me.initMixin('configurable', [config]);
     },
 
+    /**
+     * Creates a filter function based on the given attributes.
+     * @param {Object} attributes The attributes to compare
+     * @returns {Function}
+     */
     createFilterFn: function (attributes) {
         var body = [];
 
@@ -170,6 +205,11 @@ JSoop.define('Ramen.util.filter.Filter', {
         return new Function('item', 'attributes', body);
     },
 
+    /**
+     * Checks whether or not the given item matches the filter.
+     * @param {Mixed} item The item to test
+     * @returns {Boolean}
+     */
     is: function (item) {
         var me = this;
 
@@ -179,12 +219,21 @@ JSoop.define('Ramen.util.filter.Filter', {
 
 /**
  * @class Ramen.util.filter.Filterable
+ * A mixin that adds filtering capability to a class.
  */
 JSoop.define('Ramen.util.filter.Filterable', {
     isFilterable: true,
     isFiltered: false,
 
+    /**
+     * @cfg
+     * The property that should be filtered
+     */
     filterTarget: 'items',
+    /**
+     * @cfg
+     * The type that should be used when creating a filter
+     */
     filterType: 'Ramen.util.filter.Filter',
 
     constructor: function () {
@@ -192,7 +241,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.filters = {};
     },
-
+    /**
+     * Adds a filter
+     * @param {String} name The name of the filter
+     * @param {Object} config The filter config
+     */
     addFilter: function (name, config) {
         var me = this,
             filters = name;
@@ -210,7 +263,10 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.filter();
     },
-
+    /**
+     * Removes a filter
+     * @param {String} name The name of the filter
+     */
     removeFilter: function (name) {
         var me = this;
 
@@ -236,7 +292,9 @@ JSoop.define('Ramen.util.filter.Filterable', {
             return fn.apply(me, arguments);
         };
     },
-
+    /**
+     * Executes all filters.
+     */
     filter: function () {
         var me = this,
             filtered;
@@ -261,7 +319,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.afterFilter(me, filtered, me.unfilteredItems);
     },
-
+    /**
+     * @private
+     * @param filter
+     * @returns {*}
+     */
     createFilter: function (filter) {
         var me = this;
 
@@ -271,7 +333,11 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         return JSoop.create(me.filterType, filter);
     },
-
+    /**
+     * @private
+     * @param filter
+     * @returns {Mixed[]}
+     */
     runFilter: function (filter) {
         var me = this,
             filtered = [],
@@ -291,7 +357,9 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         return filtered;
     },
-
+    /**
+     * Removes all filters.
+     */
     clearFilters: function () {
         var me = this;
 
@@ -309,36 +377,60 @@ JSoop.define('Ramen.util.filter.Filterable', {
 
         me.afterFilter(me, me[me.filterTarget], me[me.filterTarget]);
     },
-
+    /**
+     * Gets all items that match the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed[]} The matching items
+     */
     find: function (config) {
         var me = this,
             filter = me.createFilter(config);
 
         return me.runFilter(filter);
     },
-
-    first: function (config) {
+    /**
+     * Gets the first item that passes the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed} The matching item
+     */
+    findFirst: function (config) {
         var me = this,
             filter = me.createFilter(config),
             filtered = me.runFilter(filter);
 
         return filtered[0];
     },
-
-    last: function (config) {
+    /**
+     * Gets the last item that passes the given filter.
+     * @param {Ramen.util.filter.Filter/Object} config The filter or filter config to use to search
+     * @returns {Mixed} The matching item
+     */
+    findLast: function (config) {
         var me = this,
             filter = me.createFilter(config),
             filtered = me.runFilter(filter);
 
         return filtered[filtered.length - 1];
     },
-
+    /**
+     * @method
+     * @template
+     * Called before executing a filter.
+     */
     beforeFilter: JSoop.emptyFn,
+    /**
+     * @method
+     * @template
+     * Called after executing a filter.
+     */
     afterFilter: JSoop.emptyFn
 });
 
 /**
  * @class Ramen.collection.List
+ * Represents a list of items. A list is similar to an array, but can also take advantage of many features contained in
+ * its mixins. These features include events, plugins and filters. If your data needs support for keys as well as
+ * indexing, you should use {@link Ramen.collection.Dictionary} instead.
  * @mixins JSoop.mixins.Configurable
  * @mixins JSoop.mixins.Observable
  * @mixins JSoop.mixins.PluginManager
@@ -356,6 +448,61 @@ JSoop.define('Ramen.collection.List', {
 
     isList: true,
 
+    /**
+     * @event add
+     * Triggered after items have been added to the list.
+     * @param {Ramen.collection.List} list The list that fired the event
+     * @param {Mixed[]} added The items that were added
+     */
+    /**
+     * @event addBefore
+     * Triggered before an item is added to the list.
+     * @param {Ramen.collection.List} list The list that fired the event
+     * @param {Mixed} item The item to be added
+     * @preventable
+     */
+    /**
+     * @event remove
+     * Triggered after items have been removed from the list
+     * @param {Ramen.collection.List} list The list that fired the event
+     * @param {Mixed[]} removed The items that were removed
+     */
+    /**
+     * @event removeBefore
+     * Triggered before an item is removed from the list.
+     * @param {Ramen.collection.List} list The list that fired the event
+     * @param {Mixed} item The item to be removed
+     * @preventable
+     */
+    /**
+     * @event removeAll
+     * Triggered when {@link #method-removeAll} is called.
+     * @param {Ramen.collection.List} list The list that fired the event
+     */
+    /**
+     * @event removeAllBefore
+     * Triggered before {@link #method-removeAll} is called.
+     * @param {Ramen.collection.List} list The list that fired the event
+     * @preventable
+     */
+    /**
+     * @event destroy
+     * Triggered when the list is destroyed.
+     * @param {Ramen.collection.List} list The list that fired the event
+     */
+    /**
+     * @event destroyBefore
+     * Triggered before the list is destroyed.
+     * @param {Ramen.collection.List} list THe list that fired the event
+     * @preventable
+     */
+
+    /**
+     * Creates a new list.
+     * @param {Mixed[]} items The initial set of items this list will manage.
+     * @param {Object} config The config object.
+     * @returns {Ramen.collection.List}
+     */
     constructor: function (items, config) {
         var me = this;
 
@@ -371,7 +518,10 @@ JSoop.define('Ramen.collection.List', {
             me.add(items);
         }
     },
-
+    /**
+     * Adds the specified items to the list.
+     * @param {Mixed[]} items The items to be added.
+     */
     add: function (items) {
         var me = this;
 
@@ -383,7 +533,10 @@ JSoop.define('Ramen.collection.List', {
 
         me.insert(items, me.items.length);
     },
-
+    /**
+     * @private
+     * @param {Mixed[]} items
+     */
     addSorted: function (items) {
         var me = this,
             added = [];
@@ -404,7 +557,12 @@ JSoop.define('Ramen.collection.List', {
 
         me.fireEvent('add', me, added);
     },
-
+    /**
+     * Inserts the specified items at the given index in the list. In general, you should use {@link #method-add}
+     * instead as it will automatically handle the index when the list is sorted, this method will not.
+     * @param {Mixed[]} items The items to be inserted
+     * @param {Number} index The index to insert at
+     */
     insert: function (items, index) {
         var me = this,
             added = [];
@@ -425,23 +583,41 @@ JSoop.define('Ramen.collection.List', {
 
         me.fireEvent('add', me, added);
     },
-
+    /**
+     * Initializes an item before it is added to the list.
+     * @param {Mixed} item The item to be initialized
+     * @returns {Mixed} The initialized item
+     */
     initItem: function (item) {
         return item;
     },
-
+    /**
+     * @private
+     * @param {Mixed} item
+     * @param Number index
+     * @param {Mixed[]} target
+     * @returns {Mixed}
+     */
     insertItem: function (item, index, target) {
         target.splice(index, 0, item);
 
         return item;
     },
-
+    /**
+     * @private
+     * @param {Mixed} item
+     * @param {Number} index
+     * @returns {Mixed}
+     */
     insertUnfilteredItem: function (item, index) {
         var me = this;
 
         return me.insertItem(item, index, me.unfilteredItems);
     },
-
+    /**
+     * Removes the specified items from the list.
+     * @param {Mixed} items The items to be removed
+     */
     remove: function (items) {
         var me = this,
             removed = [];
@@ -462,11 +638,16 @@ JSoop.define('Ramen.collection.List', {
 
         me.fireEvent('remove', me, removed);
     },
-
+    /**
+     * Removes the item at the specified index.
+     * @param {Number} index The index of the item to remove
+     */
     removeAt: function (index) {
         this.items.splice(index, 1);
     },
-
+    /**
+     * Removes all items from the list.
+     */
     removeAll: function () {
         var me = this,
             removed;
@@ -487,17 +668,32 @@ JSoop.define('Ramen.collection.List', {
         me.fireEvent('remove:all', me);
         me.fireEvent('remove', me, removed);
     },
-
+    /**
+     * Gets the index of the specified item. If the item is not in the list, -1 will be returned.
+     * @param {Mixed} item The item to search for
+     * @returns {Number} The index of the item
+     */
     indexOf: function (item) {
         var me = this;
 
         return JSoop.util.Array.indexOf(me.items, item);
     },
-
+    /**
+     * Gets the item at the specified index.
+     * @param {Number} index The index of the item to get
+     * @returns {Mixed} The requested item
+     */
     at: function (index) {
         return this.items[index];
     },
-
+    /**
+     * Executes the specified function on each item of the list. If the function returns false, then the execution will
+     * stop.
+     * @param {Function} fn The function to execute
+     * @param {Mixed} fn.item The current item
+     * @param {Number} fn.index The current index
+     * @param {Object} [scope] An object to scope the function to, defaults to the list
+     */
     each: function (fn, scope) {
         var me = this,
             items = me.items.slice(),
@@ -512,7 +708,11 @@ JSoop.define('Ramen.collection.List', {
             }
         }
     },
-
+    /**
+     * Locates all items in the list that match the specified filter.
+     * @param {Ramen.util.filter.Filter/Object} attributes The attributes or filter to search for
+     * @returns {Mixed[]} The items that match the desired filter
+     */
     find: function (attributes) {
         var me = this,
             filter = me.createFilter(attributes),
@@ -526,7 +726,11 @@ JSoop.define('Ramen.collection.List', {
 
         return found;
     },
-
+    /**
+     * Locates the first item in the list that match the specified filter.
+     * @param {Ramen.util.filter.Filter/Object} attributes The attributes or filter to search for
+     * @returns {Mixed} The first item that matches the desired filter
+     */
     findFirst: function (attributes) {
         var me = this,
             filter = me.createFilter(attributes),
@@ -542,23 +746,41 @@ JSoop.define('Ramen.collection.List', {
 
         return found;
     },
+    /**
+     * Locates the last item in the list that match the specified filter.
+     * @param {Ramen.util.filter.Filter/Object} attributes The attributes or filter to search for
+     * @returns {Mixed} The last item that matches the desired filter
+     */
+    findLast: function (attributes) {
+        var me = this,
+            found = me.find(attributes);
 
+        if (found.length > 0) {
+            return found.pop();
+        }
+
+        return undefined;
+    },
+    /**
+     * Gets the total number of items in the list.
+     * @returns {Number}
+     */
     getCount: function () {
         return this.items.length;
     },
-
     afterSort: function (list, sorted) {
         var me = this;
 
         me.fireEvent('sort', me, sorted);
     },
-
     afterFilter: function (list, filtered, unfiltered) {
         var me = this;
 
         me.fireEvent('filter', me, filtered, unfiltered);
     },
-
+    /**
+     * Destroys the list.
+     */
     destroy: function () {
         var me = this;
 
@@ -574,6 +796,12 @@ JSoop.define('Ramen.collection.List', {
         me.removeAll();
     },
 
+    /**
+     * @private
+     * @param {Ramen.collection.List} list
+     * @param {Mixed} item
+     * @param {Number} index
+     */
     onAddBefore: function (list, item, index) {
         var me = this;
 
@@ -598,6 +826,8 @@ JSoop.define('Ramen.collection.List', {
 
 /**
  * @class Ramen.collection.Dictionary
+ * Represents a set of key value pairs similar to a standard javascript object. However, Dictionary provides additional
+ * functionality such as sorting and filtering.
  * @extends Ramen.collection.List
  */
 JSoop.define('Ramen.collection.Dictionary', {
@@ -605,8 +835,7 @@ JSoop.define('Ramen.collection.Dictionary', {
 
     isDictionary: true,
 
-    //====================================================================================================
-    //Ramen.collection.List Overrides
+    //region Ramen.collection.List Overrides
     //====================================================================================================
     constructor: function () {
         var me = this;
@@ -704,37 +933,68 @@ JSoop.define('Ramen.collection.Dictionary', {
 
         me.cache = {};
     },
+    //endregion
 
+    //region New Members
     //====================================================================================================
-    //New Members
-    //====================================================================================================
+    /**
+     * Checks to see whether the dictionary has the specified item.
+     * @param {Mixed} item The item to search for
+     * @returns {Boolean}
+     */
     has: function (item) {
         return this.indexOf(item) !== -1;
     },
-
+    /**
+     * Gets the key of the specified item.
+     * @param {Mixed} item
+     * @returns {String}
+     */
     getKey: function (item) {
         return item.id;
     },
-
+    /**
+     * Gets the index of the specified key.
+     * @param {String} key
+     * @returns {Number}
+     */
     indexOfKey: function (key) {
         var me = this;
 
         return JSoop.util.Array.indexOf(me.keys, key);
     },
-
+    /**
+     * Gets the item that matches the specified key.
+     * @param {String} key
+     * @returns {Mixed}
+     */
     get: function (key) {
         return this.cache[key];
     },
-
+    /**
+     * Iterates over the dictionary, executing the given function on each item. If the function returns false, execution
+     * will stop.
+     * @param {Function} fn The function to execute
+     * @param {Mixed} fn.item The current item
+     * @param {String} fn.key The current key
+     * @param {Object} [scope] The object to scope the functiojn to, defaults to the dictionary.
+     */
     iterate: function (fn, scope) {
         var me = this,
             keys = me.keys.slice();
+
+        scope = scope || me;
 
         me.each(function (item, index) {
             return fn.call(scope, item, keys[index]);
         });
     },
-
+    /**
+     * @private
+     * @param {Function/String} fn
+     * @param {"asc"/"desc"} dir
+     * @returns {Function}
+     */
     createSortFn: function (fn, dir) {
         var body;
 
@@ -756,7 +1016,9 @@ JSoop.define('Ramen.collection.Dictionary', {
 
         return fn;
     },
-
+    /**
+     * @private
+     */
     rebuildCache: function () {
         var me = this;
 
@@ -766,7 +1028,9 @@ JSoop.define('Ramen.collection.Dictionary', {
             me.cache[key] = item;
         });
     },
-
+    /**
+     * @private
+     */
     rebuildKeys: function () {
         var me = this;
 
@@ -776,6 +1040,7 @@ JSoop.define('Ramen.collection.Dictionary', {
             me.keys.push(me.getKey(item));
         });
     }
+    //endregion
 });
 
 /*
@@ -1171,7 +1436,7 @@ JSoop.define('Ramen.data.Model', {
     idField: 'id',
 
     /**
-     * @cfg {Ramen.data.Association[]/Object[]} associations
+     * @cfg {Ramen.data.association.Association[]/Object[]} associations
      * An array of association definitions that will be used to parse related data for this model.
      */
 
@@ -1364,8 +1629,23 @@ JSoop.define('Ramen.data.Model', {
 
         me.parseAssociations(attributes);
 
+        /**
+         * @event change
+         * Fired when data changes within the model.
+         * @param {Ramen.data.Model} model The model that fired the event
+         * @param {Object} oldValues The old values
+         * @param {Object} newValues The new values
+         */
         me.fireEvent('change', me, oldValues, newValues);
     },
+
+    /**
+     * @event changeAssociation
+     * Fired when one of the data within one of the model's associations changes.
+     * @param {Ramen.data.Model} model The model that fired the event
+     * @param {String} name The name of the association that changed
+     * @param {Mixed} data The data of the association
+     */
 
     /**
      * @private
@@ -1423,6 +1703,7 @@ JSoop.define('Ramen.data.Query', {
 
 /**
  * @class Ramen.data.Collection
+ * Represents a set of {@link Ramen.data.Model}'s.
  * @extends Ramen.collection.Dictionary
  */
 JSoop.define('Ramen.data.Collection', {
@@ -1435,6 +1716,11 @@ JSoop.define('Ramen.data.Collection', {
 
     config: {
         required: [
+            /**
+             * @cfg {String} model
+             * The default model type this collection manages. This is used when a raw javascript object is added to the
+             * collection.
+             */
             'model'
         ]
     },
@@ -1493,6 +1779,11 @@ JSoop.define('Ramen.data.Collection', {
     //====================================================================================================
     isCollection: true,
 
+    /**
+     * Makes sure that the given item is a {@link Ramen.data.Model}.
+     * @param {Ramen.data.Model/Object} item
+     * @returns {Ramen.data.Model}
+     */
     create: function (item) {
         var me = this;
 
@@ -1507,10 +1798,20 @@ JSoop.define('Ramen.data.Collection', {
 }, function () {
     Ramen.collections = {};
 
+    /**
+     * @member Ramen
+     * @param {String} name
+     * @param {Ramen.data.Collection} collection
+     */
     Ramen.addCollection = function (name, collection) {
         Ramen.collections[name] = collection;
     };
 
+    /**
+     * @member Ramen
+     * @param {String} name
+     * @returns {Ramen.data.Collection}
+     */
     Ramen.getCollection = function (name) {
         return Ramen.collections[name];
     };
@@ -1824,7 +2125,7 @@ JSoop.define('Ramen.app.Controller', {
 
     /**
      * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
-     * {@link Ramen.view.Manager}. If a view matches one of the selectors, the events nested in the object will be
+     * {@link Ramen.view.ViewManager}. If a view matches one of the selectors, the events nested in the object will be
      * attached to it. For example, this will attach to all new views and log a message when they are rendered:
      *
      *      this.control({
@@ -2339,6 +2640,7 @@ SOFTWARE.
 */
 /**
  * @class Ramen.util.Renderable
+ * @private
  */
 JSoop.define('Ramen.util.Renderable', {
     isRenderable: true,
@@ -2372,6 +2674,12 @@ JSoop.define('Ramen.util.Renderable', {
         return tag;
     },
 
+    /**
+     * Retrieves a template from the class. If the property with the given name is not a template, a template will be
+     * created using the value of the property.
+     * @param {String} name The name of the desired template
+     * @returns {Ramen.util.Template}
+     */
     getTemplate: function (name) {
         var me = this,
             tpl = me[name];
@@ -2385,11 +2693,24 @@ JSoop.define('Ramen.util.Renderable', {
         return me[name];
     },
 
-    initRenderSelectors: function () {
+    initChildSelectors: function () {
         var me = this,
-            renderSelectors = me.renderSelectors || {};
+            renderSelectors = me.renderSelectors || {},
+            childSelectors = me.childSelectors || {}
+            ,hasRenderSelectors = false
+            ;
 
         JSoop.iterate(renderSelectors, function (selector, key) {
+            hasRenderSelectors = true;
+            //todo: detach from jquery
+            me[key] = jQuery(selector, me.el);
+        });
+
+        if (hasRenderSelectors) {
+            JSoop.log('renderSelectors being used in ' + me.$className + '. renderSelectors is depreciated, please use childSelectors instead');
+        }
+
+        JSoop.iterate(childSelectors, function (selector, key) {
             //todo: detach from jquery
             me[key] = jQuery(selector, me.el);
         });
@@ -2409,11 +2730,14 @@ JSoop.define('Ramen.util.Renderable', {
 
 /**
  * @class Ramen.util.Template
+ * A template that can be used to dynamically create content. Templates use the Twig templating language.
  */
 //todo: detach from twig
 JSoop.define('Ramen.util.Template', {
     isTemplate: true,
-
+    /**
+     * @param {String/String[]} tpl The desired template
+     */
     constructor: function (tpl) {
         var me = this;
 
@@ -2425,7 +2749,9 @@ JSoop.define('Ramen.util.Template', {
 
         me.initTemplate();
     },
-
+    /**
+     * @private
+     */
     initTemplate: function () {
         var me = this;
 
@@ -2433,7 +2759,11 @@ JSoop.define('Ramen.util.Template', {
             data: me.raw
         });
     },
-
+    /**
+     * Renders the template using the given params.
+     * @param {Object} params
+     * @returns {String}
+     */
     render: function (params) {
         return this.tpl.render(params);
     }
@@ -2441,6 +2771,51 @@ JSoop.define('Ramen.util.Template', {
 
 /**
  * @class Ramen.dom.Helper
+ * A helper class that turns structured objects into HTMLElements or markup. A dom object consists of a tag, and then
+ * any attributes you want to add to the tag. There are a few special keys that you can use:
+ *
+ *  - <strong>cls</strong> - is used to add css classes as `class` is a keyword in javascript, and can't be used as a key
+ *  - <strong>style</strong> - can either be a string, or an object. A style object will be converted to valid
+ *    css. Any appropriate numbers will have "px" added to them as units. You can also use nested objects for
+ *    styles that have multiple properties for example "padding-left", "padding-right", etc can instead be written:
+ *
+ *        {
+ *            padding: {
+ *                top: 5
+ *                left: 10,
+ *                right: 10,
+ *                bottom: 5
+ *            }
+ *        }
+ *
+ *  - <strong>html</strong> - will be applied to the innerHTML of the created tag
+ *  - <strong>children</strong> - is an array of tag objects that will be added as children to the created tag.
+ *
+ *  The following is a correctly formatted object:
+ *
+ *      Ramen.dom.Helper.markup({
+ *          tag: 'ul',
+ *          cls: [
+ *              'task-list',
+ *              'important-list'
+ *          ],
+ *          style: {
+ *              margin: {
+ *                  top: 20
+ *              }
+ *          },
+ *          children: [{
+ *              tag: 'li',
+ *              html: 'Write awesome app'
+ *          }, {
+ *              tag: 'li',
+ *              html: '???'
+ *          }, {
+ *              tag: 'li',
+ *              html: 'profit'
+ *          }]
+ *      });
+ *
  * @singleton
  */
 JSoop.define('Ramen.dom.Helper', {
@@ -2448,21 +2823,33 @@ JSoop.define('Ramen.dom.Helper', {
 
     //todo: need to find a better list of singleton tags
     singletonRegEx: /^(br|hr|img|input|link|meta|param)$/,
+    unitlessRegEx: /^(font-weight|z-index)$/,
 
+    /**
+     * Generates HTMLElements from the given tag object.
+     * @param {Object} config The tag config
+     * @returns {HTMLElement} The generated HTMLElements
+     */
     create: function (config) {
         //todo: detach from jquery
         return jQuery(Ramen.dom.Helper.markup(config));
     },
 
+    /**
+     * Generates HTML markup from the given tag object.
+     * @param {Object} config The tag config
+     * @returns {String} The generated markup
+     */
     markup: function (config) {
-        var html = ['<' + config.tag];
+        var me = this,
+            html = ['<' + config.tag];
 
         JSoop.iterate(config, function (value, attr) {
-            if (attr === 'html') {
-                return;
-            }
-
             switch (attr) {
+                case 'html':
+                    return;
+                case 'children':
+                    return;
                 case 'tag':
                     return;
                 case 'cls':
@@ -2479,28 +2866,42 @@ JSoop.define('Ramen.dom.Helper', {
 
         if (Ramen.dom.Helper.singletonRegEx.test(config.tag)) {
             html.push('/>');
-        } else {
+        } else if (config.html) {
+            html.push('>' + config.html + '</' + config.tag + '>');
+        } else if (config.children) {
             html.push('>');
 
-            if (config.html) {
-                html.push(config.html);
-            }
+            JSoop.each(config.children, function (child) {
+                html.push(me.markup(child));
+            });
 
             html.push('</' + config.tag + '>');
+        } else {
+            html.push('></' + config.tag + '>');
         }
 
         //todo: detach from jquery
         return html.join(' ');
     },
 
-    addUnits: function (value) {
-        if (JSoop.isNumber(value)) {
+    /**
+     * @private
+     * @param {Number} value
+     * @returns {String}
+     */
+    addUnits: function (key, value) {
+        if (JSoop.isNumber(value) && !this.unitlessRegEx.test(key)) {
             value = value + 'px';
         }
 
         return value;
     },
 
+    /**
+     * @private
+     * @param {Object} obj
+     * @returns {String}
+     */
     parseStyle: function (obj) {
         var me = this,
             style = [];
@@ -2515,7 +2916,7 @@ JSoop.define('Ramen.dom.Helper', {
                     style.push(key + '-' + subKey + ':' + me.addUnits(value));
                 });
             } else {
-                style.push(key + ':' + me.addUnits(value));
+                style.push(key + ':' + me.addUnits(key, value));
             }
         });
 
@@ -2548,6 +2949,14 @@ SOFTWARE.
 */
 /**
  * @class Ramen.view.Box
+ * The base for all views. In general, a box is a managed HTMLElement. For the most part, this class shouldn't need to
+ * be used. Instead look at its subclasses as a better starting point for creating views:
+ *
+ *  - {@link Ramen.view.View}
+ *  - {@link Ramen.view.binding.BindingView}
+ *  - {@link Ramen.view.container.Container}
+ *  - {@link Ramen.view.container.CollectionContainer}
+ *
  * @mixins JSoop.mixins.Configurable
  * @mixins JSoop.mixins.Observable
  * @mixins JSoop.mixins.PluginManager
@@ -2561,22 +2970,52 @@ JSoop.define('Ramen.view.Box', {
         renderable: 'Ramen.util.Renderable'
     },
 
+    /**
+     * @property {String} stype
+     * An arbitrary used for locating the view via a {@link Ramen.view.Query}.
+     */
     stype: 'box',
 
     isBox: true,
+    /**
+     * @cfg
+     * Determines whether or not the view should be placed into {@link Ramen.view.ViewManager}
+     */
     isManaged: true,
-
+    /**
+     * @cfg
+     * If set to `true` the view will be rendered on creation. This is used in cojunction with {@link #renderTo}
+     */
     autoRender: false,
-    el: null,
+    /**
+     * @cfg {String/Object}
+     * The config object used by {@link Ramen.dom.Helper} to create the HTMLElement the box manages.
+     */
     tag: null,
+    /**
+     * @cfg {String} renderTo
+     * A css selector that points to where the box should be rendered to if no container is specified.
+     */
 
     config: {
         required: [
+            /**
+             * @cfg {String} baseId
+             * The ID prefix that will be used when creating the auto ID.
+             */
             'baseId',
+            /**
+             * @cfg {String} baseCls
+             * The base css class that will be applied to the managed HTMLElement
+             */
             'baseCls'
         ]
     },
 
+    /**
+     * Creates a new box.
+     * @param {Object} config The config object
+     */
     constructor: function (config) {
         var me = this;
 
@@ -2597,9 +3036,16 @@ JSoop.define('Ramen.view.Box', {
             me.render(me.renderTo);
         }
     },
-
+    /**
+     * @method
+     * Called after mixins have been setup, but before anything else.
+     * @template
+     */
     initView: JSoop.emptyFn,
-
+    /**
+     * Gets the ID of the box. If one is not set, it will be created using the {@link #baseId}.
+     * @returns {String}
+     */
     getId: function () {
         var me = this;
 
@@ -2609,7 +3055,12 @@ JSoop.define('Ramen.view.Box', {
 
         return me.id;
     },
-
+    /**
+     * Renders the box and places it in the specified container.
+     * @param {HTMLElement} container The container element to place the box into
+     * @param {Number} [index]
+     * The index to insert the box at, if this is ommited the box will be appended to the container
+     */
     render: function (container, index) {
         var me = this;
 
@@ -2623,7 +3074,7 @@ JSoop.define('Ramen.view.Box', {
 
         me.isRendered = true;
 
-        if (me.owner) {
+        if (me.owner && !me.owner.isRendered) {
             me.mon(me.owner, 'render:after', function () {
                 me.fireEvent('render:after', me);
             }, me, {
@@ -2633,7 +3084,11 @@ JSoop.define('Ramen.view.Box', {
             me.fireEvent('render:after', me);
         }
     },
-
+    /**
+     * @private
+     * @param {HTMLElement} container
+     * @param {Number} index
+     */
     addToContainer: function (container, index) {
         var me = this;
 
@@ -2656,7 +3111,10 @@ JSoop.define('Ramen.view.Box', {
             container.insertBefore(me.el[0], container.childNodes[index]);
         }
     },
-
+    /**
+     * Adds a css class to the box.
+     * @param {String/String[]} classes The classes to add
+     */
     addCls: function (classes) {
         var me = this;
 
@@ -2681,7 +3139,10 @@ JSoop.define('Ramen.view.Box', {
             me.el.addClass(cls);
         });
     },
-
+    /**
+     * Removes a css class from the box.
+     * @param {String/String[]} classes The classes to remove
+     */
     removeCls: function (classes) {
         var me = this;
 
@@ -2708,7 +3169,9 @@ JSoop.define('Ramen.view.Box', {
             me.el.removeClass(cls);
         });
     },
-
+    /**
+     * Destroys the box. This will remove the box from the dom and do any needed cleanup.
+     */
     destroy: function () {
         var me = this;
 
@@ -2730,16 +3193,45 @@ JSoop.define('Ramen.view.Box', {
         }
     },
 
+    /**
+     * @event destroyBefore
+     * Fired before the box is destroyed.
+     * @param {Ramen.view.Box} me The box that fired the event
+     * @preventable
+     */
     onDestroyBefore: JSoop.emptyFn,
+    /**
+     * @event destroy
+     * Fired when the box is destroyed.
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
     onDestroy: JSoop.emptyFn,
-
+    /**
+     * @event renderDuring
+     * Fired at the beginning of the render process.
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
     onRenderDuring: JSoop.emptyFn,
+    /**
+     * @event renderBefore
+     * Fired before the render happens
+     * @param {Ramen.view.Box} me The box that fired the event
+     * @param {HTMLElement} container The container the box was tried to render to
+     * @param {Number} index The index the box was tried to render to
+     * @preventable
+     */
     onRenderBefore: JSoop.emptyFn,
+    /**
+     * @event renderAfter
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
     onRenderAfter: JSoop.emptyFn
 });
 
 /**
  * @class Ramen.view.View
+ * A more advanced version of a {@link Ramen.view.Box} adding templating, dom events, and child elements. In most cases,
+ * this is a good place to start when creating your own custom views.
  * @extends Ramen.view.Box
  */
 JSoop.define('Ramen.view.View', {
@@ -2749,7 +3241,68 @@ JSoop.define('Ramen.view.View', {
 
     stype: 'view',
 
+    /**
+     * @cfg {String/String[]}
+     * The template used to render the view.
+     */
     tpl: '',
+    /**
+     * @cfg {Object} domListeners
+     * An object containing listener definitions for elements within the view. The keys of this object are names of
+     * elements within the view, and the values are listener configs similar to those used by JSoop.mixins.Observable.
+     * Elements must be present in either {@link #childEls} or {@link #childSelectors}.
+     *
+     * For example:
+     *
+     *      ...
+     *      domListeners: {
+     *          buttonEl: {
+     *              click: {
+     *                  fn: 'onButtonClick',
+     *                  single: true
+     *              }
+     *              mouseover: 'onButtonOver',
+     *              mouseout: 'onButtonOut'
+     *          }
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} childEls
+     * An object containing a listing on elements that the view needs references to once its template has been rendered.
+     * They keys are the names of properties to store the elements as, and the values are pieces of ID's that, when
+     * added to the ID of view, can be used to locate the elements in the DOM. For example:
+     *
+     *      ...
+     *      tpl: '<button id="{{ id }}-btn"></button>',
+     *      childEls: {
+     *          buttonEl: 'btn'
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} childSelectors
+     * Similar to {@link #childEls} this object contains property names as its keys and css selectors as its values. In
+     * general, childEls should be used when selecting only a single element as it is more performant. However, when you
+     * need a reference to groups of elements, childSelectors should be used. For example:
+     *
+     *      ...
+     *      tpl: [
+     *          '<ul>',
+     *              '<li>Item 1</li>',
+     *              '<li>Item 2</li>',
+     *              '<li>Item 3</li>',
+     *          '</ul>'
+     *      ],
+     *      childSelectors: {
+     *          listEls: 'li'
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Object} renderData
+     * This object will be passed to the template at render time. `baseCls` and `id` will be passed automatically.
+     */
 
     baseCls: 'view',
     baseId: 'view',
@@ -2762,6 +3315,11 @@ JSoop.define('Ramen.view.View', {
         me.callParent(arguments);
     },
 
+    /**
+     * @private
+     * @param {Object} renderData
+     * @returns {Object}
+     */
     initRenderData: function (renderData) {
         var me = this;
 
@@ -2782,11 +3340,16 @@ JSoop.define('Ramen.view.View', {
         //todo: detach from jquery
         me.el.html(html);
 
-        me.initRenderSelectors();
+        me.initChildSelectors();
         me.initChildEls();
         me.initDomListeners();
     },
-
+    /**
+     * @private
+     * @param {HTMLElement} el
+     * @param {String} ename
+     * @param {Object} listener
+     */
     addDomListener: function (el, ename, listener) {
         if (listener.single) {
             listener.callFn = function () {
@@ -2802,7 +3365,13 @@ JSoop.define('Ramen.view.View', {
         //todo: detach from jquery
         el.bind(ename, listener.callFn);
     },
-
+    /**
+     * @private
+     * @param {String} ename
+     * @param {Function/String} listener
+     * @param {Object} defaults
+     * @returns {Object}
+     */
     initDomListener: function (ename, listener, defaults) {
         var me = this;
 
@@ -2825,7 +3394,9 @@ JSoop.define('Ramen.view.View', {
 
         return listener;
     },
-
+    /**
+     * @private
+     */
     initDomListeners: function () {
         var me = this,
             domListeners = me.domListeners || {};
@@ -3041,15 +3612,30 @@ JSoop.define('Ramen.view.View', {
 
     /**
      * @class Ramen.view.Query
+     * Allows the querying of any objects the inherit from {@link Ramen.view.Box} in a css-like syntax based on
+     * {@link Ramen.view.Box#stype stype} as the tag name.
      * @singleton
      */
     JSoop.define('Ramen.view.Query', {
         singleton: true,
 
+        /**
+         * Creates a pre-parsed version of the given query for quick use. If you're going to be doing a lot of checking
+         * make sure you use this instead of {@link #is}.
+         * @param {String} selector
+         * @returns {Query}
+         */
         parse: function (selector) {
             return new Query(selector);
         },
 
+        /**
+         * Checks the given view to see if it matches the given selector. If you're going to be using the selector a lot
+         * it's better to store a parsed version of it using {@link #parse} and then call `is` directly on that object.
+         * @param {Ramen.view.Box} view The view to check
+         * @param {String} selector The query to check the view against
+         * @returns {Boolean} Whether or not the view matches
+         */
         is: function (view, selector) {
             var query = new Query(selector);
 
@@ -3097,6 +3683,8 @@ SOFTWARE.
 */
 /**
  * @class Ramen.view.binding.Binding
+ * Represents a living piece of data within a view. It will update it's display when something changes. The most common
+ * form of binding is {@link Ramen.view.binding.ModelBinding}.
  * @mixins JSoop.mixins.Configurable
  * @mixins JSoop.mixins.Observable
  * @mixins Ramen.util.Renderable
@@ -3110,9 +3698,19 @@ JSoop.define('Ramen.view.binding.Binding', {
 
     isBinding: true,
 
+    /**
+     * The base class applied to the containing element and passed to the template
+     */
     baseCls: 'binding',
+
+    /**
+     * The template used to render content
+     */
     tpl: '{{ content }}',
 
+    /**
+     * @param {Object} config
+     */
     constructor: function (config) {
         var me = this;
 
@@ -3126,19 +3724,29 @@ JSoop.define('Ramen.view.binding.Binding', {
         }
     },
 
+    /**
+     * @private
+     */
     attach: function () {
         var me = this;
 
-        me.owner.on({
+        me.mon(me.owner, {
             'render:before': me.onOwnerRenderBefore,
-            'render:after': me.onOwnerRenderAfter,
+            'render:during': me.onOwnerRenderDuring,
             scope: me,
             single: true
         });
     },
 
+    /**
+     * @method
+     * @template
+     */
     initBinding: JSoop.emptyFn,
 
+    /**
+     * @returns {String}
+     */
     getId: function () {
         var me = this;
 
@@ -3149,6 +3757,11 @@ JSoop.define('Ramen.view.binding.Binding', {
         return me.id;
     },
 
+    /**
+     * Retrieves the complete markup for the binding that needs to be inserted into a view. The includes the wrapping
+     * element as well as the rendered template.
+     * @returns {String}
+     */
     getHtml: function () {
         var me = this,
             tag = me.getTagConfig();
@@ -3158,6 +3771,10 @@ JSoop.define('Ramen.view.binding.Binding', {
         return Ramen.dom.Helper.markup(tag);
     },
 
+    /**
+     * Retrieves the content of the binding.
+     * @returns {String}
+     */
     getContent: function () {
         var me = this,
             renderData = me.getRenderData();
@@ -3176,10 +3793,17 @@ JSoop.define('Ramen.view.binding.Binding', {
         return me.getTemplate('tpl').render(renderData);
     },
 
+    /**
+     * @private
+     * @returns {String}
+     */
     getRenderData: function () {
         return '';
     },
 
+    /**
+     * This needs to be called whenever the binding needs to update its content.
+     */
     update: function () {
         var me = this;
 
@@ -3188,6 +3812,10 @@ JSoop.define('Ramen.view.binding.Binding', {
         }, 0);
     },
 
+    /**
+     * Destroys the binding. This does not remove the HTMLElement associated with the binding. This should be done by
+     * the view managing the binding.
+     */
     destroy: function () {
         var me = this;
 
@@ -3195,19 +3823,26 @@ JSoop.define('Ramen.view.binding.Binding', {
         me.removeAllManagedListeners();
     },
 
+    /**
+     * @private
+     * @param {Ramen.view.Box} view
+     */
     onOwnerRenderBefore: function (view) {
         var me = this;
 
         view.renderData[me.token] = me.getHtml();
     },
 
-    onOwnerRenderAfter: function () {
+    /**
+     * @private
+     */
+    onOwnerRenderDuring: function () {
         var me = this;
 
         //todo: detach from jquery
         me.el = me.owner.el.find('#' + me.getId());
 
-        me.initRenderSelectors();
+        me.initChildSelectors();
         me.initChildEls();
 
         me.update();
@@ -3216,6 +3851,7 @@ JSoop.define('Ramen.view.binding.Binding', {
 
 /**
  * @class Ramen.view.binding.ModelBinding
+ * A special binding used to monitor a {@link Ramen.data.Model} and update its content based on changes to said model.
  * @extends Ramen.view.binding.Binding
  */
 JSoop.define('Ramen.view.binding.ModelBinding', {
@@ -3225,6 +3861,20 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
 
     watchingFields: null,
     watchingAssociations: null,
+
+    /**
+     * @cfg {Function} formatter
+     * A function that will be used to format any model data prior to rendering it. If {@link #field} is set, this will
+     * be ignored.
+     * @param {Ramen.data.Model} model The model
+     * @param {Ramen.view.Box} view The view managing the binding
+     * @returns {String} The formatted data
+     */
+    /**
+     * @cfg {String} field
+     * The field within the model that should be monitored for change. If this is set, then {@link #formatter} will be
+     * ignored.
+     */
 
     initBinding: function () {
         var me = this;
@@ -3239,6 +3889,19 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
         me.mon(me.model, 'change:association', me.onAssociationChange, me);
     },
 
+    /**
+     * @private
+     * @returns {Object}
+     */
+    getRenderData: function () {
+        var me = this;
+
+        return me.formatter(me.model, me.owner);
+    },
+
+    /**
+     * @private
+     */
     parseWatchers: function () {
         var me = this,
             watching = [],
@@ -3267,12 +3930,11 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
         me.watchingAssociations = watching;
     },
 
-    getRenderData: function () {
-        var me = this;
-
-        return me.formatter(me.model, me.owner);
-    },
-
+    /**
+     * @private
+     * @param {Ramen.data.Model} model
+     * @param {Mixed} newValues
+     */
     onChange: function (model, newValues) {
         var me = this,
             update = false;
@@ -3290,6 +3952,11 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
         }
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Model} model
+     * @param {String} name
+     */
     onAssociationChange: function (model, name) {
         var me = this;
 
@@ -3302,10 +3969,49 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
 
 /**
  * @class Ramen.view.binding.BindingView
+ * A special view that allows the use of {@link #bindings}.
  * @extends Ramen.view.View
  */
 JSoop.define('Ramen.view.binding.BindingView', {
     extend: 'Ramen.view.View',
+
+    /**
+     * @cfg {Ramen.view.binding.Binding[]/Object[]} bindings
+     * An object containing binding configs that will be used to create {@link Ramen.view.binding.Binding}'s. If the
+     * value is just a function, the view will assume that it is a formatter.
+     *
+     * Each binding will receive the following if they are not already set:
+     *
+     *  - **type** - {@link Ramen.view.binding.ModelBinding} will be used
+     *  - **owner** - the current view
+     *  - **token** - the key of the original object
+     *
+     * For example:
+     *
+     *      ...
+     *      tpl: [
+     *          '{{ name }}',
+     *          '{{ address }}',
+     *          '{{ total }}'
+     *      ],
+     *      bindings: {
+     *          name: 'name',
+     *          address: function (model) {
+     *              return model.get('street') + ' ' +
+     *                     model.get('city') + ', ' +
+     *                     model.get('state') + ' ' +
+     *                     model.get('zip');
+     *          },
+     *          total: {
+     *              type: 'Demo.binding.Total'
+     *          }
+     *      },
+     *      ...
+     */
+    /**
+     * @cfg {Ramen.data.Model} model
+     * The model that this view manages.
+     */
 
     render: function () {
         var me = this;
@@ -3315,6 +4021,9 @@ JSoop.define('Ramen.view.binding.BindingView', {
         me.callParent(arguments);
     },
 
+    /**
+     * @private
+     */
     initBindings: function () {
         var me = this,
             bindings = JSoop.clone(me.bindings || {}),
@@ -3361,7 +4070,10 @@ JSoop.define('Ramen.view.binding.BindingView', {
             me.bindings[key] = binding;
         });
     },
-
+    /**
+     * Retrieves the managed model.
+     * @returns {Ramen.data.Model}
+     */
     getModel: function () {
         return this.model;
     },
@@ -3414,7 +4126,13 @@ JSoop.define('Ramen.view.layout.Layout', {
     baseCls: 'layout',
     baseId: 'layout',
 
+    /**
+     * @cfg {String/Object}
+     */
     wrapperTag: null,
+    /**
+     * @cfg {String}
+     */
     wrapperCls: '',
 
     constructor: function () {
@@ -3451,27 +4169,44 @@ JSoop.define('Ramen.view.layout.Layout', {
         me.wrapperCache = {};
     },
 
+    /**
+     * @method
+     * @template
+     */
     initLayout: JSoop.emptyFn,
+    /**
+     * @method
+     * @template
+     */
     initContainer: JSoop.emptyFn,
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     */
     add: function (items) {
         var me = this;
 
         me.itemCache.add(items);
     },
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     * @param {Number} index
+     */
     insert: function (items, index) {
         var me = this;
 
         me.itemCache.insert(items, index);
     },
-
+    /**
+     * @param {Ramen.view.Box[]} items
+     */
     remove: function (items) {
         var me = this;
 
         me.itemCache.remove(items);
     },
-
+    /**
+     * @private
+     */
     renderItems: function () {
         var me = this;
 
@@ -3490,11 +4225,19 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.render(wrapper);
         });
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {String}
+     */
     getItemId: function (item) {
         return this.itemCache.getKey(item);
     },
-
+    /**
+     * @private
+     * @param {Ramen.view.Box} item
+     * @param {Number} index
+     * @returns {HTMLElement}
+     */
     createWrapper: function (item, index) {
         var me = this,
             tag = JSoop.clone(me.wrapperTag || {
@@ -3527,7 +4270,10 @@ JSoop.define('Ramen.view.layout.Layout', {
 
         return wrapper;
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {String[]}
+     */
     getWrapperClasses: function (item) {
         var me = this,
             classes = [me.wrapperCls];
@@ -3538,7 +4284,10 @@ JSoop.define('Ramen.view.layout.Layout', {
 
         return classes;
     },
-
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {Object}
+     */
     getWrapperStyle: function (item) {
         var style = {},
             keys = [
@@ -3566,7 +4315,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             me.itemCache.removeAll();
         }
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} added
+     */
     onItemsAdd: function (collection, added) {
         var me = this;
 
@@ -3586,7 +4339,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.render(wrapper);
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} removed
+     */
     onItemsRemove: function (collection, removed) {
         var me = this;
 
@@ -3601,9 +4358,13 @@ JSoop.define('Ramen.view.layout.Layout', {
             item.destroy();
         });
     },
-
+    /**
+     * @private
+     */
     onItemsFilter: JSoop.emptyFn,
-
+    /**
+     * @private
+     */
     onItemsSort: function () {
         var me = this,
             container = me.owner.getTargetEl();
@@ -3619,7 +4380,11 @@ JSoop.define('Ramen.view.layout.Layout', {
             }
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
     onOwnerItemsAdd: function (collection, items) {
         var me = this;
 
@@ -3629,11 +4394,17 @@ JSoop.define('Ramen.view.layout.Layout', {
             me.itemCache.insert(item, index);
         });
     },
-
+    /**
+     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
     onOwnerItemsRemove: function (collection, items) {
         this.itemCache.remove(items);
     },
-
+    /**
+     * @private
+     */
     onOwnerItemsSort: function () {
         var me = this;
 
@@ -3717,6 +4488,7 @@ SOFTWARE.
 */
 /**
  * @class Ramen.view.container.Container
+ * A special view that is used to render other views within it.
  * @extends Ramen.view.View
  */
 JSoop.define('Ramen.view.container.Container', {
@@ -3729,7 +4501,26 @@ JSoop.define('Ramen.view.container.Container', {
     baseCls: 'container',
     baseId: 'container',
 
+    /**
+     * @cfg {Ramen.view.Box[]/Object[]} items
+     * An array of items that should be rendered into the container. Each created item will be given an `owner` property
+     * that points to the container.
+     */
+    /**
+     * @cfg {Object} itemDefaults
+     * The items in this object will be applied to every item in the container if they don't already have them.
+     */
+    /**
+     * @cfg {Ramen.view.layout.Layout/String/Object}
+     * The layout that should be used when rendering items.
+     */
     layout: 'Ramen.view.layout.Layout',
+    /**
+     * @cfg {String} [targetEl]
+     * The element reference to render elements into. The element reference must be defined in {@link #childEls}.
+     * If this isn't set, then the base `el` will be used.
+     */
+    targetEl: null,
 
     initView: function () {
         var me = this,
@@ -3750,6 +4541,9 @@ JSoop.define('Ramen.view.container.Container', {
         }
     },
 
+    /**
+     * @private
+     */
     initLayout: function () {
         var me = this,
             layout = JSoop.clone(me.layout || {});
@@ -3770,6 +4564,11 @@ JSoop.define('Ramen.view.container.Container', {
         me.layout = JSoop.create(layout.type, layout);
     },
 
+    /**
+     * @private
+     * @param {Ramen.view.Box[]/Object[]} items
+     * @returns {Ramen.view.Box[]}
+     */
     initItems: function (items) {
         var me = this;
 
@@ -3784,6 +4583,11 @@ JSoop.define('Ramen.view.container.Container', {
         return items;
     },
 
+    /**
+     * @private
+     * @param {Ramen.view.Box/Object} item
+     * @returns {Ramen.view.Box}
+     */
     initItem: function (item) {
         var me = this;
 
@@ -3805,10 +4609,23 @@ JSoop.define('Ramen.view.container.Container', {
         return item;
     },
 
+    /**
+     * @private
+     */
     getTargetEl: function () {
-        return this.el;
+        var me = this;
+
+        if (me.targetEl && me[me.targetEl]) {
+            return me.targetEl;
+        }
+
+        return me.el;
     },
 
+    /**
+     * Adds an item to the end of the container.
+     * @param {Ramen.view.Box[]/Object[]} items The item or items to add
+     */
     add: function (items) {
         var me = this;
 
@@ -3817,10 +4634,19 @@ JSoop.define('Ramen.view.container.Container', {
         me.items.add(items);
     },
 
+    /**
+     * Removes an item from the container. This will destroy the item.
+     * @param {Ramen.view.Box[]} items The item or items to remove
+     */
     remove: function (items) {
         this.items.remove(items);
     },
 
+    /**
+     * Inserts a view at the specified index.
+     * @param {Ramen.view.Box[]/Object[]} items The item or items to insert
+     * @param {Number} index The index to insert the items at
+     */
     insert: function (items, index) {
         var me = this;
 
@@ -3839,6 +4665,11 @@ JSoop.define('Ramen.view.container.Container', {
         me.callParent(arguments);
     },
 
+    /**
+     * Locates children views that matches the given query. This is not a recursive search.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box[]}
+     */
     find: function (query) {
         var me = this,
             found = [];
@@ -3854,12 +4685,22 @@ JSoop.define('Ramen.view.container.Container', {
         return found;
     },
 
+    /**
+     * Locates the first child view that matches the given query.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box}
+     */
     findFirst: function (query) {
         var me = this;
 
         return me.find(query).shift();
     },
 
+    /**
+     * Locates the last child view that matches the given query.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box}
+     */
     findLast: function (query) {
         var me = this;
 
@@ -3869,12 +4710,27 @@ JSoop.define('Ramen.view.container.Container', {
 
 /**
  * @class Ramen.view.container.CollectionContainer
+ * A collection container is a special container that will create a child view for every element within a
+ * {@link Ramen.data.Collection}, as well as react to any changes to said collections such as sorting or filtering.
  * @extends Ramen.view.container.Container
  */
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 
     stype: 'collection-container',
+
+    /**
+     * @cfg {Ramen.view.Box/Object} emptyView
+     * The view to show when no items are in the collection
+     */
+    /**
+     * @cfg {Ramen.data.Collection} collection
+     * The collection this view is listening to.
+     */
+    /**
+     * @cfg {Boolean}
+     * Setting this to `true` will stop the {@link #emptyView} from being displayed.
+     */
     supressEmptyView: false,
 
     initView: function () {
@@ -3915,6 +4771,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         return item;
     },
 
+    /**
+     * @private
+     */
     initEmptyView: function () {
         var me = this,
             emptyView;
@@ -3938,6 +4797,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.items.add(emptyView);
     },
 
+    /**
+     * Shows the {@link #emptyView}.
+     */
     showEmptyView: function () {
         var me = this;
 
@@ -3949,6 +4811,9 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.emptyView.el.show();
     },
 
+    /**
+     * Hides the {@link #emptyView}.
+     */
     hideEmptyView: function () {
         var me = this;
 
@@ -3960,6 +4825,10 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.emptyView.el.hide();
     },
 
+    /**
+     * @private
+     * @returns {Function}
+     */
     createItemSortFn: function () {
         var me = this,
             collection = me.collection;
@@ -3969,6 +4838,11 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         };
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} added
+     */
     onCollectionAdd: function (collection, added) {
         var me = this;
 
@@ -3981,6 +4855,11 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         me.hideEmptyView();
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} removed
+     */
     onCollectionRemove: function (collection, removed) {
         var me = this;
 
@@ -3997,12 +4876,21 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         }
     },
 
+    /**
+     * @private
+     */
     onCollectionSort: function () {
         var me = this;
 
         me.items.sort(me.createItemSortFn());
     },
 
+    /**
+     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} filtered
+     * @param {Ramen.data.Model[]} unfiltered
+     */
     onCollectionFilter: function (collection, filtered, unfiltered) {
         var me = this,
             removed = [],
@@ -4038,6 +4926,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
 
 /**
  * @class Ramen.view.container.Viewport
+ * A viewport is a special container that allows you to {@link #replace} all of its children with a new set of children.
  * @extends Ramen.view.container.Container
  */
 JSoop.define('Ramen.view.container.Viewport', {
@@ -4047,6 +4936,9 @@ JSoop.define('Ramen.view.container.Viewport', {
     baseId: 'viewport',
     baseCls: 'viewport',
 
+    /**
+     * @param {Ramen.view.Box/Object} items
+     */
     replace: function (items) {
         var me = this;
 

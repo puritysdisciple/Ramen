@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-data-association-Association'>/**
+</span> * @class Ramen.data.association.Association
+ * @mixins JSoop.mixins.Configurable
+ */
+JSoop.define('Ramen.data.association.Association', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable'
+    },
+
+    config: {
+        required: [
+<span id='Ramen-data-association-Association-cfg-name'>            /**
+</span>             * @cfg {String} name (required)
+             * The name of this association. This will be used to create getters on the parent model.
+             */
+            'name',
+<span id='Ramen-data-association-Association-cfg-model'>            /**
+</span>             * @cfg {String} model (required)
+             * The type of model this association will create
+             */
+            'model',
+<span id='Ramen-data-association-Association-cfg-mapping'>            /**
+</span>             * @cfg {String} mapping (required)
+             * The location of the associated data.
+             */
+            'mapping',
+<span id='Ramen-data-association-Association-cfg-foreignKey'>            /**
+</span>             * @cfg {String} foreignKey
+             * The name of the field that contains the foreign key.
+             */
+        ]
+    },
+
+<span id='Ramen-data-association-Association-cfg-prepare'>    /**
+</span>     * @cfg {Function/String} prepare
+     * A function, or name of a function, that will be used to prepare the data prior to association. If a function name
+     * is given, the function will be pulled from the parent model.
+     */
+
+    isAssociation: true,
+
+    constructor: function (config) {
+        var me = this;
+
+        me.initMixin('configurable', [config]);
+    },
+
+    parse: function (model, attributes) {
+        var me = this,
+            prep, data, models;
+
+        if (me.prepare) {
+            prep = me.prepare;
+
+            if (JSoop.isString(prep)) {
+                prep = model[prep];
+            }
+
+            prep.call(model, attributes);
+        }
+
+        data = me.getData(attributes);
+        models = me.createModels(model, data);
+
+        me.assignModels(model, models);
+    },
+
+    getData: function (attributes) {
+        var me = this;
+
+        return JSoop.objectQuery(me.mapping, attributes);
+    },
+
+    createModel: function (data) {
+        var me = this;
+
+        if (data.isModel) {
+            return data;
+        }
+
+        return JSoop.create(me.model, data);
+    },
+
+    createAssociationChangeListener: function (model) {
+        var me = this;
+
+        return function () {
+            model.fireEvent('change:association', model, me.name, model['get' + me.name]());
+        };
+    },
+
+    createModels: JSoop.emptyFn,
+    assignModels: JSoop.emptyFn
+});
+</pre>
+</body>
+</html>

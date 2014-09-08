@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-container-Container'>/**
+</span> * @class Ramen.view.container.Container
+ * A special view that is used to render other views within it.
+ * @extends Ramen.view.View
+ */
+JSoop.define('Ramen.view.container.Container', {
+    extend: 'Ramen.view.View',
+
+    isContainer: true,
+
+    stype: 'container',
+
+    baseCls: 'container',
+    baseId: 'container',
+
+<span id='Ramen-view-container-Container-cfg-items'>    /**
+</span>     * @cfg {Ramen.view.Box[]/Object[]} items
+     * An array of items that should be rendered into the container. Each created item will be given an `owner` property
+     * that points to the container.
+     */
+<span id='Ramen-view-container-Container-cfg-itemDefaults'>    /**
+</span>     * @cfg {Object} itemDefaults
+     * The items in this object will be applied to every item in the container if they don't already have them.
+     */
+<span id='Ramen-view-container-Container-cfg-layout'>    /**
+</span>     * @cfg {Ramen.view.layout.Layout/String/Object}
+     * The layout that should be used when rendering items.
+     */
+    layout: 'Ramen.view.layout.Layout',
+<span id='Ramen-view-container-Container-cfg-targetEl'>    /**
+</span>     * @cfg {String} [targetEl]
+     * The element reference to render elements into. The element reference must be defined in {@link #childEls}.
+     * If this isn't set, then the base `el` will be used.
+     */
+    targetEl: null,
+
+    initView: function () {
+        var me = this,
+            items = JSoop.clone(me.items);
+
+        me.callParent(arguments);
+
+        me.items = JSoop.create('Ramen.collection.Dictionary', null, {
+            getKey: function (item) {
+                return item.getId();
+            }
+        });
+
+        me.initLayout();
+
+        if (items) {
+            me.add(items);
+        }
+    },
+
+<span id='Ramen-view-container-Container-method-initLayout'>    /**
+</span>     * @private
+     */
+    initLayout: function () {
+        var me = this,
+            layout = JSoop.clone(me.layout || {});
+
+        if (JSoop.isString(layout)) {
+            layout = {
+                type: layout
+            };
+        }
+
+        JSoop.applyIf(layout, me.layout || {});
+        JSoop.applyIf(layout, {
+            type: 'Ramen.view.layout.Layout'
+        });
+
+        layout.owner = me;
+
+        me.layout = JSoop.create(layout.type, layout);
+    },
+
+<span id='Ramen-view-container-Container-method-initItems'>    /**
+</span>     * @private
+     * @param {Ramen.view.Box[]/Object[]} items
+     * @returns {Ramen.view.Box[]}
+     */
+    initItems: function (items) {
+        var me = this;
+
+        items = JSoop.toArray(items);
+
+        JSoop.each(items, function (item, index) {
+            item = me.initItem(item);
+
+            items[index] = item;
+        });
+
+        return items;
+    },
+
+<span id='Ramen-view-container-Container-method-initItem'>    /**
+</span>     * @private
+     * @param {Ramen.view.Box/Object} item
+     * @returns {Ramen.view.Box}
+     */
+    initItem: function (item) {
+        var me = this;
+
+        if (item.isBox) {
+            item.owner = me;
+
+            return item;
+        }
+
+        JSoop.applyIf(item, JSoop.clone(me.itemDefaults || {}));
+        JSoop.applyIf(item, {
+            type: 'Ramen.view.View'
+        });
+
+        item.owner = me;
+
+        item = JSoop.create(item.type, item);
+
+        return item;
+    },
+
+<span id='Ramen-view-container-Container-method-getTargetEl'>    /**
+</span>     * @private
+     */
+    getTargetEl: function () {
+        var me = this;
+
+        if (me.targetEl &amp;&amp; me[me.targetEl]) {
+            return me.targetEl;
+        }
+
+        return me.el;
+    },
+
+<span id='Ramen-view-container-Container-method-add'>    /**
+</span>     * Adds an item to the end of the container.
+     * @param {Ramen.view.Box[]/Object[]} items The item or items to add
+     */
+    add: function (items) {
+        var me = this;
+
+        items = me.initItems(items);
+
+        me.items.add(items);
+    },
+
+<span id='Ramen-view-container-Container-method-remove'>    /**
+</span>     * Removes an item from the container. This will destroy the item.
+     * @param {Ramen.view.Box[]} items The item or items to remove
+     */
+    remove: function (items) {
+        this.items.remove(items);
+    },
+
+<span id='Ramen-view-container-Container-method-insert'>    /**
+</span>     * Inserts a view at the specified index.
+     * @param {Ramen.view.Box[]/Object[]} items The item or items to insert
+     * @param {Number} index The index to insert the items at
+     */
+    insert: function (items, index) {
+        var me = this;
+
+        items = me.initItems(items);
+
+        me.items.insert(items, index);
+    },
+
+    onDestroy: function () {
+        var me = this;
+
+        me.items.removeAll();
+
+        me.layout.destroy();
+
+        me.callParent(arguments);
+    },
+
+<span id='Ramen-view-container-Container-method-find'>    /**
+</span>     * Locates children views that matches the given query. This is not a recursive search.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box[]}
+     */
+    find: function (query) {
+        var me = this,
+            found = [];
+
+        query = Ramen.view.Query.parse(query);
+
+        me.items.each(function (item) {
+            if (query.is(item)) {
+                found.push(item);
+            }
+        });
+
+        return found;
+    },
+
+<span id='Ramen-view-container-Container-method-findFirst'>    /**
+</span>     * Locates the first child view that matches the given query.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box}
+     */
+    findFirst: function (query) {
+        var me = this;
+
+        return me.find(query).shift();
+    },
+
+<span id='Ramen-view-container-Container-method-findLast'>    /**
+</span>     * Locates the last child view that matches the given query.
+     * @param {Ramen.view.Query/String} query The query to use when searching
+     * @returns {Ramen.view.Box}
+     */
+    findLast: function (query) {
+        var me = this;
+
+        return me.find(query).pop();
+    }
+});
+</pre>
+</body>
+</html>

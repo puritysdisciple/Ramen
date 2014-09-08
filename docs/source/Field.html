@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-data-Field'>/**
+</span> * @class Ramen.data.Field
+ * @private
+ * @mixins JSoop.mixins.Configurable
+ * The Field class is used to parse a value out of data object. It can locate the value, convert its type, and run an
+ * arbitrary conversion function to make sure the resulting value is the one that is requested.
+ */
+JSoop.define('Ramen.data.Field', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable'
+    },
+
+    config: {
+        required: [
+            'name'
+        ],
+        defaults: {
+            type: 'auto'
+        }
+    },
+
+    statics: {
+        types: {
+            'bool': function (value) {
+                return !!value;
+            },
+            'int': function (value) {
+                return parseInt(value, 10);
+            },
+            'float': function (value) {
+                return parseFloat(value);
+            },
+            'auto': function (value) {
+                return value;
+            }
+        }
+    },
+
+    isField: true,
+
+<span id='Ramen-data-Field-cfg-name'>    /**
+</span>     * @cfg {String} name (required)
+     * The name of the field. This is used by {@link Ramen.data.Model} when parsing its data.
+     */
+<span id='Ramen-data-Field-cfg-type'>    /**
+</span>     * @cfg {String} [type=&quot;auto&quot;]
+     * The type the value needs to be converted to.
+     */
+<span id='Ramen-data-Field-cfg-convert'>    /**
+</span>     * @cfg {Function} [convert]
+     * An arbitrary function that will be called last. Its return value will be the value the field returns.
+     */
+
+    constructor: function (config) {
+        var me = this;
+
+        if (!JSoop.isObject(config)) {
+            config = {name: config};
+        }
+
+        me.initMixin('configurable', [config]);
+
+        if (!me.mapping) {
+            me.mapping = me.name;
+        }
+    },
+
+    read: function (data, model) {
+        var me = this,
+            value = JSoop.objectQuery(me.mapping, data);
+
+        if (value === undefined &amp;&amp; data) {
+            value = data[me.name];
+        }
+
+        return me.parse(value, data, model);
+    },
+
+<span id='Ramen-data-Field-method-parse'>    /**
+</span>     * @method parse
+     * Parses a value out of the given data object.
+     * @param {Object} data
+     * The data object the field is parsing.
+     * @param {Ramen.data.Model} [model]
+     * The model the field is parsing data for.
+     * @returns The parsed data value.
+     */
+    parse: function (value, data, model) {
+        var me = this;
+
+        if (value === undefined) {
+            value = me.defaultValue;
+        }
+
+        value = Ramen.data.Field.types[me.type](value);
+
+        if (me.convert) {
+            value = me.convert(value, model, data);
+        }
+
+        return value;
+    }
+});
+</pre>
+</body>
+</html>

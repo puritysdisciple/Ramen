@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-util-Renderable'>/**
+</span> * @class Ramen.util.Renderable
+ * @private
+ */
+JSoop.define('Ramen.util.Renderable', {
+    isRenderable: true,
+
+    createEl: function () {
+        return Ramen.dom.Helper.create(this.getTagConfig());
+    },
+
+    getTagConfig: function () {
+        var me = this,
+            classes = JSoop.toArray(me.cls || []),
+            tag;
+
+        classes.push(me.baseCls);
+
+        if (JSoop.isString(me.tag)) {
+            tag = {
+                tag: me.tag
+            };
+        } else {
+            tag = JSoop.clone(me.tag || {});
+        }
+
+        JSoop.applyIf(tag, {
+            tag: 'div',
+            id: me.getId(),
+            cls: classes,
+            style: me.style || {}
+        });
+
+        return tag;
+    },
+
+<span id='Ramen-util-Renderable-method-getTemplate'>    /**
+</span>     * Retrieves a template from the class. If the property with the given name is not a template, a template will be
+     * created using the value of the property.
+     * @param {String} name The name of the desired template
+     * @returns {Ramen.util.Template}
+     */
+    getTemplate: function (name) {
+        var me = this,
+            tpl = me[name];
+
+        if (tpl.isTemplate) {
+            return tpl;
+        }
+
+        me[name] = JSoop.create('Ramen.util.Template', tpl);
+
+        return me[name];
+    },
+
+    initChildSelectors: function () {
+        var me = this,
+            renderSelectors = me.renderSelectors || {},
+            childSelectors = me.childSelectors || {}
+            //&lt;debug&gt;
+            ,hasRenderSelectors = false
+            //&lt;/debug&gt;
+            ;
+
+        JSoop.iterate(renderSelectors, function (selector, key) {
+            //&lt;debug&gt;
+            hasRenderSelectors = true;
+            //&lt;/debug&gt;
+            //todo: detach from jquery
+            me[key] = jQuery(selector, me.el);
+        });
+
+        //&lt;debug&gt;
+        if (hasRenderSelectors) {
+            JSoop.log('renderSelectors being used in ' + me.$className + '. renderSelectors is depreciated, please use childSelectors instead');
+        }
+        //&lt;/debug&gt;
+
+        JSoop.iterate(childSelectors, function (selector, key) {
+            //todo: detach from jquery
+            me[key] = jQuery(selector, me.el);
+        });
+    },
+
+    initChildEls: function () {
+        var me = this,
+            id = me.getId(),
+            els = me.childEls || {};
+
+        JSoop.iterate(els, function (addition, key) {
+            //todo: detach from jquery
+            me[key] = jQuery('#' + id + '-' + addition, me.el);
+        });
+    }
+});
+</pre>
+</body>
+</html>

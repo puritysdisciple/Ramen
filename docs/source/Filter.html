@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-util-filter-Filter'>/**
+</span> * @class Ramen.util.filter.Filter
+ * Represents a set of conditions used to filter items.
+ * @mixins JSoop.mixins.Configurable
+ */
+JSoop.define('Ramen.util.filter.Filter', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable'
+    },
+
+<span id='Ramen-util-filter-Filter-method-constructor'>    /**
+</span>     * @param {Object/Function} attributes The attributes to be used in the filter, or a filter function
+     * @param {Object} [config] The config object
+     */
+    constructor: function (attributes, config) {
+        var me = this;
+
+        if (arguments.length === 1) {
+            if (attributes.fn) {
+                config = attributes;
+            } else if (JSoop.isFunction(attributes)) {
+                config = {
+                    fn: attributes
+                };
+            } else {
+                config = {
+                    fn: me.createFilterFn(attributes),
+                    attributes: attributes
+                };
+            }
+        } else {
+            config.attributes = attributes;
+        }
+
+        me.initMixin('configurable', [config]);
+    },
+
+<span id='Ramen-util-filter-Filter-method-createFilterFn'>    /**
+</span>     * Creates a filter function based on the given attributes.
+     * @param {Object} attributes The attributes to compare
+     * @returns {Function}
+     */
+    createFilterFn: function (attributes) {
+        var body = [];
+
+        JSoop.iterate(attributes, function (value, key) {
+            body.push('item[&quot;' + key + '&quot;] === attributes[&quot;' + key + '&quot;]');
+        });
+
+        body = 'return ' + body.join(' &amp;&amp; ') + ';';
+
+        return new Function('item', 'attributes', body);
+    },
+
+<span id='Ramen-util-filter-Filter-method-is'>    /**
+</span>     * Checks whether or not the given item matches the filter.
+     * @param {Mixed} item The item to test
+     * @returns {Boolean}
+     */
+    is: function (item) {
+        var me = this;
+
+        return !!me.fn(item, me.attributes);
+    }
+});
+</pre>
+</body>
+</html>

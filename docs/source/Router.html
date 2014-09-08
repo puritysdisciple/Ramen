@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-app-Router'>/**
+</span> * @class Ramen.app.Router
+ * @private
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ */
+JSoop.define('Ramen.app.Router', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable',
+        observable: 'JSoop.mixins.Observable'
+    },
+
+    isRouter: true,
+
+    constructor: function (config) {
+        var me = this,
+            routes;
+
+        me.initMixin('configurable', [config]);
+        me.initMixin('observable');
+
+        routes = me.routes;
+        me.routes = {};
+
+        if (JSoop.isArray(routes)) {
+            JSoop.each(routes, function (route) {
+                me.add(route);
+            });
+        }
+
+        me.initRouter();
+
+        Ramen.app.History.on('change', me.onHistoryChange, me);
+    },
+
+    initRouter: JSoop.emptyFn,
+
+    add: function (route) {
+        var me = this,
+            fragment = Ramen.app.History.getFragment();
+
+        if (JSoop.isString(route)) {
+            route = {
+                route: route
+            };
+        }
+
+        if (!route.isRoute) {
+            JSoop.applyIf(route, {
+                type: 'Ramen.app.Route'
+            });
+
+            route = JSoop.create(route.type, route);
+        }
+
+        me.routes[route.name] = route;
+
+        if (route.is(fragment)) {
+            me.fireEvent('route', route.route, route);
+        }
+    },
+
+    remove: function (name) {
+        delete this.routes[name];
+    },
+
+    onHistoryChange: function (fragment) {
+        var me = this,
+            routed = false;
+
+        JSoop.iterate(me.routes, function (route, path) {
+            if (route.is(fragment)) {
+                if (me.fireEvent('route', me, path, route) === false) {
+                    routed = true;
+
+                    return false;
+                }
+            }
+        });
+
+        if (routed) {
+            return false;
+        }
+    }
+});
+</pre>
+</body>
+</html>

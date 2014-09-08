@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-binding-ModelBinding'>/**
+</span> * @class Ramen.view.binding.ModelBinding
+ * A special binding used to monitor a {@link Ramen.data.Model} and update its content based on changes to said model.
+ * @extends Ramen.view.binding.Binding
+ */
+JSoop.define('Ramen.view.binding.ModelBinding', {
+    extend: 'Ramen.view.binding.Binding',
+
+    isModelBinding: true,
+
+    watchingFields: null,
+    watchingAssociations: null,
+
+<span id='Ramen-view-binding-ModelBinding-cfg-formatter'>    /**
+</span>     * @cfg {Function} formatter
+     * A function that will be used to format any model data prior to rendering it. If {@link #field} is set, this will
+     * be ignored.
+     * @param {Ramen.data.Model} model The model
+     * @param {Ramen.view.Box} view The view managing the binding
+     * @returns {String} The formatted data
+     */
+<span id='Ramen-view-binding-ModelBinding-cfg-field'>    /**
+</span>     * @cfg {String} field
+     * The field within the model that should be monitored for change. If this is set, then {@link #formatter} will be
+     * ignored.
+     */
+
+    initBinding: function () {
+        var me = this;
+
+        if (me.field) {
+            me.formatter = new Function('model', 'return model.get(&quot;' + me.field + '&quot;);');
+        }
+
+        me.parseWatchers();
+
+        me.mon(me.model, 'change', me.onChange, me);
+        me.mon(me.model, 'change:association', me.onAssociationChange, me);
+    },
+
+<span id='Ramen-view-binding-ModelBinding-method-getRenderData'>    /**
+</span>     * @private
+     * @returns {Object}
+     */
+    getRenderData: function () {
+        var me = this;
+
+        return me.formatter(me.model, me.owner);
+    },
+
+<span id='Ramen-view-binding-ModelBinding-method-parseWatchers'>    /**
+</span>     * @private
+     */
+    parseWatchers: function () {
+        var me = this,
+            watching = [],
+            fn = me.formatter.toString(),
+            parser = /\.get\([&quot;'](.+?)[&quot;']\)/g,
+            match;
+
+        //this looks for field changes
+        for (match = parser.exec(fn); match; match = parser.exec(fn)) {
+            if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
+                watching.push(match[1]);
+            }
+        }
+
+        me.watchingFields = watching;
+
+        parser = /\.get([A-Z][a-zA-Z0-9]*)\(.*\)/g;
+        watching = [];
+
+        for (match = parser.exec(fn); match; match = parser.exec(fn)) {
+            if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
+                watching.push(match[1]);
+            }
+        }
+
+        me.watchingAssociations = watching;
+    },
+
+<span id='Ramen-view-binding-ModelBinding-method-onChange'>    /**
+</span>     * @private
+     * @param {Ramen.data.Model} model
+     * @param {Mixed} newValues
+     */
+    onChange: function (model, newValues) {
+        var me = this,
+            update = false;
+
+        JSoop.each(me.watchingFields, function (field) {
+            if (newValues.hasOwnProperty(field)) {
+                update = true;
+
+                return false;
+            }
+        });
+
+        if (update) {
+            me.update();
+        }
+    },
+
+<span id='Ramen-view-binding-ModelBinding-method-onAssociationChange'>    /**
+</span>     * @private
+     * @param {Ramen.data.Model} model
+     * @param {String} name
+     */
+    onAssociationChange: function (model, name) {
+        var me = this;
+
+        //this could cause an issue when watching many different associations
+        if (JSoop.util.Array.indexOf(me.watchingAssociations, name) !== -1) {
+            me.update();
+        }
+    }
+});
+</pre>
+</body>
+</html>

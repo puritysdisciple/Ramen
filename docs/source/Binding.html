@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-binding-Binding'>/**
+</span> * @class Ramen.view.binding.Binding
+ * Represents a living piece of data within a view. It will update it's display when something changes. The most common
+ * form of binding is {@link Ramen.view.binding.ModelBinding}.
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins Ramen.util.Renderable
+ */
+JSoop.define('Ramen.view.binding.Binding', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable',
+        observable: 'JSoop.mixins.Observable',
+        renderable: 'Ramen.util.Renderable'
+    },
+
+    isBinding: true,
+
+<span id='Ramen-view-binding-Binding-property-baseCls'>    /**
+</span>     * The base class applied to the containing element and passed to the template
+     */
+    baseCls: 'binding',
+
+<span id='Ramen-view-binding-Binding-property-tpl'>    /**
+</span>     * The template used to render content
+     */
+    tpl: '{{ content }}',
+
+<span id='Ramen-view-binding-Binding-method-constructor'>    /**
+</span>     * @param {Object} config
+     */
+    constructor: function (config) {
+        var me = this;
+
+        me.initMixin('configurable', [config]);
+        me.initMixin('observable');
+
+        me.initBinding();
+
+        if (me.owner) {
+            me.attach();
+        }
+    },
+
+<span id='Ramen-view-binding-Binding-method-attach'>    /**
+</span>     * @private
+     */
+    attach: function () {
+        var me = this;
+
+        me.mon(me.owner, {
+            'render:before': me.onOwnerRenderBefore,
+            'render:during': me.onOwnerRenderDuring,
+            scope: me,
+            single: true
+        });
+    },
+
+<span id='Ramen-view-binding-Binding-method-initBinding'>    /**
+</span>     * @method
+     * @template
+     */
+    initBinding: JSoop.emptyFn,
+
+<span id='Ramen-view-binding-Binding-method-getId'>    /**
+</span>     * @returns {String}
+     */
+    getId: function () {
+        var me = this;
+
+        if (!me.id) {
+            me.id = Ramen.id('binding');
+        }
+
+        return me.id;
+    },
+
+<span id='Ramen-view-binding-Binding-method-getHtml'>    /**
+</span>     * Retrieves the complete markup for the binding that needs to be inserted into a view. The includes the wrapping
+     * element as well as the rendered template.
+     * @returns {String}
+     */
+    getHtml: function () {
+        var me = this,
+            tag = me.getTagConfig();
+
+        tag.html = me.getContent();
+
+        return Ramen.dom.Helper.markup(tag);
+    },
+
+<span id='Ramen-view-binding-Binding-method-getContent'>    /**
+</span>     * Retrieves the content of the binding.
+     * @returns {String}
+     */
+    getContent: function () {
+        var me = this,
+            renderData = me.getRenderData();
+
+        if (!JSoop.isObject(renderData)) {
+            renderData = {
+                content: renderData
+            };
+        }
+
+        JSoop.applyIf(renderData, {
+            id: me.getId(),
+            baseCls: me.baseCls
+        });
+
+        return me.getTemplate('tpl').render(renderData);
+    },
+
+<span id='Ramen-view-binding-Binding-method-getRenderData'>    /**
+</span>     * @private
+     * @returns {String}
+     */
+    getRenderData: function () {
+        return '';
+    },
+
+<span id='Ramen-view-binding-Binding-method-update'>    /**
+</span>     * This needs to be called whenever the binding needs to update its content.
+     */
+    update: function () {
+        var me = this;
+
+        setTimeout(function () {
+            me.el.html(me.getContent());
+        }, 0);
+    },
+
+<span id='Ramen-view-binding-Binding-method-destroy'>    /**
+</span>     * Destroys the binding. This does not remove the HTMLElement associated with the binding. This should be done by
+     * the view managing the binding.
+     */
+    destroy: function () {
+        var me = this;
+
+        me.removeAllListeners();
+        me.removeAllManagedListeners();
+    },
+
+<span id='Ramen-view-binding-Binding-method-onOwnerRenderBefore'>    /**
+</span>     * @private
+     * @param {Ramen.view.Box} view
+     */
+    onOwnerRenderBefore: function (view) {
+        var me = this;
+
+        view.renderData[me.token] = me.getHtml();
+    },
+
+<span id='Ramen-view-binding-Binding-method-onOwnerRenderDuring'>    /**
+</span>     * @private
+     */
+    onOwnerRenderDuring: function () {
+        var me = this;
+
+        //todo: detach from jquery
+        me.el = me.owner.el.find('#' + me.getId());
+
+        me.initChildSelectors();
+        me.initChildEls();
+
+        me.update();
+    }
+});
+</pre>
+</body>
+</html>

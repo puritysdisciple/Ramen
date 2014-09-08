@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-app-Route'>/**
+</span> * @class Ramen.app.Route
+ * @private
+ * Represents a browser history state that can be used to execute code. This class shouldn't be instantiated directly.
+ * Use {@link Ramen.app.Controller controllers} to create these along with their callbacks.
+ * @mixins JSoop.mixins.Configurable
+ */
+JSoop.define('Ramen.app.Route', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable'
+    },
+
+    isRoute: true,
+
+    constructor: function (config) {
+        var me = this;
+
+        me.initMixin('configurable', [config]);
+
+        if (!me.name) {
+            me.name = me.route;
+        }
+
+        me.initRoute();
+    },
+
+    initRoute: (function () {
+        var optionalParam = /\((.*?)\)/g,
+            namedParam    = /(\(\?)?:\w+/g,
+            splatParam    = /\*\w+/g,
+            escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+
+        return function () {
+            var me = this,
+                route = me.route;
+
+            if (!JSoop.isRegExp(route)) {
+                route = route.replace(escapeRegExp, '\\$&amp;')
+                    .replace(optionalParam, '(?:$1)?')
+                    .replace(namedParam, function(match, optional) {
+                        return optional ? match : '([^/?]+)';
+                    })
+                    .replace(splatParam, '([^?]*?)');
+
+                me.route = new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$');
+            }
+        };
+    }()),
+
+    is: function (fragment) {
+        var me = this;
+
+        return me.route.test(fragment);
+    },
+
+    getParams: function (fragment) {
+        var me = this,
+            parts = me.route.exec(fragment).slice(1),
+            params = [];
+
+        JSoop.each(parts, function (part, index) {
+            part = part || null;
+
+            if (index === parts.length - 1) {
+                params.push(part);
+
+                return;
+            }
+
+            if (part !== null) {
+                part = decodeURIComponent(part);
+            }
+
+            params.push(part);
+        });
+
+        return params;
+    }
+});
+</pre>
+</body>
+</html>

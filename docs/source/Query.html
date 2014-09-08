@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-data-Query'>/**
+</span> * @class Ramen.data.Query
+ * @private
+ */
+JSoop.define('Ramen.data.Query', {
+    constructor: function (field, value) {
+        var me = this,
+            data = field;
+
+        if (!JSoop.isObject(data)) {
+            data = {};
+            data[field] = value;
+        }
+
+        me.data = data;
+
+        me.createFn();
+    },
+
+    createFn: function () {
+        var me = this,
+            fn = [];
+
+        JSoop.iterate(me.data, function (value, field) {
+            fn.push('model.get(&quot;' + field + '&quot;) === data[&quot;' + field + '&quot;]');
+        });
+
+        me.fn = new Function('model', 'data', 'return ' + fn.join('&amp;&amp;') + ';');
+    },
+
+    is: function (model) {
+        var me = this;
+
+        return me.fn(model, me.data);
+    }
+});
+</pre>
+</body>
+</html>

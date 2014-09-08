@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-layout-Layout'>/**
+</span> * @class Ramen.view.layout.Layout
+ * @extends Ramen.view.Box
+ */
+JSoop.define('Ramen.view.layout.Layout', {
+    extend: 'Ramen.view.Box',
+
+    isLayout: true,
+
+    isManaged: false,
+
+    baseCls: 'layout',
+    baseId: 'layout',
+
+<span id='Ramen-view-layout-Layout-cfg-wrapperTag'>    /**
+</span>     * @cfg {String/Object}
+     */
+    wrapperTag: null,
+<span id='Ramen-view-layout-Layout-cfg-wrapperCls'>    /**
+</span>     * @cfg {String}
+     */
+    wrapperCls: '',
+
+    constructor: function () {
+        var me = this;
+
+        me.callParent(arguments);
+
+        me.initLayout();
+
+        me.itemCache = JSoop.create('Ramen.collection.Dictionary', null, {
+            getKey: function (item) {
+                return item.getId();
+            },
+            listeners: {
+                add: me.onItemsAdd,
+                remove: me.onItemsRemove,
+                sort: me.onItemsSort,
+                filter: me.onItemsFilter,
+                scope: me
+            }
+        });
+
+        me.mon(me.owner.items, {
+            add: me.onOwnerItemsAdd,
+            remove: me.onOwnerItemsRemove,
+            sort: me.onOwnerItemsSort,
+            scope: me
+        });
+
+        me.mon(me.owner, 'render:during', me.renderItems, me, {
+            single: true
+        });
+
+        me.wrapperCache = {};
+    },
+
+<span id='Ramen-view-layout-Layout-method-initLayout'>    /**
+</span>     * @method
+     * @template
+     */
+    initLayout: JSoop.emptyFn,
+<span id='Ramen-view-layout-Layout-method-initContainer'>    /**
+</span>     * @method
+     * @template
+     */
+    initContainer: JSoop.emptyFn,
+<span id='Ramen-view-layout-Layout-method-add'>    /**
+</span>     * @param {Ramen.view.Box[]} items
+     */
+    add: function (items) {
+        var me = this;
+
+        me.itemCache.add(items);
+    },
+<span id='Ramen-view-layout-Layout-method-insert'>    /**
+</span>     * @param {Ramen.view.Box[]} items
+     * @param {Number} index
+     */
+    insert: function (items, index) {
+        var me = this;
+
+        me.itemCache.insert(items, index);
+    },
+<span id='Ramen-view-layout-Layout-method-remove'>    /**
+</span>     * @param {Ramen.view.Box[]} items
+     */
+    remove: function (items) {
+        var me = this;
+
+        me.itemCache.remove(items);
+    },
+<span id='Ramen-view-layout-Layout-method-renderItems'>    /**
+</span>     * @private
+     */
+    renderItems: function () {
+        var me = this;
+
+        if (!me.needsRender) {
+            return;
+        }
+
+        me.initContainer();
+
+        me.itemCache.each(function (item, index) {
+            var key = me.getItemId(item),
+                wrapper = me.createWrapper(item, index);
+
+            me.wrapperCache[key] = wrapper;
+
+            item.render(wrapper);
+        });
+    },
+<span id='Ramen-view-layout-Layout-method-getItemId'>    /**
+</span>     * @param {Ramen.view.Box} item
+     * @returns {String}
+     */
+    getItemId: function (item) {
+        return this.itemCache.getKey(item);
+    },
+<span id='Ramen-view-layout-Layout-method-createWrapper'>    /**
+</span>     * @private
+     * @param {Ramen.view.Box} item
+     * @param {Number} index
+     * @returns {HTMLElement}
+     */
+    createWrapper: function (item, index) {
+        var me = this,
+            tag = JSoop.clone(me.wrapperTag || {
+                tag: 'div'
+            }),
+            classes = me.getWrapperClasses(item, index),
+            container = me.owner.getTargetEl(),
+            wrapper;
+
+        if (JSoop.isString(tag)) {
+            tag = {
+                tag: tag
+            };
+        }
+
+        JSoop.applyIf(tag, {
+            cls: classes,
+            style: me.getWrapperStyle(item, index)
+        });
+
+        wrapper = Ramen.dom.Helper.create(tag);
+
+        if (index === undefined || !container[0].childNodes[index]) {
+            container.append(wrapper);
+        } else {
+            container = container[0];
+
+            container.insertBefore(wrapper[0], container.childNodes[index]);
+        }
+
+        return wrapper;
+    },
+<span id='Ramen-view-layout-Layout-method-getWrapperClasses'>    /**
+</span>     * @param {Ramen.view.Box} item
+     * @returns {String[]}
+     */
+    getWrapperClasses: function (item) {
+        var me = this,
+            classes = [me.wrapperCls];
+
+        if (item.wrapperCls) {
+            classes = classes.concat(JSoop.toArray(item.wrapperCls));
+        }
+
+        return classes;
+    },
+<span id='Ramen-view-layout-Layout-method-getWrapperStyle'>    /**
+</span>     * @param {Ramen.view.Box} item
+     * @returns {Object}
+     */
+    getWrapperStyle: function (item) {
+        var style = {},
+            keys = [
+                'width',
+                'height',
+                'padding',
+                'margin'
+            ];
+
+        JSoop.each(keys, function (key) {
+            if (item[key] !== undefined) {
+                style[key] = item[key];
+            }
+        });
+
+        JSoop.apply(style, item.wrapperStyle || {});
+
+        return style;
+    },
+
+    destroy: function () {
+        var me = this;
+
+        if (me.callParent(arguments) !== false) {
+            me.itemCache.removeAll();
+        }
+    },
+<span id='Ramen-view-layout-Layout-method-onItemsAdd'>    /**
+</span>     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} added
+     */
+    onItemsAdd: function (collection, added) {
+        var me = this;
+
+        if (!me.owner.isRendered) {
+            me.needsRender = true;
+
+            return;
+        }
+
+        JSoop.each(added, function (item) {
+            var key = me.getItemId(item),
+                index = me.itemCache.indexOf(item),
+                wrapper = me.createWrapper(item, index);
+
+            me.wrapperCache[key] = wrapper;
+
+            item.render(wrapper);
+        });
+    },
+<span id='Ramen-view-layout-Layout-method-onItemsRemove'>    /**
+</span>     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} removed
+     */
+    onItemsRemove: function (collection, removed) {
+        var me = this;
+
+        JSoop.each(removed, function (item) {
+            var key = me.getItemId(item),
+                wrapper = me.wrapperCache[key];
+
+            delete me.wrapperCache[key];
+
+            //todo: detach from jquery
+            wrapper.remove();
+            item.destroy();
+        });
+    },
+<span id='Ramen-view-layout-Layout-property-onItemsFilter'>    /**
+</span>     * @private
+     */
+    onItemsFilter: JSoop.emptyFn,
+<span id='Ramen-view-layout-Layout-method-onItemsSort'>    /**
+</span>     * @private
+     */
+    onItemsSort: function () {
+        var me = this,
+            container = me.owner.getTargetEl();
+
+        me.itemCache.each(function (item, index) {
+            var key = me.getItemId(item),
+                wrapper = me.wrapperCache[key];
+
+            if (index === undefined || !container[0].childNodes[index]) {
+                container.append(wrapper);
+            } else {
+                container[0].insertBefore(wrapper[0], container[0].childNodes[index]);
+            }
+        });
+    },
+<span id='Ramen-view-layout-Layout-method-onOwnerItemsAdd'>    /**
+</span>     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
+    onOwnerItemsAdd: function (collection, items) {
+        var me = this;
+
+        JSoop.each(items, function (item) {
+            var index = collection.indexOf(item);
+
+            me.itemCache.insert(item, index);
+        });
+    },
+<span id='Ramen-view-layout-Layout-method-onOwnerItemsRemove'>    /**
+</span>     * @private
+     * @param {Ramen.collection.Dictionary} collection
+     * @param {Ramen.view.Box[]} items
+     */
+    onOwnerItemsRemove: function (collection, items) {
+        this.itemCache.remove(items);
+    },
+<span id='Ramen-view-layout-Layout-method-onOwnerItemsSort'>    /**
+</span>     * @private
+     */
+    onOwnerItemsSort: function () {
+        var me = this;
+
+        me.itemCache.sort(me.owner.items.sortFn);
+    }
+});
+</pre>
+</body>
+</html>

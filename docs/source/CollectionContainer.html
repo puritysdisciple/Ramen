@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-container-CollectionContainer'>/**
+</span> * @class Ramen.view.container.CollectionContainer
+ * A collection container is a special container that will create a child view for every element within a
+ * {@link Ramen.data.Collection}, as well as react to any changes to said collections such as sorting or filtering.
+ * @extends Ramen.view.container.Container
+ */
+JSoop.define('Ramen.view.container.CollectionContainer', {
+    extend: 'Ramen.view.container.Container',
+
+    stype: 'collection-container',
+
+<span id='Ramen-view-container-CollectionContainer-cfg-emptyView'>    /**
+</span>     * @cfg {Ramen.view.Box/Object} emptyView
+     * The view to show when no items are in the collection
+     */
+<span id='Ramen-view-container-CollectionContainer-cfg-collection'>    /**
+</span>     * @cfg {Ramen.data.Collection} collection
+     * The collection this view is listening to.
+     */
+<span id='Ramen-view-container-CollectionContainer-cfg-supressEmptyView'>    /**
+</span>     * @cfg {Boolean}
+     * Setting this to `true` will stop the {@link #emptyView} from being displayed.
+     */
+    supressEmptyView: false,
+
+    initView: function () {
+        var me = this;
+
+        //Collection container's should not have their own items, the collection should be controlling this
+        me.items = me.collection.items;
+        me.itemCache = {};
+
+        me.callParent(arguments);
+
+        me.initEmptyView();
+
+        me.mon(me.collection, {
+            add: me.onCollectionAdd,
+            remove: me.onCollectionRemove,
+            sort: me.onCollectionSort,
+            filter: me.onCollectionFilter,
+            scope: me
+        });
+    },
+
+    initItem: function (item) {
+        var me = this;
+
+        //&lt;debug&gt;
+        if (!item.isModel) {
+            JSoop.error(me.$className + '::initItem must be called with a model');
+        }
+        //&lt;/debug&gt;
+
+        item = {
+            model: item
+        };
+
+        item = me.callParent([item]);
+
+        me.itemCache[me.collection.getKey(item.model)] = item;
+
+        return item;
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-initEmptyView'>    /**
+</span>     * @private
+     */
+    initEmptyView: function () {
+        var me = this,
+            emptyView;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        if (!me.emptyView.isBox) {
+            emptyView = JSoop.clone(me.emptyView);
+
+            //empty view doesn't have a model, so we need to bypass CollectionContainer::initItem
+            emptyView = Ramen.view.container.Container.prototype.initItem.call(me, emptyView);
+
+            me.emptyView = emptyView;
+        }
+
+        //hide the empty view by default
+        me.emptyView.on('render:during', me.hideEmptyView, me, {single: true});
+
+        me.items.add(emptyView);
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-showEmptyView'>    /**
+</span>     * Shows the {@link #emptyView}.
+     */
+    showEmptyView: function () {
+        var me = this;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        //todo: detatch from jquery
+        me.emptyView.el.show();
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-hideEmptyView'>    /**
+</span>     * Hides the {@link #emptyView}.
+     */
+    hideEmptyView: function () {
+        var me = this;
+
+        if (!me.emptyView) {
+            return;
+        }
+
+        //todo: detatch from jquery
+        me.emptyView.el.hide();
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-createItemSortFn'>    /**
+</span>     * @private
+     * @returns {Function}
+     */
+    createItemSortFn: function () {
+        var me = this,
+            collection = me.collection;
+
+        return function (item1, item2) {
+            return collection.sortFn(item1.model, item2.model);
+        };
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-onCollectionAdd'>    /**
+</span>     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} added
+     */
+    onCollectionAdd: function (collection, added) {
+        var me = this;
+
+        JSoop.each(added, function (item) {
+            var index = collection.indexOf(item);
+
+            me.insert(item, index);
+        });
+
+        me.hideEmptyView();
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-onCollectionRemove'>    /**
+</span>     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} removed
+     */
+    onCollectionRemove: function (collection, removed) {
+        var me = this;
+
+        JSoop.each(removed, function (item) {
+            var key = collection.getKey(item);
+
+            me.items.remove(me.itemCache[key]);
+
+            delete me.itemCache[key];
+        });
+
+        if (collection.getCount() === 0 &amp;&amp; !me.supressEmptyView) {
+            me.showEmptyView();
+        }
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-onCollectionSort'>    /**
+</span>     * @private
+     */
+    onCollectionSort: function () {
+        var me = this;
+
+        me.items.sort(me.createItemSortFn());
+    },
+
+<span id='Ramen-view-container-CollectionContainer-method-onCollectionFilter'>    /**
+</span>     * @private
+     * @param {Ramen.data.Collection} collection
+     * @param {Ramen.data.Model[]} filtered
+     * @param {Ramen.data.Model[]} unfiltered
+     */
+    onCollectionFilter: function (collection, filtered, unfiltered) {
+        var me = this,
+            removed = [],
+            added = [];
+
+        JSoop.each(unfiltered, function (item) {
+            if (collection.indexOf(item) === -1) {
+                removed.push(item);
+            }
+        });
+
+        collection.iterate(function (item, id) {
+            if (!me.itemCache[id]) {
+                added.push(item);
+            }
+        });
+
+        if (removed.length &gt; 0) {
+            me.onCollectionRemove(collection, removed);
+        }
+
+        if (added.length &gt; 0) {
+            me.onCollectionAdd(collection, added);
+        }
+
+        if (collection.getCount() === 0 &amp;&amp; !me.supressEmptyView) {
+            me.showEmptyView();
+        } else {
+            me.hideEmptyView();
+        }
+    }
+});
+</pre>
+</body>
+</html>

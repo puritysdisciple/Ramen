@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-view-Box'>/**
+</span> * @class Ramen.view.Box
+ * The base for all views. In general, a box is a managed HTMLElement. For the most part, this class shouldn't need to
+ * be used. Instead look at its subclasses as a better starting point for creating views:
+ *
+ *  - {@link Ramen.view.View}
+ *  - {@link Ramen.view.binding.BindingView}
+ *  - {@link Ramen.view.container.Container}
+ *  - {@link Ramen.view.container.CollectionContainer}
+ *
+ * @mixins JSoop.mixins.Configurable
+ * @mixins JSoop.mixins.Observable
+ * @mixins JSoop.mixins.PluginManager
+ * @mixins Ramen.util.Renderable
+ */
+JSoop.define('Ramen.view.Box', {
+    mixins: {
+        configurable: 'JSoop.mixins.Configurable',
+        observable: 'JSoop.mixins.Observable',
+        pluginManager: 'JSoop.mixins.PluginManager',
+        renderable: 'Ramen.util.Renderable'
+    },
+
+<span id='Ramen-view-Box-property-stype'>    /**
+</span>     * @property {String} stype
+     * An arbitrary used for locating the view via a {@link Ramen.view.Query}.
+     */
+    stype: 'box',
+
+    isBox: true,
+<span id='Ramen-view-Box-cfg-isManaged'>    /**
+</span>     * @cfg
+     * Determines whether or not the view should be placed into {@link Ramen.view.ViewManager}
+     */
+    isManaged: true,
+<span id='Ramen-view-Box-cfg-autoRender'>    /**
+</span>     * @cfg
+     * If set to `true` the view will be rendered on creation. This is used in cojunction with {@link #renderTo}
+     */
+    autoRender: false,
+<span id='Ramen-view-Box-cfg-tag'>    /**
+</span>     * @cfg {String/Object}
+     * The config object used by {@link Ramen.dom.Helper} to create the HTMLElement the box manages.
+     */
+    tag: null,
+<span id='Ramen-view-Box-cfg-renderTo'>    /**
+</span>     * @cfg {String} renderTo
+     * A css selector that points to where the box should be rendered to if no container is specified.
+     */
+
+    config: {
+        required: [
+<span id='Ramen-view-Box-cfg-baseId'>            /**
+</span>             * @cfg {String} baseId
+             * The ID prefix that will be used when creating the auto ID.
+             */
+            'baseId',
+<span id='Ramen-view-Box-cfg-baseCls'>            /**
+</span>             * @cfg {String} baseCls
+             * The base css class that will be applied to the managed HTMLElement
+             */
+            'baseCls'
+        ]
+    },
+
+<span id='Ramen-view-Box-method-constructor'>    /**
+</span>     * Creates a new box.
+     * @param {Object} config The config object
+     */
+    constructor: function (config) {
+        var me = this;
+
+        me.initMixin('configurable', [config]);
+        me.initMixin('observable');
+        me.initMixin('pluginManager');
+
+        me.initView();
+
+        me.id = me.getId();
+        me.el = me.createEl();
+
+        if (me.isManaged) {
+            Ramen.view.ViewManager.add(me);
+        }
+
+        if (me.autoRender) {
+            me.render(me.renderTo);
+        }
+    },
+<span id='Ramen-view-Box-method-initView'>    /**
+</span>     * @method
+     * Called after mixins have been setup, but before anything else.
+     * @template
+     */
+    initView: JSoop.emptyFn,
+<span id='Ramen-view-Box-method-getId'>    /**
+</span>     * Gets the ID of the box. If one is not set, it will be created using the {@link #baseId}.
+     * @returns {String}
+     */
+    getId: function () {
+        var me = this;
+
+        if (!me.id) {
+            me.id = Ramen.id(me.baseId);
+        }
+
+        return me.id;
+    },
+<span id='Ramen-view-Box-method-render'>    /**
+</span>     * Renders the box and places it in the specified container.
+     * @param {HTMLElement} container The container element to place the box into
+     * @param {Number} [index]
+     * The index to insert the box at, if this is ommited the box will be appended to the container
+     */
+    render: function (container, index) {
+        var me = this;
+
+        if (me.fireEvent('render:before', me, container, index) === false) {
+            return;
+        }
+
+        me.fireEvent('render:during', me);
+
+        me.addToContainer(container, index);
+
+        me.isRendered = true;
+
+        if (me.owner &amp;&amp; !me.owner.isRendered) {
+            me.mon(me.owner, 'render:after', function () {
+                me.fireEvent('render:after', me);
+            }, me, {
+                single: true
+            });
+        } else {
+            me.fireEvent('render:after', me);
+        }
+    },
+<span id='Ramen-view-Box-method-addToContainer'>    /**
+</span>     * @private
+     * @param {HTMLElement} container
+     * @param {Number} index
+     */
+    addToContainer: function (container, index) {
+        var me = this;
+
+        if (!container) {
+            container = me.renderTo;
+        }
+
+        //&lt;debug&gt;
+        if (!container) {
+            JSoop.error('Render requires either a container argument or a &quot;renderTo&quot; config value');
+        }
+        //&lt;/debug&gt;
+
+        //todo: detach from jquery
+        container = jQuery(container).eq(0);
+
+        if (index === undefined || !container[0].childNodes[index]) {
+            container.append(me.el);
+        } else {
+            container = container[0];
+
+            container.insertBefore(me.el[0], container.childNodes[index]);
+        }
+    },
+<span id='Ramen-view-Box-method-addCls'>    /**
+</span>     * Adds a css class to the box.
+     * @param {String/String[]} classes The classes to add
+     */
+    addCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                me.cls = [];
+            }
+
+            JSoop.each(classes, function (cls) {
+                if (JSoop.util.Array.indexOf(me.cls, cls) === -1) {
+                    me.cls.push(cls);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.addClass(cls);
+        });
+    },
+<span id='Ramen-view-Box-method-removeCls'>    /**
+</span>     * Removes a css class from the box.
+     * @param {String/String[]} classes The classes to remove
+     */
+    removeCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                return;
+            }
+
+            JSoop.each(classes, function (cls) {
+                index = JSoop.util.Array.indexOf(me.cls, cls);
+
+                if (index !== -1) {
+                    me.cls.splice(index, 1);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.removeClass(cls);
+        });
+    },
+<span id='Ramen-view-Box-method-destroy'>    /**
+</span>     * Destroys the box. This will remove the box from the dom and do any needed cleanup.
+     */
+    destroy: function () {
+        var me = this;
+
+        if (me.fireEvent('destroy:before') === false) {
+            return false;
+        }
+
+        me.fireEvent('destroy', me);
+
+        me.removeAllListeners();
+        me.removeAllManagedListeners();
+        me.destroyPlugins();
+
+        //todo: detach from jquery
+        me.el.remove();
+
+        if (me.isManaged) {
+            Ramen.view.ViewManager.remove(me);
+        }
+    },
+
+<span id='Ramen-view-Box-event-destroyBefore'>    /**
+</span>     * @event destroyBefore
+     * Fired before the box is destroyed.
+     * @param {Ramen.view.Box} me The box that fired the event
+     * @preventable
+     */
+    onDestroyBefore: JSoop.emptyFn,
+<span id='Ramen-view-Box-event-destroy'>    /**
+</span>     * @event destroy
+     * Fired when the box is destroyed.
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
+    onDestroy: JSoop.emptyFn,
+<span id='Ramen-view-Box-event-renderDuring'>    /**
+</span>     * @event renderDuring
+     * Fired at the beginning of the render process.
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
+    onRenderDuring: JSoop.emptyFn,
+<span id='Ramen-view-Box-event-renderBefore'>    /**
+</span>     * @event renderBefore
+     * Fired before the render happens
+     * @param {Ramen.view.Box} me The box that fired the event
+     * @param {HTMLElement} container The container the box was tried to render to
+     * @param {Number} index The index the box was tried to render to
+     * @preventable
+     */
+    onRenderBefore: JSoop.emptyFn,
+<span id='Ramen-view-Box-event-renderAfter'>    /**
+</span>     * @event renderAfter
+     * @param {Ramen.view.Box} me The box that fired the event
+     */
+    onRenderAfter: JSoop.emptyFn
+});
+</pre>
+</body>
+</html>

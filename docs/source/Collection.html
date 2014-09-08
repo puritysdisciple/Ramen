@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-data-Collection'>/**
+</span> * @class Ramen.data.Collection
+ * Represents a set of {@link Ramen.data.Model}'s.
+ * @extends Ramen.collection.Dictionary
+ */
+JSoop.define('Ramen.data.Collection', {
+    extend: 'Ramen.collection.Dictionary',
+
+    //====================================================================================================
+    //Ramen.collection.Dictionary Overrides
+    //====================================================================================================
+    filterType: 'Ramen.data.filter.ModelFilter',
+
+    config: {
+        required: [
+<span id='Ramen-data-Collection-cfg-model'>            /**
+</span>             * @cfg {String} model
+             * The default model type this collection manages. This is used when a raw javascript object is added to the
+             * collection.
+             */
+            'model'
+        ]
+    },
+
+    getKey: function (item) {
+        return item.get(item.idField);
+    },
+
+    initItem: function (item) {
+        return this.create(item);
+    },
+
+    createSortFn: function (fn, dir) {
+        var body;
+
+        if (JSoop.isString(fn)) {
+            body = [
+                'var val1 = model1.get(&quot;' + fn + '&quot;),',
+                '    val2 = model2.get(&quot;' + fn + '&quot;);',
+                'if (val1 ' + ((dir === 'desc')? '&gt;' : '&lt;') + ' val2) {',
+                '   return -1;',
+                '}',
+                'if (val1 ' + ((dir === 'desc')? '&lt;' : '&gt;') + ' val2) {',
+                '   return 1;',
+                '}',
+                'return 0;'
+            ];
+
+            fn = new Function('model1', 'model2', body.join('\n'));
+        }
+
+        return fn;
+    },
+
+    onAddBefore: function (collection, item, index) {
+        var me = this;
+
+        if (me.callParent(arguments) === false) {
+            index = me.indexOfKey(me.getKey(item));
+
+            //merge models if it is already in the collection
+            if (index !== -1) {
+                me.items[index].set(item.mergeData);
+
+                delete item.mergeData;
+            }
+
+            return false;
+        } else {
+            delete item.mergeData;
+        }
+    },
+
+    //====================================================================================================
+    //New Members
+    //====================================================================================================
+    isCollection: true,
+
+<span id='Ramen-data-Collection-method-create'>    /**
+</span>     * Makes sure that the given item is a {@link Ramen.data.Model}.
+     * @param {Ramen.data.Model/Object} item
+     * @returns {Ramen.data.Model}
+     */
+    create: function (item) {
+        var me = this;
+
+        if (item.isModel) {
+            return item;
+        }
+
+        return JSoop.create(me.model, item, {
+            mergeData: item
+        });
+    }
+}, function () {
+    Ramen.collections = {};
+
+<span id='Ramen-method-addCollection'>    /**
+</span>     * @member Ramen
+     * @param {String} name
+     * @param {Ramen.data.Collection} collection
+     */
+    Ramen.addCollection = function (name, collection) {
+        Ramen.collections[name] = collection;
+    };
+
+<span id='Ramen-method-getCollection'>    /**
+</span>     * @member Ramen
+     * @param {String} name
+     * @returns {Ramen.data.Collection}
+     */
+    Ramen.getCollection = function (name) {
+        return Ramen.collections[name];
+    };
+});
+</pre>
+</body>
+</html>

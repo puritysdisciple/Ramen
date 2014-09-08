@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='Ramen-util-Template'>/**
+</span> * @class Ramen.util.Template
+ * A template that can be used to dynamically create content. Templates use the Twig templating language.
+ */
+//todo: detach from twig
+JSoop.define('Ramen.util.Template', {
+    isTemplate: true,
+<span id='Ramen-util-Template-method-constructor'>    /**
+</span>     * @param {String/String[]} tpl The desired template
+     */
+    constructor: function (tpl) {
+        var me = this;
+
+        if (JSoop.isArray(tpl)) {
+            tpl = tpl.join('');
+        }
+
+        me.raw = tpl;
+
+        me.initTemplate();
+    },
+<span id='Ramen-util-Template-method-initTemplate'>    /**
+</span>     * @private
+     */
+    initTemplate: function () {
+        var me = this;
+
+        me.tpl = Twig.twig({
+            data: me.raw
+        });
+    },
+<span id='Ramen-util-Template-method-render'>    /**
+</span>     * Renders the template using the given params.
+     * @param {Object} params
+     * @returns {String}
+     */
+    render: function (params) {
+        return this.tpl.render(params);
+    }
+});
+</pre>
+</body>
+</html>
