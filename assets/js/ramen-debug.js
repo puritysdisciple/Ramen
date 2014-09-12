@@ -792,7 +792,7 @@ JSoop.define('Ramen.collection.List', {
 
         me.removeAllListeners();
         me.removeAllManagedListeners();
-        me.destroyPlugins();
+        me.destroyAllPlugins();
         me.removeAll();
     },
 
@@ -2725,7 +2725,66 @@ JSoop.define('Ramen.util.Renderable', {
             //todo: detach from jquery
             me[key] = jQuery('#' + id + '-' + addition, me.el);
         });
-    }
+    },
+
+    /**
+     * Adds a css class to the element.
+     * @param {String/String[]} classes The classes to add
+     */
+    addCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                me.cls = [];
+            }
+
+            JSoop.each(classes, function (cls) {
+                if (JSoop.util.Array.indexOf(me.cls, cls) === -1) {
+                    me.cls.push(cls);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.addClass(cls);
+        });
+    },
+    /**
+     * Removes a css class from the element.
+     * @param {String/String[]} classes The classes to remove
+     */
+    removeCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                return;
+            }
+
+            JSoop.each(classes, function (cls) {
+                index = JSoop.util.Array.indexOf(me.cls, cls);
+
+                if (index !== -1) {
+                    me.cls.splice(index, 1);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.removeClass(cls);
+        });
+    },
 });
 
 /**
@@ -3112,64 +3171,6 @@ JSoop.define('Ramen.view.Box', {
         }
     },
     /**
-     * Adds a css class to the box.
-     * @param {String/String[]} classes The classes to add
-     */
-    addCls: function (classes) {
-        var me = this;
-
-        classes = JSoop.toArray(classes);
-
-        if (!me.el) {
-            if (!me.cls) {
-                me.cls = [];
-            }
-
-            JSoop.each(classes, function (cls) {
-                if (JSoop.util.Array.indexOf(me.cls, cls) === -1) {
-                    me.cls.push(cls);
-                }
-            });
-
-            return;
-        }
-
-        JSoop.each(classes, function (cls) {
-            //todo: detach from jquery
-            me.el.addClass(cls);
-        });
-    },
-    /**
-     * Removes a css class from the box.
-     * @param {String/String[]} classes The classes to remove
-     */
-    removeCls: function (classes) {
-        var me = this;
-
-        classes = JSoop.toArray(classes);
-
-        if (!me.el) {
-            if (!me.cls) {
-                return;
-            }
-
-            JSoop.each(classes, function (cls) {
-                index = JSoop.util.Array.indexOf(me.cls, cls);
-
-                if (index !== -1) {
-                    me.cls.splice(index, 1);
-                }
-            });
-
-            return;
-        }
-
-        JSoop.each(classes, function (cls) {
-            //todo: detach from jquery
-            me.el.removeClass(cls);
-        });
-    },
-    /**
      * Destroys the box. This will remove the box from the dom and do any needed cleanup.
      */
     destroy: function () {
@@ -3183,7 +3184,7 @@ JSoop.define('Ramen.view.Box', {
 
         me.removeAllListeners();
         me.removeAllManagedListeners();
-        me.destroyPlugins();
+        me.destroyAllPlugins();
 
         //todo: detach from jquery
         me.el.remove();
@@ -3909,6 +3910,14 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             parser = /\.get\(["'](.+?)["']\)/g,
             match;
 
+        if (!me.watchingFields) {
+            me.watchingFields = [];
+        }
+
+        if (!me.watchingAssociations) {
+            me.watchingAssociations = [];
+        }
+
         //this looks for field changes
         for (match = parser.exec(fn); match; match = parser.exec(fn)) {
             if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
@@ -3916,7 +3925,7 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             }
         }
 
-        me.watchingFields = watching;
+        me.watchingFields = me.watchingFields.concat(watching);
 
         parser = /\.get([A-Z][a-zA-Z0-9]*)\(.*\)/g;
         watching = [];
@@ -3927,7 +3936,7 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             }
         }
 
-        me.watchingAssociations = watching;
+        me.watchingAssociations = me.watchingAssociations.concat(watching);
     },
 
     /**
