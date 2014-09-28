@@ -74,7 +74,7 @@
                 type = match[1],
                 attribute = match[3],
                 value = match[4],
-                fn = ['if (view.stype !== \'' + type + '\') { return false; }'];
+                fn = ['if (view.rtype !== \'' + type + '\') { return false; }'];
 
             if (attribute && !value) {
                 fn.push('if (!view[\'' + attribute + '\']) { return false; }');
@@ -163,7 +163,7 @@
     /**
      * @class Ramen.view.Query
      * Allows the querying of any objects the inherit from {@link Ramen.view.Box} in a css-like syntax based on
-     * {@link Ramen.view.Box#stype stype} as the tag name.
+     * {@link Ramen.view.Box#rtype rtype} as the tag name.
      * @singleton
      */
     JSoop.define('Ramen.view.Query', {

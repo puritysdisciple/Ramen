@@ -6,7 +6,7 @@
 JSoop.define('Ramen.view.container.Viewport', {
     extend: 'Ramen.view.container.Container',
 
-    stype: 'viewport',
+    rtype: 'viewport',
     baseId: 'viewport',
     baseCls: 'viewport',
 

@@ -9,7 +9,7 @@ JSoop.define('Ramen.view.View', {
 
     isView: true,
 
-    stype: 'view',
+    rtype: 'view',
 
     /**
      * @cfg {String/String[]}

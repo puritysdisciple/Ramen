@@ -91,5 +91,64 @@ JSoop.define('Ramen.util.Renderable', {
             //todo: detach from jquery
             me[key] = jQuery('#' + id + '-' + addition, me.el);
         });
-    }
+    },
+
+    /**
+     * Adds a css class to the element.
+     * @param {String/String[]} classes The classes to add
+     */
+    addCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                me.cls = [];
+            }
+
+            JSoop.each(classes, function (cls) {
+                if (JSoop.util.Array.indexOf(me.cls, cls) === -1) {
+                    me.cls.push(cls);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.addClass(cls);
+        });
+    },
+    /**
+     * Removes a css class from the element.
+     * @param {String/String[]} classes The classes to remove
+     */
+    removeCls: function (classes) {
+        var me = this;
+
+        classes = JSoop.toArray(classes);
+
+        if (!me.el) {
+            if (!me.cls) {
+                return;
+            }
+
+            JSoop.each(classes, function (cls) {
+                index = JSoop.util.Array.indexOf(me.cls, cls);
+
+                if (index !== -1) {
+                    me.cls.splice(index, 1);
+                }
+            });
+
+            return;
+        }
+
+        JSoop.each(classes, function (cls) {
+            //todo: detach from jquery
+            me.el.removeClass(cls);
+        });
+    },
 });

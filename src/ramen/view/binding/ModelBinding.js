@@ -28,6 +28,10 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
     initBinding: function () {
         var me = this;
 
+        if (JSoop.isString(me.model)) {
+            me.model = me.owner[me.model];
+        }
+
         if (me.field) {
             me.formatter = new Function('model', 'return model.get("' + me.field + '");');
         }
@@ -58,6 +62,14 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             parser = /\.get\(["'](.+?)["']\)/g,
             match;
 
+        if (!me.watchingFields) {
+            me.watchingFields = [];
+        }
+
+        if (!me.watchingAssociations) {
+            me.watchingAssociations = [];
+        }
+
         //this looks for field changes
         for (match = parser.exec(fn); match; match = parser.exec(fn)) {
             if (JSoop.util.Array.indexOf(watching, match[1]) === -1) {
@@ -65,7 +77,7 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             }
         }
 
-        me.watchingFields = watching;
+        me.watchingFields = me.watchingFields.concat(watching);
 
         parser = /\.get([A-Z][a-zA-Z0-9]*)\(.*\)/g;
         watching = [];
@@ -76,7 +88,7 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
             }
         }
 
-        me.watchingAssociations = watching;
+        me.watchingAssociations = me.watchingAssociations.concat(watching);
     },
 
     /**

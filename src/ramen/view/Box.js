@@ -22,10 +22,10 @@ JSoop.define('Ramen.view.Box', {
     },
 
     /**
-     * @property {String} stype
+     * @property {String} rtype
      * An arbitrary used for locating the view via a {@link Ramen.view.Query}.
      */
-    stype: 'box',
+    rtype: 'box',
 
     isBox: true,
     /**
@@ -165,64 +165,6 @@ JSoop.define('Ramen.view.Box', {
         }
     },
     /**
-     * Adds a css class to the box.
-     * @param {String/String[]} classes The classes to add
-     */
-    addCls: function (classes) {
-        var me = this;
-
-        classes = JSoop.toArray(classes);
-
-        if (!me.el) {
-            if (!me.cls) {
-                me.cls = [];
-            }
-
-            JSoop.each(classes, function (cls) {
-                if (JSoop.util.Array.indexOf(me.cls, cls) === -1) {
-                    me.cls.push(cls);
-                }
-            });
-
-            return;
-        }
-
-        JSoop.each(classes, function (cls) {
-            //todo: detach from jquery
-            me.el.addClass(cls);
-        });
-    },
-    /**
-     * Removes a css class from the box.
-     * @param {String/String[]} classes The classes to remove
-     */
-    removeCls: function (classes) {
-        var me = this;
-
-        classes = JSoop.toArray(classes);
-
-        if (!me.el) {
-            if (!me.cls) {
-                return;
-            }
-
-            JSoop.each(classes, function (cls) {
-                index = JSoop.util.Array.indexOf(me.cls, cls);
-
-                if (index !== -1) {
-                    me.cls.splice(index, 1);
-                }
-            });
-
-            return;
-        }
-
-        JSoop.each(classes, function (cls) {
-            //todo: detach from jquery
-            me.el.removeClass(cls);
-        });
-    },
-    /**
      * Destroys the box. This will remove the box from the dom and do any needed cleanup.
      */
     destroy: function () {
@@ -236,7 +178,7 @@ JSoop.define('Ramen.view.Box', {
 
         me.removeAllListeners();
         me.removeAllManagedListeners();
-        me.destroyPlugins();
+        me.destroyAllPlugins();
 
         //todo: detach from jquery
         me.el.remove();

@@ -364,7 +364,7 @@ JSoop.define('Ramen.collection.List', {
 
         me.removeAllListeners();
         me.removeAllManagedListeners();
-        me.destroyPlugins();
+        me.destroyAllPlugins();
         me.removeAll();
     },
 

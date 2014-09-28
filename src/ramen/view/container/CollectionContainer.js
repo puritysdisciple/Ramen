@@ -7,7 +7,7 @@
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 
-    stype: 'collection-container',
+    rtype: 'collection-container',
 
     /**
      * @cfg {Ramen.view.Box/Object} emptyView
@@ -21,7 +21,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
      * @cfg {Boolean}
      * Setting this to `true` will stop the {@link #emptyView} from being displayed.
      */
-    supressEmptyView: false,
+    suppressEmptyView: false,
 
     initView: function () {
         var me = this;
@@ -63,6 +63,14 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         return item;
     },
 
+    onDestroy: function () {
+        var me = this;
+
+        me.callParent(arguments);
+
+        me.emptyView = null;
+    },
+
     /**
      * @private
      */
@@ -84,7 +92,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         }
 
         //hide the empty view by default
-        me.emptyView.on('render:during', me.hideEmptyView, me, {single: true});
+        me.mon(me.emptyView, 'render:during', me.hideEmptyView, me, {single: true});
 
         me.items.add(emptyView);
     },
@@ -163,7 +171,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
             delete me.itemCache[key];
         });
 
-        if (collection.getCount() === 0 && !me.supressEmptyView) {
+        if (collection.getCount() === 0 && !me.suppressEmptyView) {
             me.showEmptyView();
         }
     },
@@ -208,7 +216,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
             me.onCollectionAdd(collection, added);
         }
 
-        if (collection.getCount() === 0 && !me.supressEmptyView) {
+        if (collection.getCount() === 0 && !me.suppressEmptyView) {
             me.showEmptyView();
         } else {
             me.hideEmptyView();

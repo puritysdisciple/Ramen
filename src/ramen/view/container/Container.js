@@ -8,7 +8,7 @@ JSoop.define('Ramen.view.container.Container', {
 
     isContainer: true,
 
-    stype: 'container',
+    rtype: 'container',
 
     baseCls: 'container',
     baseId: 'container',
@@ -128,7 +128,7 @@ JSoop.define('Ramen.view.container.Container', {
         var me = this;
 
         if (me.targetEl && me[me.targetEl]) {
-            return me.targetEl;
+            return me[me.targetEl];
         }
 
         return me.el;
