@@ -194,6 +194,17 @@ JSoop.define('Ramen.view.layout.Layout', {
         return style;
     },
 
+    /**
+     * Gets the wrapper element associated with the given item.
+     * @param {Ramen.view.Box} item
+     * @returns {HTMLElement}
+     */
+    getWrapperEl: function (item) {
+        var me = this;
+
+        return me.wrapperCache[me.getItemId(item)];
+    },
+
     destroy: function () {
         var me = this;
 

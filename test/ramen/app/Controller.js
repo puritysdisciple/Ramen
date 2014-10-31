@@ -2,7 +2,7 @@ describe('Ramen.app.Controller', function () {
     JSoop.define('Testing.app.ControllerView', {
         extend: 'Ramen.view.View',
 
-        stype: 'test-view'
+        rtype: 'test-view'
     });
 
     var controller = JSoop.create('Ramen.app.Controller', {

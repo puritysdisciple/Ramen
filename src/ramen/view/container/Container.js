@@ -36,7 +36,7 @@ JSoop.define('Ramen.view.container.Container', {
 
     initView: function () {
         var me = this,
-            items = JSoop.clone(me.items);
+            items = me.items;
 
         me.callParent(arguments);
 

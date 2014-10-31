@@ -27,7 +27,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         var me = this;
 
         //Collection container's should not have their own items, the collection should be controlling this
-        me.items = me.collection.items;
+        me.items = JSoop.clone(me.collection.items);
         me.itemCache = {};
 
         me.callParent(arguments);

@@ -151,6 +151,14 @@ JSoop.define('Ramen.app.Controller', {
     },
 
     /**
+     * Gets a reference to the Ramen.app.Application that created the controller.
+     * @returns {Ramen.app.Application}
+     */
+    getApp: function () {
+        return this.app;
+    },
+
+    /**
      * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
      * {@link Ramen.view.ViewManager}. If a view matches one of the selectors, the events nested in the object will be
      * attached to it. For example, this will attach to all new views and log a message when they are rendered:
@@ -199,8 +207,7 @@ JSoop.define('Ramen.app.Controller', {
 
     onRouterRoute: function (router, path, route) {
         var me = this,
-            callback = me.routes[path],
-            scope;
+            callback = me.routes[path];
 
         if (!callback) {
             return;

@@ -23,6 +23,14 @@ JSoop.define('Ramen.app.Helper', {
     },
 
     /**
+     * Gets a reference to the Ramen.app.Application that created the parent controller.
+     * @returns {Ramen.app.Application}
+     */
+    getApp: function () {
+        return this.owner.app;
+    },
+
+    /**
      * @method
      * Called after the config has been applied
      * @template

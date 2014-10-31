@@ -105,6 +105,8 @@ JSoop.define('Ramen.util.Renderable', {
         if (!me.el) {
             if (!me.cls) {
                 me.cls = [];
+            } else {
+                me.cls = JSoop.toArray(me.cls);
             }
 
             JSoop.each(classes, function (cls) {
@@ -133,6 +135,8 @@ JSoop.define('Ramen.util.Renderable', {
         if (!me.el) {
             if (!me.cls) {
                 return;
+            } else {
+                me.cls = JSoop.toArray(me.cls);
             }
 
             JSoop.each(classes, function (cls) {
