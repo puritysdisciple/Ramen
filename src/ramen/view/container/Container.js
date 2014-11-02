@@ -74,6 +74,19 @@ JSoop.define('Ramen.view.container.Container', {
         layout.owner = me;
 
         me.layout = JSoop.create(layout.type, layout);
+
+        me.mon(me.layout, {
+            'layout:before': function () {
+                return me.fireEvent('layout:before', me);
+            },
+            'layout:during': function () {
+                me.fireEvent('layout:during', me);
+            },
+            'layout:after': function () {
+                me.fireEvent('layout:after', me);
+            },
+            scope: me
+        });
     },
 
     /**
@@ -217,5 +230,13 @@ JSoop.define('Ramen.view.container.Container', {
         var me = this;
 
         return me.find(query).pop();
-    }
+    },
+
+    doLayout: function () {
+        this.layout.doLayout();
+    },
+
+    onLayoutBefore: JSoop.emptyFn,
+    onLayoutDuring: JSoop.emptyFn,
+    onLayoutAfter: JSoop.emptyFn
 });

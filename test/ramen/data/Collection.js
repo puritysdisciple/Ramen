@@ -112,11 +112,11 @@ describe('Ramen.data.Collection', function () {
 
         expect(collection.getCount()).toBe(2);
 
-        expect(collection.first({
+        expect(collection.findFirst({
             first: 'Bertram'
         }).get('first')).toBe('Bertram');
 
-        expect(collection.last({
+        expect(collection.findLast({
             first: 'Jarrod'
         }).get('first')).toBe('Jarrod');
 

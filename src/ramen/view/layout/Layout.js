@@ -36,7 +36,6 @@ JSoop.define('Ramen.view.layout.Layout', {
                 add: me.onItemsAdd,
                 remove: me.onItemsRemove,
                 sort: me.onItemsSort,
-                filter: me.onItemsFilter,
                 scope: me
             }
         });
@@ -48,7 +47,10 @@ JSoop.define('Ramen.view.layout.Layout', {
             scope: me
         });
 
-        me.mon(me.owner, 'render:during', me.renderItems, me, {
+        me.mon(me.owner, {
+            'render:during': me.renderItems,
+            'render:after': me.doLayout,
+            scope: me,
             single: true
         });
 
@@ -65,6 +67,17 @@ JSoop.define('Ramen.view.layout.Layout', {
      * @template
      */
     initContainer: JSoop.emptyFn,
+    doLayout: function () {
+        var me = this;
+
+        if (me.fireEvent('layout:before', me) === false) {
+            return;
+        }
+
+        me.fireEvent('layout:during', me);
+
+        me.fireEvent('layout:after', me);
+    },
     /**
      * @param {Ramen.view.Box[]} items
      */
@@ -235,6 +248,8 @@ JSoop.define('Ramen.view.layout.Layout', {
 
             item.render(wrapper);
         });
+
+        me.doLayout();
     },
     /**
      * @private
@@ -252,13 +267,12 @@ JSoop.define('Ramen.view.layout.Layout', {
 
             //todo: detach from jquery
             wrapper.remove();
+
             item.destroy();
         });
+
+        me.doLayout();
     },
-    /**
-     * @private
-     */
-    onItemsFilter: JSoop.emptyFn,
     /**
      * @private
      */
@@ -276,6 +290,8 @@ JSoop.define('Ramen.view.layout.Layout', {
                 container[0].insertBefore(wrapper[0], container[0].childNodes[index]);
             }
         });
+
+        me.doLayout();
     },
     /**
      * @private
@@ -306,5 +322,9 @@ JSoop.define('Ramen.view.layout.Layout', {
         var me = this;
 
         me.itemCache.sort(me.owner.items.sortFn);
-    }
+    },
+
+    onLayoutBefore: JSoop.emptyFn,
+    onLayoutDuring: JSoop.emptyFn,
+    onLayoutAfter: JSoop.emptyFn
 });
