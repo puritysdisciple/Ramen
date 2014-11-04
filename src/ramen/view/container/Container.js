@@ -102,6 +102,10 @@ JSoop.define('Ramen.view.container.Container', {
         JSoop.each(items, function (item, index) {
             item = me.initItem(item);
 
+            if (!item) {
+                return;
+            }
+
             items[index] = item;
         });
 
