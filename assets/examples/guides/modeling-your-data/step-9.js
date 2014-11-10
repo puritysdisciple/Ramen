@@ -49,7 +49,7 @@ JSoop.define('Talk.model.Conversation', {
 
     prepareParticipants: function (data) {
         var participants = [],
-        //get the global users collection so we can query it
+            //get the global users collection so we can query it
             users = Ramen.getCollection('Users');
 
         JSoop.each(data.participants, function (participantId) {

@@ -1,58 +1,8 @@
+{% extends "guide.html.twig" %}
 
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
+{% set title = "Life Cycle of a View" %}
 
-    <title>Ramen - Making Your Apps Delicious</title>
-
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/css/prism.css">
-    <link rel="stylesheet" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/css/styles.css">
-    
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/index.html">Ramen</a>
-        </div>
-        <div class="navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/features.html">Features</a></li>
-                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/get-started.html">Get Started</a></li>
-                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/docs/index.html">Documentation</a></li>
-                <li>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Download <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen.js" target="_blank">Compressed</a></li>
-                        <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen-debug.js" target="_blank">Uncompressed</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-    <div class="jumbotron guide-jumbotron">
-        <div class="container">
-            <h1>Life Cycle of a View</h1>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
+{% block guide %}
     <div class="col-md-9">
         <h3 id="intro">Introduction</h3>
         <p>
@@ -95,24 +45,24 @@
                 </p>
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Note</th>
-                        </tr>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Note</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><code>view</code></td>
-                            <td>the view that the hook belongs to</td>
-                        </tr>
-                        <tr>
-                            <td><code>container</code></td>
-                            <td>the container <code>render</code> was called with</td>
-                        </tr>
-                        <tr>
-                            <td><code>index</code></td>
-                            <td>the index <code>render</code> was called with</td>
-                        </tr>
+                    <tr>
+                        <td><code>view</code></td>
+                        <td>the view that the hook belongs to</td>
+                    </tr>
+                    <tr>
+                        <td><code>container</code></td>
+                        <td>the container <code>render</code> was called with</td>
+                    </tr>
+                    <tr>
+                        <td><code>index</code></td>
+                        <td>the index <code>render</code> was called with</td>
+                    </tr>
                     </tbody>
                 </table>
             </li>
@@ -241,7 +191,7 @@
                     the collection lock that this view has. You can see how this is done in the <code>initEmptyView</code>
                     method:
                 </p>
-                <pre data-src="../assets/examples/guides/life-cycle-of-a-view/initEmptyView.js"></pre>
+                <pre data-src="{{ root }}{{ assets }}/examples/guides/life-cycle-of-a-view/initEmptyView.js"></pre>
             </li>
         </ol>
     </div>
@@ -257,21 +207,4 @@
             </ul>
         </div>
     </div>
-</div>
-    </div>
-
-<div class="container">
-    <footer>
-        <hr/>
-    </footer>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/twig.js"></script>
-<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/jsoop.js"></script>
-<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen.js"></script>
-<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/prism.min.js"></script>
-    <script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/usage.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout.html.twig" %}
+
+{% set root = "../.." %}
+
+{% block js %}
+    <script src="{{ root }}{{ assets }}/js/usage.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron main">
+        <div class="container">
+            <h1>{{ title }}</h1>
+            <p>{{ subtitle }}</p>
+        </div>
+    </div>
+
+<div class="container">
+    <div class="row">
+        {% block guide %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
