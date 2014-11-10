@@ -2124,6 +2124,14 @@ JSoop.define('Ramen.app.Controller', {
     },
 
     /**
+     * Gets a reference to the Ramen.app.Application that created the controller.
+     * @returns {Ramen.app.Application}
+     */
+    getApp: function () {
+        return this.app;
+    },
+
+    /**
      * Sets up {@link Ramen.view.Query view queries} that can be used to identify new views added to
      * {@link Ramen.view.ViewManager}. If a view matches one of the selectors, the events nested in the object will be
      * attached to it. For example, this will attach to all new views and log a message when they are rendered:
@@ -2172,8 +2180,7 @@ JSoop.define('Ramen.app.Controller', {
 
     onRouterRoute: function (router, path, route) {
         var me = this,
-            callback = me.routes[path],
-            scope;
+            callback = me.routes[path];
 
         if (!callback) {
             return;
@@ -2223,6 +2230,14 @@ JSoop.define('Ramen.app.Helper', {
         me.initMixin('observable');
 
         me.initHelper();
+    },
+
+    /**
+     * Gets a reference to the Ramen.app.Application that created the parent controller.
+     * @returns {Ramen.app.Application}
+     */
+    getApp: function () {
+        return this.owner.app;
     },
 
     /**
@@ -2739,6 +2754,8 @@ JSoop.define('Ramen.util.Renderable', {
         if (!me.el) {
             if (!me.cls) {
                 me.cls = [];
+            } else {
+                me.cls = JSoop.toArray(me.cls);
             }
 
             JSoop.each(classes, function (cls) {
@@ -2767,6 +2784,8 @@ JSoop.define('Ramen.util.Renderable', {
         if (!me.el) {
             if (!me.cls) {
                 return;
+            } else {
+                me.cls = JSoop.toArray(me.cls);
             }
 
             JSoop.each(classes, function (cls) {
@@ -3030,10 +3049,10 @@ JSoop.define('Ramen.view.Box', {
     },
 
     /**
-     * @property {String} stype
+     * @property {String} rtype
      * An arbitrary used for locating the view via a {@link Ramen.view.Query}.
      */
-    stype: 'box',
+    rtype: 'box',
 
     isBox: true,
     /**
@@ -3240,7 +3259,7 @@ JSoop.define('Ramen.view.View', {
 
     isView: true,
 
-    stype: 'view',
+    rtype: 'view',
 
     /**
      * @cfg {String/String[]}
@@ -3525,7 +3544,7 @@ JSoop.define('Ramen.view.View', {
                 type = match[1],
                 attribute = match[3],
                 value = match[4],
-                fn = ['if (view.stype !== \'' + type + '\') { return false; }'];
+                fn = ['if (view.rtype !== \'' + type + '\') { return false; }'];
 
             if (attribute && !value) {
                 fn.push('if (!view[\'' + attribute + '\']) { return false; }');
@@ -3614,7 +3633,7 @@ JSoop.define('Ramen.view.View', {
     /**
      * @class Ramen.view.Query
      * Allows the querying of any objects the inherit from {@link Ramen.view.Box} in a css-like syntax based on
-     * {@link Ramen.view.Box#stype stype} as the tag name.
+     * {@link Ramen.view.Box#rtype rtype} as the tag name.
      * @singleton
      */
     JSoop.define('Ramen.view.Query', {
@@ -3879,6 +3898,10 @@ JSoop.define('Ramen.view.binding.ModelBinding', {
 
     initBinding: function () {
         var me = this;
+
+        if (JSoop.isString(me.model)) {
+            me.model = me.owner[me.model];
+        }
 
         if (me.field) {
             me.formatter = new Function('model', 'return model.get("' + me.field + '");');
@@ -4159,7 +4182,6 @@ JSoop.define('Ramen.view.layout.Layout', {
                 add: me.onItemsAdd,
                 remove: me.onItemsRemove,
                 sort: me.onItemsSort,
-                filter: me.onItemsFilter,
                 scope: me
             }
         });
@@ -4171,7 +4193,10 @@ JSoop.define('Ramen.view.layout.Layout', {
             scope: me
         });
 
-        me.mon(me.owner, 'render:during', me.renderItems, me, {
+        me.mon(me.owner, {
+            'render:during': me.renderItems,
+            'render:after': me.doLayout,
+            scope: me,
             single: true
         });
 
@@ -4188,6 +4213,17 @@ JSoop.define('Ramen.view.layout.Layout', {
      * @template
      */
     initContainer: JSoop.emptyFn,
+    doLayout: function () {
+        var me = this;
+
+        if (me.fireEvent('layout:before', me) === false) {
+            return;
+        }
+
+        me.fireEvent('layout:during', me);
+
+        me.fireEvent('layout:after', me);
+    },
     /**
      * @param {Ramen.view.Box[]} items
      */
@@ -4317,6 +4353,17 @@ JSoop.define('Ramen.view.layout.Layout', {
         return style;
     },
 
+    /**
+     * Gets the wrapper element associated with the given item.
+     * @param {Ramen.view.Box} item
+     * @returns {HTMLElement}
+     */
+    getWrapperEl: function (item) {
+        var me = this;
+
+        return me.wrapperCache[me.getItemId(item)];
+    },
+
     destroy: function () {
         var me = this;
 
@@ -4347,6 +4394,8 @@ JSoop.define('Ramen.view.layout.Layout', {
 
             item.render(wrapper);
         });
+
+        me.doLayout();
     },
     /**
      * @private
@@ -4364,13 +4413,12 @@ JSoop.define('Ramen.view.layout.Layout', {
 
             //todo: detach from jquery
             wrapper.remove();
+
             item.destroy();
         });
+
+        me.doLayout();
     },
-    /**
-     * @private
-     */
-    onItemsFilter: JSoop.emptyFn,
     /**
      * @private
      */
@@ -4388,6 +4436,8 @@ JSoop.define('Ramen.view.layout.Layout', {
                 container[0].insertBefore(wrapper[0], container[0].childNodes[index]);
             }
         });
+
+        me.doLayout();
     },
     /**
      * @private
@@ -4418,7 +4468,11 @@ JSoop.define('Ramen.view.layout.Layout', {
         var me = this;
 
         me.itemCache.sort(me.owner.items.sortFn);
-    }
+    },
+
+    onLayoutBefore: JSoop.emptyFn,
+    onLayoutDuring: JSoop.emptyFn,
+    onLayoutAfter: JSoop.emptyFn
 });
 
 /**
@@ -4505,7 +4559,7 @@ JSoop.define('Ramen.view.container.Container', {
 
     isContainer: true,
 
-    stype: 'container',
+    rtype: 'container',
 
     baseCls: 'container',
     baseId: 'container',
@@ -4533,7 +4587,7 @@ JSoop.define('Ramen.view.container.Container', {
 
     initView: function () {
         var me = this,
-            items = JSoop.clone(me.items);
+            items = me.items;
 
         me.callParent(arguments);
 
@@ -4571,6 +4625,19 @@ JSoop.define('Ramen.view.container.Container', {
         layout.owner = me;
 
         me.layout = JSoop.create(layout.type, layout);
+
+        me.mon(me.layout, {
+            'layout:before': function () {
+                return me.fireEvent('layout:before', me);
+            },
+            'layout:during': function () {
+                me.fireEvent('layout:during', me);
+            },
+            'layout:after': function () {
+                me.fireEvent('layout:after', me);
+            },
+            scope: me
+        });
     },
 
     /**
@@ -4585,6 +4652,10 @@ JSoop.define('Ramen.view.container.Container', {
 
         JSoop.each(items, function (item, index) {
             item = me.initItem(item);
+
+            if (!item) {
+                return;
+            }
 
             items[index] = item;
         });
@@ -4625,7 +4696,7 @@ JSoop.define('Ramen.view.container.Container', {
         var me = this;
 
         if (me.targetEl && me[me.targetEl]) {
-            return me.targetEl;
+            return me[me.targetEl];
         }
 
         return me.el;
@@ -4714,7 +4785,15 @@ JSoop.define('Ramen.view.container.Container', {
         var me = this;
 
         return me.find(query).pop();
-    }
+    },
+
+    doLayout: function () {
+        this.layout.doLayout();
+    },
+
+    onLayoutBefore: JSoop.emptyFn,
+    onLayoutDuring: JSoop.emptyFn,
+    onLayoutAfter: JSoop.emptyFn
 });
 
 /**
@@ -4726,7 +4805,7 @@ JSoop.define('Ramen.view.container.Container', {
 JSoop.define('Ramen.view.container.CollectionContainer', {
     extend: 'Ramen.view.container.Container',
 
-    stype: 'collection-container',
+    rtype: 'collection-container',
 
     /**
      * @cfg {Ramen.view.Box/Object} emptyView
@@ -4740,13 +4819,13 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
      * @cfg {Boolean}
      * Setting this to `true` will stop the {@link #emptyView} from being displayed.
      */
-    supressEmptyView: false,
+    suppressEmptyView: false,
 
     initView: function () {
         var me = this;
 
         //Collection container's should not have their own items, the collection should be controlling this
-        me.items = me.collection.items;
+        me.items = JSoop.clone(me.collection.items);
         me.itemCache = {};
 
         me.callParent(arguments);
@@ -4780,6 +4859,14 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         return item;
     },
 
+    onDestroy: function () {
+        var me = this;
+
+        me.callParent(arguments);
+
+        me.emptyView = null;
+    },
+
     /**
      * @private
      */
@@ -4801,7 +4888,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         }
 
         //hide the empty view by default
-        me.emptyView.on('render:during', me.hideEmptyView, me, {single: true});
+        me.mon(me.emptyView, 'render:during', me.hideEmptyView, me, {single: true});
 
         me.items.add(emptyView);
     },
@@ -4880,7 +4967,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
             delete me.itemCache[key];
         });
 
-        if (collection.getCount() === 0 && !me.supressEmptyView) {
+        if (collection.getCount() === 0 && !me.suppressEmptyView) {
             me.showEmptyView();
         }
     },
@@ -4925,7 +5012,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
             me.onCollectionAdd(collection, added);
         }
 
-        if (collection.getCount() === 0 && !me.supressEmptyView) {
+        if (collection.getCount() === 0 && !me.suppressEmptyView) {
             me.showEmptyView();
         } else {
             me.hideEmptyView();
@@ -4941,7 +5028,7 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
 JSoop.define('Ramen.view.container.Viewport', {
     extend: 'Ramen.view.container.Container',
 
-    stype: 'viewport',
+    rtype: 'viewport',
     baseId: 'viewport',
     baseCls: 'viewport',
 
