@@ -1,0 +1,57 @@
+.talk-status {
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin: 20px auto;
+    width: 300px;
+}
+    .talk-status .talk-status-status {
+        float: left;
+        margin-right: 10px;
+    }
+        .talk-status .talk-status-status span {
+            position: relative;
+            top: 1px;
+            display: inline-block;
+            font-family: 'Glyphicons Halflings';
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+        .talk-status .talk-status-status .status-available:before {
+            color: #588F27;
+            content: "\e084";
+        }
+        .talk-status .talk-status-status .status-away:before {
+            color: #F2B134;
+            content: "\e085";
+        }
+        .talk-status .talk-status-status .status-busy:before {
+            color: #8A0917;
+            content: "\e083";
+        }
+
+    .talk-status .talk-status-name {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .talk-status .talk-status-message {
+        color: #777;
+    }
+
+.demo-controls button {
+    width: 125px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.demo-controls button:first-child {
+    margin-top: 0;
+}

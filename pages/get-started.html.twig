@@ -1,0 +1,60 @@
+{% extends "layout.html.twig" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ root }}{{ assets }}/css/get-started.css">
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Get Started</h1>
+            <p>
+                Ramen provides you with a great base to build your applications on. Take a look around this section to
+                learn the basics of Ramen and get started creating powerful apps now.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="guide-section">
+                    <h3><span class="glyphicon glyphicon-hdd"></span>Working with data</h3>
+                    <div class="guide-list">
+                        <h4><a href="guides/modeling-your-data.html">Modeling Your Data</a></h4>
+                        <p>
+                            The most complex of piece of Ramen's data layer is the model. This guide covers how to
+                            define your own.
+                        </p>
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="guide-section">
+                    <h3><span class="glyphicon glyphicon-list-alt"></span>Creating views</h3>
+                    <div class="guide-list">
+                        <h4><a href="guides/create-a-view.html">Creating a Custom View</a></h4>
+                        <p>
+                            This guide walks you through, step by step, how to create a custom view that reacts to changes in
+                            your application's data.
+                        </p>
+                        <hr/>
+                        <h4><a href="guides/life-cycle-of-a-view.html">Life Cycle of a View</a></h4>
+                        <p>
+                            This guide takes you through the life cycle of a view, explaining all of the available hooks and
+                            what you can do with them.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="guide-section">
+                    <h3><span class="glyphicon glyphicon-cog"></span>Building apps</h3>
+                    <div class="guide-list">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

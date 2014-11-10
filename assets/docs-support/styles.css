@@ -1,0 +1,86 @@
+#north-region {
+    background: linear-gradient(to bottom,#3c3c3c 0,#222 100%);
+}
+#center-container h1.class .class-source-link {
+    background: url(resources/images/class-m.png) no-repeat 0 -5px
+}
+#center-container h1.singleton .class-source-link {
+    background: url(resources/images/singleton-m.png) no-repeat 0 -5px;
+}
+#treecontainer .x-grid-cell-inner .icon-class {
+    background: url(resources/images/icons.png) no-repeat 0 -40px;
+}
+#treecontainer .x-grid-cell-inner .icon-singleton {
+    background: url(resources/images/icons.png) no-repeat 0 -80px;
+}
+.class-overview .x-toolbar.member-links .icon-method {
+    background-image: url(resources/member-icons/method.png);
+}
+.class-overview .x-toolbar.member-links .icon-property {
+    background-image: url(resources/member-icons/property.png);
+}
+.class-overview .x-toolbar.member-links .icon-cfg {
+    background-image: url(resources/member-icons/cfg.png);
+}
+.members .members-section .icon-cfg {
+    background-image: url(resources/member-icons/cfg.png);
+}
+.members .members-section .icon-property {
+    background-image: url(resources/member-icons/property.png);
+}
+.members .members-section .icon-method {
+    background-image: url(resources/member-icons/method.png);
+}
+.doctabs .doctab.classes .m a {
+    background: url(resources/images/tabs.png) no-repeat 2px -20px;
+}
+.doctabs .doctab a.close {
+    background: url(resources/images/tabs.png) no-repeat -8px -111px!important;
+}
+.doctabs .icon-singleton {
+    background: url(resources/images/icons.png) no-repeat 0 -80px;
+}
+.doctabs .icon-class {
+    background: url(resources/images/icons.png) no-repeat 0 -40px;
+}
+.doctabs .doctab .l {
+    background: url(resources/images/tabs.png) no-repeat -8px -141px;
+}
+.doctabs .doctab .m {
+    background: url(resources/images/tabs.png) repeat-x 0 -173px;
+}
+.doctabs .doctab .r {
+    background: url(resources/images/tabs.png) no-repeat 0 -239px;
+}
+.doctabs .doctab.active .r {
+    background: url(resources/images/tabs.png) no-repeat 3px -479px;
+}
+.doctabs .doctab.active .m {
+    background: url(resources/images/tabs.png) repeat-x 0 -405px;
+}
+.doctabs .doctab.active .l {
+    background: url(resources/images/tabs.png) no-repeat -9px -369px;
+}
+.doctabs .doctab.highlight .l {
+    background: url(resources/images/tabs.png) no-repeat -9px -271px;
+}
+.doctabs .doctab.highlight .m {
+    background: url(resources/images/tabs.png) repeat-x 0 -303px;
+}
+.doctabs .doctab.highlight .r {
+    background: url(resources/images/tabs.png) no-repeat -9px -335px;
+}
+#header-content {
+    background: url(resources/images/logo.png) 0 0 no-repeat;
+    padding-left: 30px;
+}
+a:link {
+    color: #105B63;
+}
+a:hover {
+    color: #105B63;
+    text-decoration: underline;
+}
+a:visited {
+    color: #BD4932;
+}

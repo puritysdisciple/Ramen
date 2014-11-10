@@ -1,0 +1,36 @@
+.guide-list {
+    background: #ececec;
+    padding: 10px;
+    height: 220px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-top: 0;
+    border-radius: 0 0 5px 5px;
+}
+
+.guide-section hr {
+    margin: 10px -10px 10px -10px;
+    border-top: 1px solid rgba(0, 0, 0, .2);
+}
+
+.guide-section h3 {
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 10px;
+    background-image: -webkit-linear-gradient(top,#3c3c3c 0,#222 100%);
+    background-image: linear-gradient(to bottom,#3c3c3c 0,#222 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    color: #999;
+    border-radius: 5px 5px 0 0;
+    font-weight: normal;
+}
+.guide-section h3 .glyphicon {
+    font-size: 19px;
+    margin-right: 10px;
+    color: #DB9E36;
+}
+
+.guide-list h4:first-child {
+    margin-top: 0;
+}

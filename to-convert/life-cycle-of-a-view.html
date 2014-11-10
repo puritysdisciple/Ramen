@@ -1,0 +1,277 @@
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <title>Ramen - Making Your Apps Delicious</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/css/prism.css">
+    <link rel="stylesheet" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/css/styles.css">
+    
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/index.html">Ramen</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/features.html">Features</a></li>
+                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/get-started.html">Get Started</a></li>
+                <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/docs/index.html">Documentation</a></li>
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Download <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen.js" target="_blank">Compressed</a></li>
+                        <li><a href="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen-debug.js" target="_blank">Uncompressed</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Life Cycle of a View</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+    <div class="col-md-9">
+        <h3 id="intro">Introduction</h3>
+        <p>
+            In this guide, we're going to to cover the life cycle of the views that Ramen comes with out of the box.
+            This will give you the available hooks you can use to modify their behavior, as well as what you can do in
+            each of the hooks. Mastering hooks is the key to creating complex custom views.
+        </p>
+        <h3 id="Ramen-view-box">Ramen.view.Box</h3>
+        <p>
+            The box view is nothing more than a managed HTML tag. In most cases, you shouldn't be extending this.
+            However, it is the most basic kind of view. If you just want to inject a raw snippet of HTML into the
+            page and have no need for it to be dynamic, then this is what you want to start with.
+        </p>
+        <p>
+            All view's follow this same life cycle, throughout this guide only the changes to these hooks will be
+            described:
+        </p>
+        <h4>create</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> initView</strong><br/>
+                <p>
+                    By the time you get to this hook, your view's config has already been applied, but not much else
+                    has happened. In this hook you should be setting up all basic config you need to as well as doing
+                    any setup possible prior to rendering such as adding or removing classes.
+                </p>
+            </li>
+        </ol>
+        <h4>render</h4>
+        <ol>
+            <li>
+                <strong>
+                    <span class="glyphicon glyphicon-flash glyphicon-hook"></span>
+                    onRenderBefore(view, container, index)
+                </strong><br/>
+                <p>
+                    Prior to this hook, your view has been fully initialized, however no rendering has taken place. The
+                    key power of this hook is that by returning <code>false</code> you can stop your view from rendering
+                    altogether. This allows you to setup rendering for a later time if your view isn't ready yet.
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>view</code></td>
+                            <td>the view that the hook belongs to</td>
+                        </tr>
+                        <tr>
+                            <td><code>container</code></td>
+                            <td>the container <code>render</code> was called with</td>
+                        </tr>
+                        <tr>
+                            <td><code>index</code></td>
+                            <td>the index <code>render</code> was called with</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onRenderDuring</strong>
+                <p>
+                    Not much changes between onRenderBefore and onRenderDuring, however this  is a good place to inject
+                    render-time functionality.
+                </p>
+            </li>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onRenderAfter</strong>
+                <p>
+                    Prior to this hook firing, the view will have been inserted into it's container, thus fully being
+                    rendered. Any sizing and layout that requires your view to be on the page should be done in this
+                    hook.
+                </p>
+            </li>
+        </ol>
+        <h4>destroy</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onDestroyBefore</strong>
+                <p>
+                    Similar to onRenderBefore, this hook gives you the ability to cancel the destruction of your view by
+                    returning <code>false</code>.
+                </p>
+            </li>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onDestroy</strong>
+                <p>
+                    This hook is used for doing any cleanup any functionally that you may have added in the other hooks.
+                </p>
+            </li>
+        </ol>
+        <h3 id="Ramen-view-view">Ramen.view.View</h3>
+        <p>
+            The standard view builds on top of box by giving you access to templates, childEls, childSelectors and
+            domListeners. If your view doesn't need to hold other views, and doesn't deal directly with data stored
+            in models, this is where you want to start.
+        </p>
+        <h4>render</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onRenderDuring</strong>
+                <p>
+                    <strong><span class="glyphicon glyphicon-circle-arrow-up"></span> callParent</strong>
+                    inserts the rendered template, pulls <code>childEls</code>, <code>childSelectors</code> and sets up
+                    <code>domListeners</code>.
+                </p>
+                <p>
+                    Once <code>callParent</code> is called you can use your rendered html, such as adding styles
+                    or classes to <code>childEls</code> or injecting more elements into your template based on complex
+                    data. It's better to do as many changes to HTML as possible in this stage so that you avoid a
+                    browser repaint or reflow. These can both occur if you wait until <code>onRenderAfter</code> to
+                    make your changes.
+                </p>
+            </li>
+        </ol>
+        <h3 id="Ramen-view-binding-binding-view">Ramen.view.binding.BindingView</h3>
+        <p>
+            Binding view builds on view by giving you data bindings that are used to read data from a
+            Ramen.data.Model.
+        </p>
+        <h4>destroy</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onDestroy</strong><br/>
+                <p>
+                    <strong><span class="glyphicon glyphicon-circle-arrow-up"></span> callParent</strong> destroys all
+                    bindings that have been added.
+                </p>
+            </li>
+        </ol>
+        <h3 id="Ramen-view-container-container">Ramen.view.container.Container</h3>
+        <p>
+            The container view, as it's name suggests, is a view that can hold and render other views. It supports
+            the use of layouts to give you control of how and where each of its children is rendered.
+        </p>
+        <h4>create</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> initView</strong><br/>
+                <p>
+                    <strong><span class="glyphicon glyphicon-circle-arrow-up"></span> callParent</strong>
+                    sets up the items dictionary with any child items currently stored in the <code>items</code>
+                    parameter.
+                </p>
+                <p>
+                    Prior to executing <code>callParent</code> the easiest way to setup child items is set the
+                    <code>items</code> parameter to an array of item configs. This is also a good time to set any
+                    dynamic values needed in <code>itemDefaults</code>.
+                </p>
+                <p>
+                    After executing <code>callParent</code> the <code>items</code> dictionary will be created, and as
+                    such you'll be required to use the standard <code>add</code>, <code>instert</code> and
+                    <code>remove</code> calls to modify child items.
+                </p>
+            </li>
+        </ol>
+        <h4>destroy</h4>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> onDestroy</strong><br/>
+                <p>
+                    <strong><span class="glyphicon glyphicon-circle-arrow-up"></span> callParent</strong> destroys all
+                    items as well as the current layout.
+                </p>
+            </li>
+        </ol>
+        <h3 id="Ramen-view-container-collection-container">Ramen.view.container.CollectionContainer</h3>
+        <ol>
+            <li>
+                <strong><span class="glyphicon glyphicon-flash glyphicon-hook"></span> initView</strong><br/>
+                <p>
+                    <strong><span class="glyphicon glyphicon-circle-arrow-up"></span> callParent</strong> sets up the
+                    <code>emptyView</code> and attaches all needed events to the collection. This also overrides the
+                    current value of the <code>items</code> parameter, meaning that <code>items</code> cannot be used.
+                </p>
+                <p>
+                    Other than setting up <code>itemDefaults</code>, you shouldn't be doing much before executing
+                    <code>callParent</code>.
+                </p>
+                <p>
+                    After <code>callParent</code> has been executed, however, you can insert items directly to bypass
+                    the collection lock that this view has. You can see how this is done in the <code>initEmptyView</code>
+                    method:
+                </p>
+                <pre data-src="../assets/examples/guides/life-cycle-of-a-view/initEmptyView.js"></pre>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-3">
+        <div class="affix-top usage-sidebar">
+            <ul class="nav">
+                <li class="active"><a href="#intro">Introduction</a></li>
+                <li><a href="#Ramen-view-box">Ramen.view.Box</a></li>
+                <li><a href="#Ramen-view-view">Ramen.view.View</a></li>
+                <li><a href="#Ramen-view-binding-binding-view">Ramen.view.binding.BindingView</a></li>
+                <li><a href="#Ramen-view-container-container">Ramen.view.container.Container</a></li>
+                <li><a href="#Ramen-view-container-collection-container">Ramen.view.container.CollectionContainer</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    </div>
+
+<div class="container">
+    <footer>
+        <hr/>
+    </footer>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/twig.js"></script>
+<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/jsoop.js"></script>
+<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/ramen.js"></script>
+<script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/prism.min.js"></script>
+    <script src="../../../Downloads/Ramen-gh-pages/Ramen-gh-pages/assets/js/usage.js"></script>
+</body>
+</html>
