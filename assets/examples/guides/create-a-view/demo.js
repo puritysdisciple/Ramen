@@ -4,7 +4,7 @@ JSoop.define('Talk.view.Status', {
     extend: 'Ramen.view.binding.BindingView',
 
     //configure the view as we need it
-    stype: 'talk-status',
+    rtype: 'talk-status',
 
     baseId: 'talk-status',
     baseCls: 'talk-status',

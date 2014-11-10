@@ -48,7 +48,7 @@
             <li>
                 <p>
                     <strong>Ramen.view.View</strong><br/>
-                    The standard view builds on top of box by giving you access to templates, childEls, renderSelectors and
+                    The standard view builds on top of box by giving you access to templates, childEls, childSelectors and
                     domListeners. If your view doesn't need to hold other views, and doesn't deal directly with data stored
                     in models, this is where you want to start.
                 </p>
@@ -87,7 +87,7 @@
         <h3 id="step-2">Step 2: Basic Configuration</h3>
         <p>
             There are three things that need to be set when you create any view. These are <code>baseId</code>,
-            <code>baseCls</code>, <code>stype</code>.
+            <code>baseCls</code>, <code>rtype</code>.
         </p>
         <ul>
             <li>
@@ -103,7 +103,7 @@
                 to the template as a parameter. This allows you to easily namespace your css classes.
             </li>
             <li>
-                <strong>stype</strong>: The <code>stype</code> is used by controllers and queries to locate your view.
+                <strong>rtype</strong>: The <code>rtype</code> is used by controllers and queries to locate your view.
                 If your view has no interactions, then this isn't strictly needed. However it is good to get into the
                 habit of setting this on all view types.
             </li>
