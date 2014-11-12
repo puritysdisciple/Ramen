@@ -10,6 +10,7 @@ JSoop.define('Talk.model.User', {
     fields: [
         'id',
         'username',
-        'message'
+        'message',
+        'status'
     ]
 });

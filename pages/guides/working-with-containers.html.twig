@@ -1,0 +1,30 @@
+{% extends "guide.html.twig" %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ root }}{{ assets }}/examples/guides/working-with-containers/styles.css">
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/model/User.js"></script>
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/collection/Users.js"></script>
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/view/ContactList.js"></script>
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/view/ControlPanel.js"></script>
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/view/Status.js"></script>
+    <script src="{{ root }}{{ assets }}/examples/guides/working-with-containers/demo/App.js"></script>
+{% endblock %}
+
+{% set title = "Working With Containers" %}
+
+{% block guide %}
+    <div class="col-md-9">
+        <div id="demo"></div>
+    </div>
+    <div class="col-md-3">
+        <div class="affix-top usage-sidebar">
+            <ul class="nav">
+                <li class="active"><a href="#step-1">Step 1: Choosing a Starting Point</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
