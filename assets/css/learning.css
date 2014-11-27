@@ -1,0 +1,50 @@
+.guide-section {
+    margin-top: 30px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+    .row:first-child .guide-section {
+        margin-top: 0;
+    }
+
+    .guide-section .guide-list {
+        position: absolute;
+        padding: 20px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 100px;
+        background-color: #ececec;
+        border-radius: 5px 0 0 5px;
+    }
+
+        .guide-section .guide-list h3 {
+            margin-top: 0;
+        }
+
+        .guide-section .guide-list ul {
+            padding-left: 20px;
+        }
+
+    .guide-section .guide-icon {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100px;
+        right: 0;
+        color: #FFFAD5;
+        font-size: 60px;
+        background-color: #3c3c3c;
+        border-radius: 0 5px 5px 0;
+    }
+
+        .guide-section .guide-icon .glyphicon {
+            display: inline-block;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            margin-top: -30px;
+        }

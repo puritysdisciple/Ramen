@@ -15,24 +15,28 @@ $spark->on('afterbuild', function ($event) {
         $file = substr($file, 1);
 
         if (strstr($file, 'assets') === false) {
-            $path = explode('/', $file);
+            $path = explode(DIRECTORY_SEPARATOR, $file);
 
             array_shift($path);
 
-            $path = implode('/', $path);
+            $path = implode(DIRECTORY_SEPARATOR, $path);
 
-            $path = $target.'/'.$path;
+            $path = $target.DIRECTORY_SEPARATOR.$path;
 
-            $dir = explode('/', $path);
+            $dir = explode(DIRECTORY_SEPARATOR, $path);
             array_pop($dir);
-            $dir = implode('/', $dir);
+            $dir = implode(DIRECTORY_SEPARATOR, $dir);
 
             FileUtils::mkdirIfNotExists($dir);
 
-            echo $target.'/'.$file.' -> '.$path."\n";
+            echo $target.DIRECTORY_SEPARATOR.$file.' -> '.$path."\n";
 
-            copy($target.'/'.$file, $path);
-            unlink($target.'/'.$file);
+            copy($target.DIRECTORY_SEPARATOR.$file, $path);
+            unlink($target.DIRECTORY_SEPARATOR.$file);
         }
     }
+
+    $locale = explode(DIRECTORY_SEPARATOR, $file);
+
+    FileUtils::recursiveDelete($target.DIRECTORY_SEPARATOR.array_shift($locale));
 });

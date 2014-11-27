@@ -1,0 +1,87 @@
+{% extends "layout.html.twig" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ root }}{{ assets }}/css/learning.css">
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Learning Center</h1>
+            <p>
+                Ramen provides you with a great base to build your applications on. Take a look around this section to
+                learn the basics of Ramen and get started creating powerful apps now.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="guide-section">
+                    <div class="guide-list">
+                        <h3>Setup</h3>
+                        <p>Download and setup the necessary libraries needed to get started with Ramen.</p>
+                        <ul>
+                            <li><a href="{{ root }}download.html">Download Ramen</a></li>
+                            <li><a href="{{ root }}guides/welcome.html">Welcome to Ramen</a></li>
+                        </ul>
+                    </div>
+                    <div class="guide-icon">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="guide-section">
+                    <div class="guide-list">
+                        <h3>Working with Data</h3>
+                        <p>Familiarize yourself with Ramen's powerful data components.</p>
+                        <ul>
+                            <li><a href="#">Understanding Models</a></li>
+                            <li><a href="#">Working with Collections</a></li>
+                            <li><a href="#">Setting up Associations</a></li>
+                        </ul>
+                    </div>
+                    <div class="guide-icon">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="guide-section">
+                    <div class="guide-list">
+                        <h3>Creating Views</h3>
+                        <p>Start learning to create complex views.</p>
+                        <ul>
+                            <li><a href="#">Basic Views</a></li>
+                            <li><a href="#">Data Bindings</a></li>
+                            <li><a href="#">Containers</a></li>
+                            <li><a href="#">Layouts</a></li>
+                        </ul>
+                    </div>
+                    <div class="guide-icon">
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="guide-section">
+                    <div class="guide-list">
+                        <h3>Application Architecture</h3>
+                        <p>Explore Ramen's way of structuring a healthy application.</p>
+                        <ul>
+                            <li><a href="#">Creating Controllers</a></li>
+                            <li><a href="#">Setting up an Application</a></li>
+                        </ul>
+                    </div>
+                    <div class="guide-icon">
+                        <span class="glyphicon glyphicon-tower" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

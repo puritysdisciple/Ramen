@@ -1,0 +1,80 @@
+{% extends "layout.html.twig" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ root }}{{ assets }}/css/download.css">
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron guide-jumbotron">
+        <div class="container">
+            <h1>Download Ramen</h1>
+            <p>
+                Get the latest version, as well as any required libraries needed, to setup Ramen.
+            </p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h2>Step 1: Download Ramen and Dependencies</h2>
+                <p>Ramen is built on top of three separate libraries:</p>
+                <ol>
+                    <li>JSoop: Provides a strong base for doing advanced Object Oriented Programming</li>
+                    <li>jQuery: A powerful library that provides, among other things, HTML manipulation</li>
+                    <li>Twig: A easy to use, but powerful, templating language</li>
+                </ol>
+                <p>
+                    You will need all three of these libraries along with the appropriate version of Ramen. In most
+                    cases you will want to use the uncompressed version for development and the compressed version for
+                    production.
+                </p>
+                <h2>Step 2: Setup Your HTML Document</h2>
+                <p>
+                    You can setup your HTML document in whatever way you wish. Just make sure that Ramen is included
+                    after its dependencies:
+                </p>
+                <pre data-src="{{ root }}{{ assets }}/examples/download/index.html"></pre>
+            </div>
+            <div class="col-md-3">
+                <div class="downloads">
+                    <a href="#">
+                        <div class="download-button">
+                            <img src="{{ root }}{{ assets }}/images/ramen.png"/>
+                            <div class="name">
+                                Ramen
+                                <span>Uncompressed</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="download-button">
+                            <img src="{{ root }}{{ assets }}/images/ramen.png"/>
+                            <div class="name">
+                                Ramen
+                                <span>Compressed</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="external-libs">
+                    <h3>Dependencies</h3>
+                    <a href="http://puritysdisciple.github.io/jsoop/">
+                        <div class="external-lib-container jsoop">
+                            <img src="{{ root }}{{ assets }}/images/jsoop.png"/> JSoop
+                        </div>
+                    </a>
+                    <a href="http://jquery.com/">
+                        <div class="external-lib-container jquery">
+                            <img src="{{ root }}{{ assets }}/images/jquery.png"/>
+                        </div>
+                    </a>
+                    <a href="https://github.com/justjohn/twig.js">
+                        <div class="external-lib-container twig">
+                            <img src="{{ root }}{{ assets }}/images/twig.png"/> TWIG
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "guide.html.twig" %}
+
+{% set title = "Welcome to Ramen" %}
+{% set subtitle = "Get a brief overview of how Ramen is setup, the class structure, and how to write Hello World." %}
+
+{% block guide %}
+    <div class="col-md-9">
+        <p>
+            This guide will give you brief overview of how to setup Ramen to display a "Hello World" view on your page. From
+            here, we'll discuss how to better structure your code to give you a good foundation to build on when creating
+            an application.
+        </p>
+        <h2 id="hello-world">Hello World</h2>
+        <p>
+            Getting started with Ramen is very simple. Once you have your HTML document setup as was discussed in
+            <a href="{{ root }}download.html">Download Ramen</a> you can start modifying your <code>app.js</code> file
+            to make it actually do something.
+        </p>
+        <p>
+            Ramen is almost entirely javascript. Writing your applications and views is done in javascript, and there is
+            very little direct interaction with HTML outside of templating. Displaying a view is as simple as instantiating
+            a view as such:
+        </p>
+        <pre data-src="{{ root }}{{ assets }}/examples/guides/welcome/step-1.js"></pre>
+        <p>
+            This will create a <code>Ramen.view.View</code> with the content <code>"Hello World"</code> and render it
+            immediately to the body of your page. The problem with this code is that we're just creating it in the middle
+            of nowhere. This could be an issue if your document's body doesn't exist just yet. We can rectify this
+            problem by wrapping our view's creationg in a <code>Ramen.application</code> call.
+        </p>
+        <pre data-src="{{ root }}{{ assets }}/examples/guides/welcome/step-2.js"></pre>
+        <p>
+            With this change, Ramen will wait for everything to be ready before executing our display code. In this
+            example it's just waiting for the document to be ready, but it has the capability to require other things
+            to be ready as well before running.
+        </p>
+        <h2 id="best-practices">Best Practices</h2>
+        <p>
+            Ramen builds on top of JSoop's class system. As such you can very easily create organized and reusable code.
+            Due to the simplicity of our Hello World application, further refactoring isn't really required. With that
+            being said, it is bad practice to instantiate any base Ramen class directly. Instead the class should be
+            extended.
+        </p>
+        <p>
+            We can do this by creating a new file <code>/app/HelloWorld.js</code> and defining the view there:
+        </p>
+        <pre data-src="{{ root }}{{ assets }}/examples/guides/welcome/step-3.js"></pre>
+        <p>
+            If you're familiar with JSoop this is quite common. We are extending <code>Ramen.view.View</code> and adding
+            our own <code>tpl</code> property. From we just need to change our application to use our custom view:
+        </p>
+        <pre data-src="{{ root }}{{ assets }}/examples/guides/welcome/step-4.js"></pre>
+        <p>
+            In general, you want to add any dependencies your class has in the <code>requires</code> array. This will
+            allow you to use JSoop's loader for development. Due to the fact that each class you define should have its
+            own file, this can easy some of the development pain of managing file inclusion order.
+        </p>
+        <h2 id="next-steps">Conclusion and Next Steps</h2>
+        <p>
+            In this guide we discussed the very basics of how to setup a Ramen application as well as went over some of
+            the best practices that should be used when doing so. From here, you can gain a further understanding of
+            Ramen:
+        </p>
+        <ul>
+            <li>
+                Gain a more in-depth understanding of <a href="#">JSoop's class system</a>.
+            </li>
+            <li>
+                Read more about specific Ramen concepts in the <a href="{{ root }}learning.html">Learning Center</a>.
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <div class="affix-top usage-sidebar">
+            <ul class="nav">
+                <li class="active"><a href="#hello-world">Hello World</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#next-steps">Next Steps</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
