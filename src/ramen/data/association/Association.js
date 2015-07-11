@@ -72,13 +72,27 @@ JSoop.define('Ramen.data.association.Association', {
     },
 
     createModel: function (data) {
-        var me = this;
+        var me = this,
+            newModel, existingModel, collection;
 
         if (data.isModel) {
             return data;
         }
 
-        return JSoop.create(me.model, data);
+        newModel = JSoop.create(me.model, data);
+
+        if (me.globalCollection) {
+            collection = Ramen.getCollection(me.globalCollection);
+
+            if (collection.indexOfKey(newModel.getId()) !== -1) {
+                existingModel = collection.get(newModel.getId());
+                existingModel.set(newModel.attributes);
+
+                newModel = existingModel;
+            }
+        }
+
+        return newModel;
     },
 
     createAssociationChangeListener: function (model) {

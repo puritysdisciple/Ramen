@@ -109,11 +109,11 @@ JSoop.define('Ramen.view.layout.Layout', {
     renderItems: function () {
         var me = this;
 
+        me.initContainer();
+
         if (!me.needsRender) {
             return;
         }
-
-        me.initContainer();
 
         me.itemCache.each(function (item, index) {
             var key = me.getItemId(item),
@@ -168,6 +168,16 @@ JSoop.define('Ramen.view.layout.Layout', {
         }
 
         return wrapper;
+    },
+    /**
+     * @param {Ramen.view.Box} item
+     * @returns {HTMLElement}
+     */
+    getWrapper: function (item) {
+        var me = this,
+            key = me.getItemId(item);
+
+        return me.wrapperCache[key];
     },
     /**
      * @param {Ramen.view.Box} item

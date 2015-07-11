@@ -146,6 +146,10 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
     onCollectionAdd: function (collection, added) {
         var me = this;
 
+        if (collection.isSorted) {
+            added.sort(collection.sortFn);
+        }
+
         JSoop.each(added, function (item) {
             var index = collection.indexOf(item);
 

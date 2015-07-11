@@ -22,9 +22,4 @@ JSoop.define('Ramen', {
             return prefix + '-' + AUTO_ID;
         };
     }())
-}, function () {
-    if (!JSoop.GLOBAL.Spine) {
-        //This is here to support backwards compatability
-        JSoop.GLOBAL.Spine = Ramen;
-    }
 });
