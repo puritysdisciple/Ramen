@@ -74,6 +74,8 @@ JSoop.define('Ramen.view.Box', {
         me.initMixin('observable');
         me.initMixin('pluginManager');
 
+        me.cls = (me.cls)? JSoop.toArray(me.cls).slice() : [];
+
         me.initView();
 
         me.id = me.getId();
