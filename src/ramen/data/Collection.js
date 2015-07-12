@@ -91,6 +91,23 @@ JSoop.define('Ramen.data.Collection', {
         return JSoop.create(me.model, item, {
             mergeData: item
         });
+    },
+
+    clone: function () {
+        var me = this,
+            newCollection = JSoop.create('Ramen.data.Collection', {
+                model: me.model,
+                items: me.items.slice()
+            });
+
+        newCollection.mon(me, {
+            add: function (collection, added) {
+                newCollection.add(added);
+            },
+            remove: function (collection, removed) {
+                newCollection.remove(removed);
+            }
+        });
     }
 }, function () {
     Ramen.collections = {};
