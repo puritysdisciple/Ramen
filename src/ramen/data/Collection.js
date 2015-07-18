@@ -95,9 +95,8 @@ JSoop.define('Ramen.data.Collection', {
 
     clone: function () {
         var me = this,
-            newCollection = JSoop.create('Ramen.data.Collection', {
-                model: me.model,
-                items: me.items.slice()
+            newCollection = JSoop.create('Ramen.data.Collection', me.items.slice(), {
+                model: me.model
             });
 
         newCollection.mon(me, {
@@ -108,6 +107,8 @@ JSoop.define('Ramen.data.Collection', {
                 newCollection.remove(removed);
             }
         });
+
+        return newCollection;
     }
 }, function () {
     Ramen.collections = {};
