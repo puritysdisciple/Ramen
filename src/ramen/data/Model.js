@@ -152,6 +152,12 @@ JSoop.define('Ramen.data.Model', {
             Ramen.data.Model.addFields.call(me, fields);
         }
 
+        JSoop.each(me.fields, function (field) {
+            if (field.isVirtual && field.init) {
+                field.init.call(me);
+            }
+        });
+
         if (data) {
             me.set(data);
         }
@@ -163,7 +169,13 @@ JSoop.define('Ramen.data.Model', {
      * @returns {Mixed} The current value of the field.
      */
     get: function (field) {
-        return this.attributes[field];
+        var me = this;
+
+        if (me.fieldCache[field] && me.fieldCache[field].getter) {
+            return me.fieldCache[field].getter.call(me);
+        }
+
+        return me.attributes[field];
     },
 
     /**
@@ -201,6 +213,12 @@ JSoop.define('Ramen.data.Model', {
         attributes = JSoop.apply(JSoop.clone(me.attributes), attributes);
 
         JSoop.each(me.fields, function (field) {
+            if (field.virtual && field.setter) {
+                field.setter.call(me, attributes);
+
+                return;
+            }
+
             var ret = field.read(attributes, me);
 
             if (ret !== undefined) {
