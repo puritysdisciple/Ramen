@@ -30,6 +30,15 @@ JSoop.define('Ramen.collection.Dictionary', {
         return me.callParent(arguments);
     },
 
+    /**
+     * Checks to see whether the dictionary has the specified item.
+     * @param {Mixed} item The item to search for
+     * @returns {Boolean}
+     */
+    has: function (item) {
+        return !!this.cache[this.getKey(item)];
+    },
+
     insertItem: function (item, index, target) {
         var me = this,
             key = me.getKey(item);
@@ -64,10 +73,9 @@ JSoop.define('Ramen.collection.Dictionary', {
     },
 
     onAddBefore: function (dictionary, item, index) {
-        var me = this,
-            key = me.getKey(item);
+        var me = this;
 
-        if (me.indexOfKey(key) !== -1 || me.callParent(arguments) === false) {
+        if (me.has(item) || me.callParent(arguments) === false) {
             return false;
         }
     },
@@ -111,14 +119,6 @@ JSoop.define('Ramen.collection.Dictionary', {
 
     //region New Members
     //====================================================================================================
-    /**
-     * Checks to see whether the dictionary has the specified item.
-     * @param {Mixed} item The item to search for
-     * @returns {Boolean}
-     */
-    has: function (item) {
-        return this.indexOf(item) !== -1;
-    },
     /**
      * Gets the key of the specified item.
      * @param {Mixed} item

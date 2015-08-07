@@ -9,5 +9,19 @@ JSoop.define('Ramen.view.ViewManager', {
 
     getKey: function (item) {
         return item.getId();
+    },
+
+    find: function (query) {
+        var me = this,
+            query = Ramen.view.Query.parse(query),
+            items = [];
+
+        me.each(function (view) {
+            if (query.is(view)) {
+                items.push(view);
+            }
+        });
+
+        return items;
     }
 });

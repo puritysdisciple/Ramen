@@ -63,6 +63,20 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
         return item;
     },
 
+    onRenderDuring: function () {
+        var me = this;
+
+        me.callParent(arguments);
+
+        if (me.emptyView) {
+            if (me.collection.getCount() === 0 && !me.suppressEmptyView) {
+                me.showEmptyView();
+            } else {
+                me.hideEmptyView();
+            }
+        }
+    },
+
     onDestroy: function () {
         var me = this;
 
@@ -90,9 +104,6 @@ JSoop.define('Ramen.view.container.CollectionContainer', {
 
             me.emptyView = emptyView;
         }
-
-        //hide the empty view by default
-        me.mon(me.emptyView, 'render:during', me.hideEmptyView, me, {single: true});
 
         me.items.add(emptyView);
     },

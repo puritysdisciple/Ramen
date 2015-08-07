@@ -200,17 +200,20 @@ JSoop.define('Ramen.view.View', {
             renderSelectors = me.renderSelectors || {},
             els = me.childEls || {};
 
+        //todo: detach from jquery
+        me.el.detach();
+
         //Unbind and destroy renderSelectors
         JSoop.iterate(renderSelectors, function (selector, key) {
             //todo: detach from jquery
-            me[key].off();
+            me[key].remove();
             me[key] = null;
         });
 
         //Unbind and destroy childEls
         JSoop.iterate(els, function (addition, key) {
             //todo: detach from jquery
-            me[key].off();
+            me[key].remove();
             me[key] = null;
         });
 

@@ -29,12 +29,12 @@ JSoop.define('Ramen.view.Box', {
 
     isBox: true,
     /**
-     * @cfg
+     * @cfg isManaged
      * Determines whether or not the view should be placed into {@link Ramen.view.ViewManager}
      */
     isManaged: true,
     /**
-     * @cfg
+     * @cfg autoRender
      * If set to `true` the view will be rendered on creation. This is used in cojunction with {@link #renderTo}
      */
     autoRender: false,
@@ -170,7 +170,8 @@ JSoop.define('Ramen.view.Box', {
      * Destroys the box. This will remove the box from the dom and do any needed cleanup.
      */
     destroy: function () {
-        var me = this;
+        var me = this,
+            proto;
 
         if (me.fireEvent('destroy:before') === false) {
             return false;
@@ -188,6 +189,40 @@ JSoop.define('Ramen.view.Box', {
         if (me.isManaged) {
             Ramen.view.ViewManager.remove(me);
         }
+
+        if (me.garbage) {
+            proto = me.$class.prototype;
+
+            while (proto) {
+                if (proto.garbage) {
+                    me.removeGarbage(proto.garbage);
+                }
+
+                if (proto.superClass) {
+                    proto = proto.superClass.prototype;
+                } else {
+                    proto = null;
+                }
+            }
+        }
+    },
+
+    removeGarbage: function (garbage) {
+        var me = this;
+
+        JSoop.iterate(garbage, function (fn, key) {
+            if (me[key]) {
+                if (JSoop.isString(fn)) {
+                    me[key][fn]();
+                }
+
+                if (JSoop.isFunction(fn)) {
+                    fn(me, key);
+                }
+
+                me[key] = null;
+            }
+        });
     },
 
     /**

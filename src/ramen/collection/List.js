@@ -340,6 +340,14 @@ JSoop.define('Ramen.collection.List', {
     getCount: function () {
         return this.items.length;
     },
+    /**
+     * Checks to see if the specified item is in the list
+     * @param {Mixed} item The item to check for
+     * @returns {boolean} Whether or not the list has the item
+     */
+    has: function (item) {
+        return this.indexOf(item) !== -1;
+    },
     afterSort: function (list, sorted) {
         var me = this;
 
